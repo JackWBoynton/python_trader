@@ -2,7 +2,6 @@
 import pandas as pd
 
 import pyrenko
-<<<<<<< HEAD
 import helper as helper
 import glob
 import argparse
@@ -14,9 +13,6 @@ args = parser.parse_args()
 
 print('fast ma length: {args.fast[0]}', 'slow ma length: {args.fast[1]}', 'signal length: {args.fast[2]}')
 sta = sorted(glob.glob('/home/jayce/20190*.csv'))
-=======
-import helper
->>>>>>> master
 
 data = pd.DataFrame(helper.load_dfs('XBTU19', sta).values)
 

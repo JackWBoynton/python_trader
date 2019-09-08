@@ -20,11 +20,7 @@ VERB = "GET"
 ENDPOINT = "/realtime"
 
 mylcd = I2C_DRIVER.lcd()
-<<<<<<< HEAD
 initial_bal = 0.010721
-=======
-initial_bal = 0.00079959
->>>>>>> master
 last_price = 0
 
 

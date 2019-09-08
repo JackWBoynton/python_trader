@@ -89,6 +89,20 @@ class BitmexTrader():
             self.open_price = 0
             self.filename = 'sim_orders.csv'
 
+    def gui(self, op, take, stop, qty):
+
+        connection = pymysql.connect(host='localhost', user=self.db_user,
+                                     password=self.db_pass, db='orders', cursorclass=pymysql.cursors.DictCursor)
+        with connection.cursor() as cursor:
+            # Create a new record
+            sql = "INSERT INTO `trades` (`open_price`,`take_price`,`stop_price`,`qty`) VALUES (%s,%s,%s,%s)"
+            cursor.execute(sql, (op, take, stop, qty))
+
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        connection.commit()
+        connection.close()
+
     def order(self, dictt):
         with open(self.filename, 'a') as f:
             f.write(json.dumps(dictt) + '\n')
@@ -96,15 +110,9 @@ class BitmexTrader():
 
     def post_balance(self):
         try:
-<<<<<<< HEAD
             self.client.chat_postMessage(channel=self.channel_trades, text='current bal: ' + str(
                 (self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)*float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])))
-=======
-            self.client.chat_postMessage(channel=self.channel_trades,
-                                         text='current bal: ' +
-                                         str(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000))
->>>>>>> master
-        except:
+pt:
             pass
         return ''
 
@@ -142,6 +150,7 @@ class BitmexTrader():
                     fee = profit * 0.00075
                     profit = profit - fee
                     self.test_bal = self.test_bal + profit
+                print(str(self.test_bal))
                 self.open['price'] = float(requests.get(
                     "https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
                 self.open['side'] = 'null'
@@ -149,6 +158,7 @@ class BitmexTrader():
                 self.open['close'] = 1
                 self.open = self.order(self.open)
 
+            # time.sleep(2)
             bal = self.auth_client_bitmex.User.User_getMargin().result()[
                 0]['availableMargin'] / 100000000
             response = requests.get(
@@ -158,6 +168,7 @@ class BitmexTrader():
             order_q = floor(bal * self.leverage * price) - 10
 
             if self.trade:
+
                 ord = ''
                 while ord != 'Filled':
                     try:
@@ -167,21 +178,19 @@ class BitmexTrader():
                         ord = order[0]['ordStatus']
                     except Exception as e:
                         self.auth_client_bitmex.Order.Order_cancelAll().result()
-<<<<<<< HEAD
                         close = self.auth_client_bitmex.Order.Order_new(
                             symbol='XBTUSD', ordType='Market', execInst='Close').result()
                         print(str(e) + ' retrying...')
                         self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                         time.sleep(2)
-=======
->>>>>>> master
                         ord = ''
+
+                print('buy order filled')
 
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(
                     price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor(
                     (price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=-order_q).result()
-<<<<<<< HEAD
                 print('placed tp at: ' + str(floor(price *
                                                    (1 + self.take_profit / self.leverage) * 0.5) / 0.5))
                 print('placed sl at: ' + str(floor((price -
@@ -190,14 +199,8 @@ class BitmexTrader():
                 self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
                 self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage,3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
 
-                self.gui(op=order[0]['price'], take=floor(price * (1 + self.take_profit / self.leverage) * 0.5) /0.5, stop=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, qty=order_q)
-=======
-                self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[
-                                      0]['marginBalance'] / 100000000)
-                self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage), 3) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+                self.gui(op=order[0]['price'], take=floor(price * (1 + self.take_profit / self.leverage) * 0.5) /0.5, stop=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, qty=order_q               self.open['price'] = order[0]['price']
 
->>>>>>> master
-                self.open['price'] = order[0]['price']
                 self.open['side'] = 'long'
                 self.open['qty'] = order[0]['orderQty']
                 self.open['close'] = 0
@@ -217,6 +220,7 @@ class BitmexTrader():
               ' @ ' + str(order[0]['price']))
 
     def sell_short(self, ex, pair):
+
         try:
             pair = pair.split('-')
             if self.trade:
@@ -246,23 +250,6 @@ class BitmexTrader():
                             self.open = self.order(self.open)
                         except:
                             pass
-<<<<<<< HEAD
-=======
-                else:
-                    if self.test_open_qty > 0:
-                        profit = ((1 / self.open_price) - (1 / float(requests.get(
-                            "https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']))) * self.test_open_qty
-                        fee = 0.00075 * profit
-                        profit = profit - fee
-                        self.test_bal = self.test_bal + profit
-                    print(str(self.test_bal))
-                    self.open['price'] = float(requests.get(
-                        "https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
-                    self.open['side'] = 'null'
-                    self.open['qty'] = 'prev'
-                    self.open['close'] = 1
-                    self.open = self.order(self.open)
->>>>>>> master
 
                 response = requests.get(
                     "https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()
@@ -271,6 +258,7 @@ class BitmexTrader():
                     0]['availableMargin'] / 100000000
 
                 if self.trade:
+
                     ord = ''
                     while ord != 'Filled':
                         try:
@@ -278,17 +266,16 @@ class BitmexTrader():
                                 symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 1).result()
                             time.sleep(2)
                             ord = order[0]['ordStatus']
-                        except:
+                        except Exception as e:
                             self.auth_client_bitmex.Order.Order_cancelAll().result()
-<<<<<<< HEAD
                             close = self.auth_client_bitmex.Order.Order_new(
                                 symbol='XBTUSD', ordType='Market', execInst='Close').result()
                             print(str(e) + ' retrying...')
                             self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                             time.sleep(2)
-=======
->>>>>>> master
                             ord = ''
+
+                    print('short order filled ')
 
                     self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(
                         price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
@@ -314,6 +301,10 @@ class BitmexTrader():
                         floor(self.test_bal * self.leverage * price) + 1
                     self.open['close'] = 0
                     self.open = self.order(self.open)
+
+            print('sold short on bitmex: ' +
+                  str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']))
+
         except Exception as e:
             print(e)
 

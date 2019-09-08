@@ -139,7 +139,6 @@ class renko:
         self.lim_y_max = np.max(self.renko_prices) + 3.0 * self.brick_size
         self.lim_y_min = np.min(self.renko_prices) - 3.0 * self.brick_size
         self.first = True
-<<<<<<< HEAD
         if self.plot:
             self.ax[0].set_xlim(0.0,
                                 len(self.renko_prices) + 1.0)
@@ -152,16 +151,6 @@ class renko:
                                 len(self.renko_prices) + 1.0)
             self.ax[2].set_ylim(-0.0005, 0.0005)
             plt.show(block=False)
-=======
-        self.ax[0].set_xlim(0.0,
-                            len(self.renko_prices) + 1.0)
-        self.ax[0].set_ylim(np.min(self.renko_prices) - 3.0 * self.brick_size,
-                            np.max(self.renko_prices) + 3.0 * self.brick_size)
-        self.ax[1].set_xlim(0.0,
-                            len(self.renko_prices) + 1.0)
-        self.ax[1].set_ylim(-100, 100)
-        plt.show(block=False)
->>>>>>> master
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
@@ -172,7 +161,6 @@ class renko:
             self.animate()
         self.last = self.renko_prices[-1]
 
-<<<<<<< HEAD
         '''
         for a in range(10):
             self.ax[0].set_xlim(0.0, len(self.renko_prices) + (a+2))
@@ -182,14 +170,11 @@ class renko:
         '''
 
         self.backtest = False
-=======
->>>>>>> master
         while True:
             self.check_for_new()
             # time.sleep(1)
 
     def check_for_new(self):
-<<<<<<< HEAD
 
         data = requests.get('http://localhost:4444/quote?symbol=XBTUSD').json()
         for key in data:
@@ -198,29 +183,10 @@ class renko:
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
-=======
-        connection = pymysql.connect(host='raspberrypi.local', user='jackboynton',
-                                     password='BwJ130903!', db='raw', cursorclass=pymysql.cursors.DictCursor)
-        with connection.cursor() as cursor:
-            sql = "SELECT `bid_price` FROM `ticks` "
-            cursor.execute(sql, ())
-            data = cursor.fetchall()
-            if self.first:
-                for n, i in enumerate(data):
-                    self.add_to_plot(float(i['bid_price']))
-                    time.sleep(0.1)
-                self.first = False
-                print('finished loading backtest data, proceeding to live')
-            else:
-                self.add_to_plot(float(data[-1]['bid_price']))
-        connection.commit()
-        connection.close()
->>>>>>> master
 
     def add_to_plot(self, price):
         self.aaa = price
         self.prices.append(price)
-<<<<<<< HEAD
         '''
         try:
             print (str(self.last_timestamp))
@@ -229,12 +195,6 @@ class renko:
         '''
         #print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
         #plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
-=======
-        print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " +
-              str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
-        plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " +
-                  str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
->>>>>>> master
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
                 if self.plot:
@@ -253,7 +213,6 @@ class renko:
                 self.last = price
         elif price < self.ys[-1] - 2 * self.brick_size:
             for i in range(floor((self.ys[-1] - price) / self.brick_size)):
-<<<<<<< HEAD
                 if self.plot:
                     #print(self.lim_y_max, self.lim_y_min)
                     self.ax[0].set_xlim(self.lim_x_min, self.lim_x_max + 1)
@@ -261,13 +220,6 @@ class renko:
                     self.ax[2].set_xlim(self.lim_x_min, self.lim_x_max + 1)
                     self.ax[0].set_ylim(self.lim_y_min -
                                         self.brick_size, self.lim_y_max)
-=======
-                print(self.lim_y_max, self.lim_y_min)
-                self.ax[0].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                self.ax[1].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                self.ax[0].set_ylim(self.lim_y_min -
-                                    self.brick_size, self.lim_y_max)
->>>>>>> master
 
                 self.x = self.x + 1
                 self.y = self.y - self.brick_size
@@ -324,10 +276,7 @@ class renko:
         macda = []
         for n, i in enumerate(fast):
             macda.append(i - slow[n])
-<<<<<<< HEAD
 
-=======
->>>>>>> master
         return macda
 
     def sma(self):
