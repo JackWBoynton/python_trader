@@ -12,7 +12,7 @@ parser.add_argument("fast", nargs=3, type=int)
 args = parser.parse_args()
 
 print('fast ma length: {args.fast[0]}', 'slow ma length: {args.fast[1]}', 'signal length: {args.fast[2]}')
-sta = sorted(glob.glob('/home/jayce/20190*.csv'))
+sta = sorted(glob.glob('/home/jayce/201909*.csv'))
 
 data = pd.DataFrame(helper.load_dfs('XBTU19', sta).values)
 
