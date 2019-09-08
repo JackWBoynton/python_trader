@@ -17,6 +17,6 @@ sta = sorted(glob.glob('/home/jayce/20190*.csv'))
 data = pd.DataFrame(helper.load_dfs('XBTU19', sta).values)
 
 renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(args.fast[1]), signal_l=int(args.fast[2]))
-renko_obj.set_brick_size(brick_size=35, auto=False)
+renko_obj.set_brick_size(brick_size=12, auto=False)
 renko_obj.build_history(prices=data)
 renko_obj.plot_renko()
