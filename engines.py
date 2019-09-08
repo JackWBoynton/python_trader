@@ -199,8 +199,8 @@ class BitmexTrader():
                 self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
                 self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage,3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
 
-                self.gui(op=order[0]['price'], take=floor(price * (1 + self.take_profit / self.leverage) * 0.5) /0.5, stop=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, qty=order_q               self.open['price'] = order[0]['price']
-
+                self.gui(op=order[0]['price'], take=floor(price * (1 + self.take_profit / self.leverage) * 0.5) /0.5, stop=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, qty=order_q
+                self.open['price'] = order[0]['price']
                 self.open['side'] = 'long'
                 self.open['qty'] = order[0]['orderQty']
                 self.open['close'] = 0
