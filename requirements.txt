@@ -1,0 +1,9 @@
+Flask==1.1.1
+python_binance==0.7.1
+PyMySQL==0.9.3
+robin_stocks==0.9.8.8
+slack==0.0.2
+bravado==10.4.1
+requests==2.21.0
+binance==0.3
+bitmex==0.2.2
