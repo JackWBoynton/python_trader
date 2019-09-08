@@ -112,7 +112,7 @@ class BitmexTrader():
         try:
             self.client.chat_postMessage(channel=self.channel_trades, text='current bal: ' + str(
                 (self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)*float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])))
-pt:
+        except:
             pass
         return ''
 
