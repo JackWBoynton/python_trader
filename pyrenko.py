@@ -7,7 +7,7 @@ import requests
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 
-trade = BitmexTrader(trade=True, leverage=5, tp=0.5, test=False)
+trade = BitmexTrader(trade=True, leverage=5, tp=0.5, test=True)
 simulator = BitmexTrader(trade=False, leverage=3, tp=0.03, test=True)
 binance = BinanceTrader()
 # robin = RobinhoodTrader()
@@ -297,7 +297,7 @@ class renko:
             (1 / self.pricea - 1 / (self.open)) * \
             self.backtest_bal_usd * self.backtest_fee
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
-        print(str((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), str(self.backtest_bal_usd))
+        print(str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), str(self.backtest_bal_usd))
         if price < self.open:
             self.w = self.w + 1
         else:
@@ -312,7 +312,7 @@ class renko:
         fee_btc = (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee
         self.profit = self.profit - fee_btc
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
-        print(str((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd))
+        print(str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd))
 
     def calc_indicator(self):
         self.pricea = self.ys[-1]

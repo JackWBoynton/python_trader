@@ -169,23 +169,21 @@ class BitmexTrader():
 
             if self.trade:
 
-                ord = ''
-                while ord != 'Filled':
-                    try:
-                        order = self.auth_client_bitmex.Order.Order_new(
-                            symbol='XBTUSD', orderQty=order_q).result()
-                        time.sleep(2)
-                        ord = order[0]['ordStatus']
-                    except Exception as e:
-                        self.auth_client_bitmex.Order.Order_cancelAll().result()
-                        close = self.auth_client_bitmex.Order.Order_new(
-                            symbol='XBTUSD', ordType='Market', execInst='Close').result()
-                        print(str(e) + ' retrying...')
-                        self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
-                        time.sleep(2)
-                        ord = ''
+                try:
+                    order = self.auth_client_bitmex.Order.Order_new(
+                        symbol='XBTUSD', orderQty=order_q).result()
+                    time.sleep(2)
+                    ord = order[0]['ordStatus']
+                except Exception as e:
+                    self.auth_client_bitmex.Order.Order_cancelAll().result()
+                    close = self.auth_client_bitmex.Order.Order_new(
+                        symbol='XBTUSD', ordType='Market', execInst='Close').result()
+                    print(str(e) + ' retrying...')
+                    self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
+                    time.sleep(2)
+                    ord = ''
 
-                print('buy order filled')
+                print('buy order: ' + str(ord))
 
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(
                     price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
@@ -259,23 +257,21 @@ class BitmexTrader():
 
                 if self.trade:
 
-                    ord = ''
-                    while ord != 'Filled':
-                        try:
-                            order = self.auth_client_bitmex.Order.Order_new(
-                                symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 1).result()
-                            time.sleep(2)
-                            ord = order[0]['ordStatus']
-                        except Exception as e:
-                            self.auth_client_bitmex.Order.Order_cancelAll().result()
-                            close = self.auth_client_bitmex.Order.Order_new(
-                                symbol='XBTUSD', ordType='Market', execInst='Close').result()
-                            print(str(e) + ' retrying...')
-                            self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
-                            time.sleep(2)
-                            ord = ''
+                    try:
+                        order = self.auth_client_bitmex.Order.Order_new(
+                            symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 1).result()
+                        time.sleep(2)
+                        ord = order[0]['ordStatus']
+                    except Exception as e:
+                        self.auth_client_bitmex.Order.Order_cancelAll().result()
+                        close = self.auth_client_bitmex.Order.Order_new(
+                            symbol='XBTUSD', ordType='Market', execInst='Close').result()
+                        print(str(e) + ' retrying...')
+                        self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
+                        time.sleep(2)
+                        ord = ''
 
-                    print('short order filled ')
+                    print('short order: ' + str(ord))
 
                     self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(
                         price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
