@@ -7,15 +7,11 @@ import requests
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 
-trade = BitmexTrader(trade=True, leverage=3, tp=0.5, test=False)
-simulator = BitmexTrader(trade=False, leverage=3, tp=0.03, test=True)
-binance = BinanceTrader()
-# robin = RobinhoodTrader()
-alpaca = AlpacaTrader()
-
 
 class renko:
-    def __init__(self, plot, j_backtest, fast, slow, signal_l):
+    def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade):
+
+        self.trade = BitmexTrader(trade=to_trade, leverage=3, tp=0.5, test=False)
         self.j_backtest = j_backtest
         self.fast = int(fast)
         self.slow = int(slow)
@@ -323,7 +319,7 @@ class renko:
                 self.close_short(self.pricea)
 
             if self.end_backtest <= self.last_timestamp and not self.j_backtest:
-                threading.Thread(target=trade.buy_long, args=(
+                threading.Thread(target=self.trade.buy_long, args=(
                     "BITMEX", "XBT-USD", )).start()
                 print('BUY at: ' + str(self.pricea),
                       str(datetime.datetime.now()))
@@ -340,7 +336,7 @@ class renko:
                 self.close_long(self.pricea)
 
             if self.end_backtest <= self.last_timestamp and not self.j_backtest:
-                threading.Thread(target=trade.sell_short,
+                threading.Thread(target=self.trade.sell_short,
                                  args=("BITMEX", "XBT-USD", )).start()
                 print('SELL at: ' + str(self.pricea),
                       str(datetime.datetime.now()))

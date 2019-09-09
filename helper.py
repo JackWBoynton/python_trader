@@ -1,5 +1,4 @@
 import pandas as pd
-import wget
 import glob
 
 
@@ -23,13 +22,21 @@ def load_df(asset, filename):
 
 
 def load_dfs(asset, filenames):
-    a = []
-    first = True
-    for i in filenames:
-        data = load_df(asset, filename=i)
-        if not first:
-            a = pd.concat([a, data], ignore_index=True)
-        else:
-            first = False
-            a = data
+    frm = filenames[0].split(',')[0]
+    too = filenames[-1].split('.')[0]
+    if not glob.glob('../'+frm+too+'.csv'):
+        a = []
+        first = True
+        for i in filenames:
+            data = load_df(asset, filename=i)
+            if not first:
+                a = pd.concat([a, data], ignore_index=True)
+            else:
+                first = False
+                a = data
+
+        a.to_csv(path_or_buf='../'+frm+too+'.csv', header=False)
+    else:
+        a = pd.read_csv('../'+frm+too+'.csv', header=None, low_memory=False, dtype={
+                           1: float}, usecols=[0, 1])
     return a
