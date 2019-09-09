@@ -177,8 +177,6 @@ class BitmexTrader():
             finally:
                 print('placed sl at: ' + str(floor((price + (price *self.stop_loss / self.leverage)) * 0.5) / 0.5))
 
-
-
             self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
 
 
