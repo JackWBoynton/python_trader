@@ -5,9 +5,14 @@ import urllib
 import json
 import hmac
 import hashlib
-import I2C_DRIVER
-import pymysql.cursors
-import requests
+import slack
+
+import configparser
+Config = configparser.ConfigParser()
+Config.read("config.ini")
+client = slack.WebClient(Config.get("Slack", 'api_key'), timeout=30)
+
+
 
 # This is up to you, most use microtime but you may have your own scheme so long as it's increasing
 # and doesn't repeat.
@@ -19,45 +24,27 @@ BITMEX_URL = "wss://www.bitmex.com"
 VERB = "GET"
 ENDPOINT = "/realtime"
 
-mylcd = I2C_DRIVER.lcd()
 initial_bal = 0.010721
 last_price = 0
-
+runs = 0
 
 def on_message(ws, message):
     message = json.loads(message)
     # print (message)
     if message['table'] == 'position':
-        mylcd.lcd_clear()
-        mylcd.lcd_display_string(
-            "c_trade " + str(round(float(message['data'][0]['unrealisedRoePcnt']) * 100, 2)) + '%', 3)
+        pos = round(float(message['data'][0]['unrealisedRoePcnt']) * 100, 2)
     elif message['table'] == 'margin':
-        #mylcd.lcd_clear()
-        mylcd.lcd_display_string("funds: $%s" % str(round(float(message['data'][0]['marginBalance']) / 100000000 * float(
-            requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 2)), 1)
-        mylcd.lcd_display_string("funds: %s BTC" % str(
-            round(float(message['data'][0]['marginBalance']) / 100000000, 6)), 2)
+
         bal = float(message['data'][0]['marginBalance']) / 100000000
-        mylcd.lcd_display_string("net: %s" % str(
-            round((bal - initial_bal) / initial_bal * 100, 2)) + '%', 4)
-    elif message['table'] == 'quote':
-        print (message)
-
-        connection = pymysql.connect(host='localhost', user='jackboynton',
-                                     password='BwJ130903!', db='raw', cursorclass=pymysql.cursors.DictCursor)
-        with connection.cursor() as cursor:
-            # Create a new record
-            sql = "SELECT * FROM `ticks`"
-            cursor.execute(sql, ())
-            data = cursor.fetchall()
-
-            sql = "INSERT INTO `ticks` (`bid_price`) VALUES (%s)"
-
-            cursor.execute(sql, (message['data'][0]['bidPrice']))
-            # connection is not autocommit by default. So you must commit to save
-            # your changes.
-            connection.commit()
-            connection.close()
+        runs += 1
+        if runs > 9:
+            net = round((bal - initial_bal) / initial_bal * 100, 2)
+            try:
+                client.chat_postMessage(channel='balance_updates', text='net: ' + str(net) + '%' + ' current: ' + str(pos) + '%')
+            except Exception as e:
+                print(str(e))
+                pass
+            runs = 0
 
 
 def on_error(ws, error):
