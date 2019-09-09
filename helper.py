@@ -21,13 +21,14 @@ def load_df(asset, filename):
     return data
 
 
-def load_dfs(asset, filenames):
-    frm = filenames[0].split(',')[0]
-    too = filenames[-1].split('.')[0]
+def load_dfs(asset, files):
+    frm = files[0].split('/')[1].split('.')[0]
+    too = files[-1].split('/')[1].split('.')[0]
+    print('dates: ' + frm + '-' + too)
     if not glob.glob('../'+frm+too+'.csv'):
         a = []
         first = True
-        for i in filenames:
+        for i in files:
             data = load_df(asset, filename=i)
             if not first:
                 a = pd.concat([a, data], ignore_index=True)
@@ -38,5 +39,5 @@ def load_dfs(asset, filenames):
         a.to_csv(path_or_buf='../'+frm+too+'.csv', header=False)
     else:
         a = pd.read_csv('../'+frm+too+'.csv', header=None, low_memory=False, dtype={
-                           1: float}, usecols=[0, 1])
+                           1: float}, usecols=[1])
     return a

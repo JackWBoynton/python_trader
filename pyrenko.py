@@ -172,7 +172,7 @@ class renko:
 
     def check_for_new(self):
 
-        data = requests.get('http://localhost:4444/quote?symbol=XBTUSD').json()
+        data = requests.get('http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 self.add_to_plot(float(key['bidPrice']))
@@ -293,7 +293,11 @@ class renko:
             (1 / self.pricea - 1 / (self.open)) * \
             self.backtest_bal_usd * self.backtest_fee
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
-        print(str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), str(self.backtest_bal_usd))
+        try:
+            per = ((self.w+self.l)-self.w)/(self.w+self.l)
+        except:
+            per = 0
+        print(str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), str(self.backtest_bal_usd), str(round(per*100,3))+'%')
         if price < self.open:
             self.w = self.w + 1
         else:
@@ -308,7 +312,11 @@ class renko:
         fee_btc = (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee
         self.profit = self.profit - fee_btc
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
-        print(str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd))
+        try:
+            per = ((self.w+self.l)-self.w)/(self.w+self.l)
+        except:
+            per = 0
+        print(str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd), str(round(per*100,3))+'%')
 
     def calc_indicator(self):
         self.pricea = self.ys[-1]
