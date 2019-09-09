@@ -38,6 +38,6 @@ def load_dfs(asset, files):
 
         a.to_csv(path_or_buf='../'+frm+too+'.csv', header=False)
     else:
-        a = pd.read_csv('../'+frm+too+'.csv', header=None, low_memory=False, dtype={
+        a = pd.read_csv('../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
                            1: float}, usecols=[1])
     return a
