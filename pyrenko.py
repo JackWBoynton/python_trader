@@ -7,7 +7,7 @@ import requests
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 
-trade = BitmexTrader(trade=True, leverage=5, tp=0.5, test=True)
+trade = BitmexTrader(trade=True, leverage=5, tp=0.5, test=False)
 simulator = BitmexTrader(trade=False, leverage=3, tp=0.03, test=True)
 binance = BinanceTrader()
 # robin = RobinhoodTrader()
