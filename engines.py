@@ -110,7 +110,7 @@ class BitmexTrader():
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
             except HTTPServiceUnavailable:
-                print ('503 retrying...')
+                print('503 retrying...')
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
             finally:
@@ -119,7 +119,7 @@ class BitmexTrader():
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=-order_q).result()
             except HTTPServiceUnavailable:
-                print ('503 retrying...')
+                print('503 retrying...')
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=-order_q).result()
             finally:
@@ -162,7 +162,7 @@ class BitmexTrader():
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
             except HTTPServiceUnavailable:
-                print ('503 retrying...')
+                print('503 retrying...')
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
             finally:
@@ -171,7 +171,7 @@ class BitmexTrader():
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
             except HTTPServiceUnavailable:
-                print ('503 retrying...')
+                print('503 retrying...')
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
             finally:
