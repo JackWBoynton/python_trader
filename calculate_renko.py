@@ -8,7 +8,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("fast", nargs=3, type=int)
-parser.add_argument("-t", "trade")
+parser.add_argument("-t", "--trade")
 args = parser.parse_args()
 
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(args.fast[1]), 'signal length: {}'.format(args.fast[2]))
