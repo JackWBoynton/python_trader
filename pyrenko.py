@@ -9,7 +9,7 @@ import threading
 
 
 class renko:
-    def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade):
+    def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
 
         self.trade = BitmexTrader(trade=to_trade, leverage=3, tp=0.5, test=False)
         self.j_backtest = j_backtest
@@ -21,6 +21,7 @@ class renko:
         self.renko_directions = []
         self.plot = plot
         self.end_backtest = datetime.datetime.now()
+        self.strategy = strategy
         if self.plot:
             import matplotlib.pyplot as plt
             import matplotlib.patches as patches
@@ -189,8 +190,8 @@ class renko:
         except:
             pass
         '''
-        #print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
-        #plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
+        # print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
+        # plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
                 if self.plot:
@@ -230,7 +231,7 @@ class renko:
         # - self.brick_size to get the open price of the brick
         self.ys.append(self.y - self.brick_size)
         self.xs.append(self.x)
-        #print(self.x, self.y)
+        # print(self.x, self.y)
         if self.next_brick == 1:
             self.col = 'b'
         elif self.next_brick == 2:
@@ -319,40 +320,42 @@ class renko:
         print(str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd), str(round(per*100,3))+'%')
 
     def calc_indicator(self):
-        self.pricea = self.ys[-1]
-        if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
-            self.long = True
-            self.short = False
-            if self.runs > 0:
-                self.close_short(self.pricea)
+        if self.strategy == 0:
+            self.pricea = self.ys[-1]
+            if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
+                self.long = True
+                self.short = False
+                if self.runs > 0:
+                    self.close_short(self.pricea)
 
-            if self.end_backtest <= self.last_timestamp and not self.j_backtest:
-                threading.Thread(target=self.trade.buy_long, args=(
-                    "BITMEX", "XBT-USD", )).start()
-                print('BUY at: ' + str(self.pricea),
-                      str(datetime.datetime.now()))
-            else:
-                self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
-                print('backtest BUY at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
-            self.open = self.pricea
-            self.next_brick = 1
-            self.runs = self.runs + 1
-        elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
-            self.short = True
-            self.long = False
-            if self.runs > 0:
-                self.close_long(self.pricea)
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest:
+                    threading.Thread(target=self.trade.buy_long, args=(
+                        "BITMEX", "XBT-USD", self.pricea, )).start()
+                    print('BUY at: ' + str(self.pricea),
+                          str(datetime.datetime.now()), 'slip: ' + str())
+                else:
+                    self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
+                    print('backtest BUY at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                self.open = self.pricea
+                self.next_brick = 1
+                self.runs = self.runs + 1
+            elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
+                self.short = True
+                self.long = False
+                if self.runs > 0:
+                    self.close_long(self.pricea)
 
-            if self.end_backtest <= self.last_timestamp and not self.j_backtest:
-                threading.Thread(target=self.trade.sell_short,
-                                 args=("BITMEX", "XBT-USD", )).start()
-                print('SELL at: ' + str(self.pricea),
-                      str(datetime.datetime.now()))
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest:
+                    threading.Thread(target=self.trade.sell_short,
+                                     args=("BITMEX", "XBT-USD", self.pricea, )).start()
+                    print('SELL at: ' + str(self.pricea),
+                          str(datetime.datetime.now()))
+                else:
+                    self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
+                    print('backtest SELL at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                self.open = self.pricea
+                self.next_brick = 2
+                self.runs = self.runs + 1
             else:
-                self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
-                print('backtest SELL at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
-            self.open = self.pricea
-            self.next_brick = 2
-            self.runs = self.runs + 1
+                self.next_brick = 0
         else:
-            self.next_brick = 0

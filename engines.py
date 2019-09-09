@@ -3,15 +3,13 @@
 # This file contains all of the trading logic
 
 import time
-import json
 from math import floor
 import slack
+from statistics import mean
 import bitmex
 import requests
 from binance.client import Client as binance_client
-import pymysql.cursors
 import robin_stocks as r
-import os
 from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest
 import alpaca_trade_api as tradeapi
 import configparser
@@ -57,6 +55,7 @@ class BitmexTrader():
         self.leverage = leverage
         self.take_profit = tp
         self.stop_loss = 0.1 # 10%
+        self.slips = []
 
         if test:
             self.auth_client_bitmex = bitmex.bitmex(
@@ -74,7 +73,7 @@ class BitmexTrader():
         self.channel_trades = 'trades'
         self.client = slack.WebClient(self.slack_api, timeout=30)
 
-    def buy_long(self, ex, pair):
+    def buy_long(self, ex, pair, ind):
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
@@ -88,8 +87,7 @@ class BitmexTrader():
                 pass
 
             bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
-            response = requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()
-            price = float(response[1]['price'])
+            price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
             order_q = floor(bal * self.leverage * price) - 10
 
             try:
@@ -103,9 +101,10 @@ class BitmexTrader():
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
                 print('long: ' + str(order_q))
-                self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!!')
+                self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
-                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']))
+                self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
+                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
@@ -114,7 +113,8 @@ class BitmexTrader():
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
             finally:
-                print('placed tp at: ' + str(floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5))
+                #print('placed tp at: ' + str(floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5))
+                pass
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=-order_q).result()
@@ -123,11 +123,12 @@ class BitmexTrader():
                 time.sleep(0.6)
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=-order_q).result()
             finally:
-                print('placed sl at: ' + str(floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5))
+                #print('placed sl at: ' + str(floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5))
+                pass
 
             self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage,3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
 
-    def sell_short(self, ex, pair):
+    def sell_short(self, ex, pair, ind):
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
@@ -155,9 +156,10 @@ class BitmexTrader():
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
                 print('short: ' + str(-floor(bal * self.leverage * price) + 1))
-                self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!!')
+                self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
-                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']))
+                self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
+                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
