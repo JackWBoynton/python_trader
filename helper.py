@@ -24,7 +24,7 @@ def load_df(asset, filename):
 def load_dfs(asset, files):
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
-    print('dates: ' + frm + '-' + too)
+    print('backtest dates: ' + frm + '-' + too)
     if not glob.glob('../'+frm+too+'.csv'):
         a = []
         first = True

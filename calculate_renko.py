@@ -12,7 +12,7 @@ parser.add_argument("-t", "--trade")
 args = parser.parse_args()
 
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(args.fast[1]), 'signal length: {}'.format(args.fast[2]))
-sta = sorted(glob.glob('../201909*.csv'))
+sta = sorted(glob.glob('../20190*.csv'))
 print('trade: ' + str(True) if args.trade else 'trade: ' + str(False))
 data = pd.DataFrame(helper.load_dfs('XBTU19', files=sta).values)
 
