@@ -128,6 +128,7 @@ class renko:
         self.l = 1
         self.runs = 0
         self.balances = []
+        self.ff = True
         self.long = False
         self.short = False
         self.open = 0
@@ -331,6 +332,9 @@ class renko:
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, )).start()
+                    if self.ff:
+                        self.backtest_bal_usd = 300
+                        self.ff = False
                     print('BUY at: ' + str(self.pricea),
                           str(datetime.datetime.now()), 'slip: ' + str())
                 else:
@@ -348,6 +352,9 @@ class renko:
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest:
                     threading.Thread(target=self.trade.sell_short,
                                      args=("BITMEX", "XBT-USD", self.pricea, )).start()
+                    if self.ff:
+                        self.backtest_bal_usd = 300
+                        self.ff = False
                     print('SELL at: ' + str(self.pricea),
                           str(datetime.datetime.now()))
                 else:
