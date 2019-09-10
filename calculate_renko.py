@@ -17,7 +17,7 @@ sta = sorted(glob.glob('../20190*.csv'))
 print('trade: ' + str(True) if args.trade else 'trade: ' + str(False))
 data = pd.DataFrame(helper.load_dfs('XBTU19', files=sta).values)
 
-renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(args.fast[1]), signal_l=int(args.fast[2]), to_trade=True if args.trade else False, strategy=0 if args.tr == 'macd' else 1)
+renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(args.fast[1]), signal_l=int(args.fast[2]), to_trade=False, strategy=0 if args.tr == 'macd' else 1)
 renko_obj.set_brick_size(brick_size=25, auto=False)
 renko_obj.build_history(prices=data)
 renko_obj.plot_renko()
