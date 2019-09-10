@@ -52,6 +52,7 @@ class BitmexTrader():
         self.bitmex_api_secret_t = Config.get('Bitmex-Testnet', 'api_secret')
         self.slack_api = Config.get("Slack", 'api_key')
         self.trade = trade
+        print('sending trades? ' + str(self.trade))
         self.leverage = leverage
         self.take_profit = tp
         self.stop_loss = 0.1 # 10%
