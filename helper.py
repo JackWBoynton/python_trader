@@ -25,7 +25,7 @@ def load_dfs(asset, files):
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
-    if not glob.glob('../'+frm+too+'.csv'):
+    if not glob.glob('../loaded'+frm+too+'.csv'):
         a = []
         first = True
         for i in files:
@@ -36,7 +36,7 @@ def load_dfs(asset, files):
                 first = False
                 a = data
 
-        a.to_csv(path_or_buf='../'+frm+too+'.csv', header=False)
+        a.to_csv(path_or_buf='../loaded'+frm+too+'.csv', header=False)
     else:
         a = pd.read_csv('../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
                            1: float}, usecols=[1])
