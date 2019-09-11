@@ -1,8 +1,10 @@
 import pandas as pd
 import glob
 from tqdm import tqdm
+from multiprocessing import Pool
 
-def load_df(asset, filename):
+def load_df(filename):
+    asset = 'XBTU19'
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
                        3: float}, usecols=[0, 1, 3], skiprows=2)
 
@@ -29,7 +31,7 @@ def load_dfs(asset, files):
         a = []
         first = True
         for i in tqdm(files):
-            data = load_df(asset, filename=i)
+            data = load_df(filename=i)
             if not first:
                 a = pd.concat([a, data], ignore_index=True)
             else:
@@ -40,4 +42,16 @@ def load_dfs(asset, files):
     else:
         a = pd.read_csv('../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
                            1: float}, usecols=[1])
+    print('loaded ' + str(a.shape[0]) + ' ticks of data')
     return a
+
+
+def load_dfs_mult(asset, files):
+    frm = files[0].split('/')[1].split('.')[0]
+    too = files[-1].split('/')[1].split('.')[0]
+    print('backtest dates: ' + frm + '-' + too)
+
+    with Pool(processes=8) as pool:
+        df_list = pool.map(load_df, files)
+        combined = pd.concat(df_list, ignore_index=True)
+    return combined
