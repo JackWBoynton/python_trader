@@ -64,10 +64,11 @@ class renko:
 
         return num_new_bars
 
-    def build_history(self, prices):
+    def build_history(self, prices, timestamps):
         if len(prices) > 0:
             self.source_prices = prices
             self.renko_prices.append(prices.iloc[-1].values)
+            #self.times.append(timestamps.iloc[-1].values)
             self.renko_directions.append(0)
 
             for p in self.source_prices[1:].values:
