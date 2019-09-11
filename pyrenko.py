@@ -56,7 +56,7 @@ class renko:
                 self.renko_directions.append(np.sign(gap_div))
 
             if is_new_brick:
-                # Add each brick
+                # add each brick
                 for d in range(start_brick, np.abs(gap_div)):
                     self.renko_prices.append(
                         self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
@@ -110,7 +110,7 @@ class renko:
             plt.show()
 
         self.last_timestamp = datetime.datetime(
-            year=2018, month=7, day=12, hour=7, minute=9, second=33)
+            year=2018, month=7, day=12, hour=7, minute=9, second=33)  # random day in the past to make sure all data gets loaded as backtest
 
         self.ys = []
         self.xs = []
@@ -299,7 +299,7 @@ class renko:
             per = ((self.w+self.l)-self.w)/(self.w+self.l)
         except:
             per = 0
-        print(str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), str(self.backtest_bal_usd), str(round(per*100,3))+'%')
+        print('trade: $' + str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%')
         if price < self.open:
             self.w = self.w + 1
         else:
@@ -318,7 +318,7 @@ class renko:
             per = ((self.w+self.l)-self.w)/(self.w+self.l)
         except:
             per = 0
-        print(str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), str(self.backtest_bal_usd), str(round(per*100,3))+'%')
+        print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%')
 
     def calc_indicator(self):
         if self.strategy == 0:
