@@ -1,6 +1,6 @@
 import pandas as pd
 import glob
-
+from tqdm import tqdm
 
 def load_df(asset, filename):
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
@@ -28,7 +28,7 @@ def load_dfs(asset, files):
     if not glob.glob('../loaded'+frm+too+'.csv'):
         a = []
         first = True
-        for i in files:
+        for i in tqdm(files):
             data = load_df(asset, filename=i)
             if not first:
                 a = pd.concat([a, data], ignore_index=True)
