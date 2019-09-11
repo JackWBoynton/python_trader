@@ -124,6 +124,7 @@ class renko:
         self.backtest = True
         self.backtest_bal_usd = 500
         self.backtest_fee = 0.00075
+        self.backtest_slippage = 12*0.5  # ticks*tick_size=$slip
         self.w = 1
         self.l = 1
         self.runs = 0
@@ -318,7 +319,7 @@ class renko:
             per = ((self.w+self.l)-self.w)/(self.w+self.l)
         except:
             per = 0
-        print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%')
+        print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%')
 
     def calc_indicator(self):
         if self.strategy == 0:
@@ -333,6 +334,8 @@ class renko:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
+                        print ('net backtest profit: $' + self.backtest_bal_usd + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print ('proceeding to live...')
                         self.backtest_bal_usd = 300
                         self.profit = 0
                         self.ff = False
@@ -341,7 +344,7 @@ class renko:
                 else:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     print('backtest BUY at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
-                self.open = self.pricea
+                self.open = self.pricea - self.backtest_slippage
                 self.next_brick = 1
                 self.runs = self.runs + 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
@@ -354,6 +357,8 @@ class renko:
                     threading.Thread(target=self.trade.sell_short,
                                      args=("BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
+                        print ('net backtest profit: $' + self.backtest_bal_usd + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print ('proceeding to live...')
                         self.backtest_bal_usd = 300
                         self.profit = 0
                         self.ff = False
@@ -362,7 +367,7 @@ class renko:
                 else:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     print('backtest SELL at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
-                self.open = self.pricea
+                self.open = self.pricea + self.backtest_slippage
                 self.next_brick = 2
                 self.runs = self.runs + 1
             else:
