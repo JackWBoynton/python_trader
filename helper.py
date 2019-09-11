@@ -51,7 +51,7 @@ def load_dfs_mult(asset, files):
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
 
-    with Pool(processes=8) as pool:
+    with Pool(processes=16) as pool:
         df_list = pool.map(load_df, files)
         combined = pd.concat(df_list, ignore_index=True)
     return combined
