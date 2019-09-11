@@ -367,4 +367,3 @@ class renko:
                 self.runs = self.runs + 1
             else:
                 self.next_brick = 0
-        else:
