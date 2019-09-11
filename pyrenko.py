@@ -334,13 +334,14 @@ class renko:
                         "BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
                         self.backtest_bal_usd = 300
+                        self.profit = 0
                         self.ff = False
                     print('BUY at: ' + str(self.pricea),
                           str(datetime.datetime.now()), 'slip: ' + str())
                 else:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     print('backtest BUY at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
-                self.open = self.pricea
+                self.open = self.pricea -
                 self.next_brick = 1
                 self.runs = self.runs + 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
@@ -354,6 +355,7 @@ class renko:
                                      args=("BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
                         self.backtest_bal_usd = 300
+                        self.profit = 0
                         self.ff = False
                     print('SELL at: ' + str(self.pricea),
                           str(datetime.datetime.now()))
