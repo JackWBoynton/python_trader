@@ -13,6 +13,7 @@ import robin_stocks as r
 from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest
 import alpaca_trade_api as tradeapi
 import configparser
+import numpy as np
 Config = configparser.ConfigParser()
 Config.read("config.ini")  # load api_keys
 
@@ -61,9 +62,11 @@ class BitmexTrader():
         if test:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=True, api_key=self.bitmex_api_key_t, api_secret=self.bitmex_api_secret_t)
+            print ('testnet')
         else:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=False, api_key=self.bitmex_api_key, api_secret=self.bitmex_api_secret)
+            print ('LIVE')
         try:
             self.auth_client_bitmex.Position.Position_updateLeverage(
                 symbol='XBTUSD', leverage=leverage).result()
@@ -105,7 +108,7 @@ class BitmexTrader():
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
-                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
+                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(np.round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
@@ -160,7 +163,7 @@ class BitmexTrader():
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
-                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
+                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(np.round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
