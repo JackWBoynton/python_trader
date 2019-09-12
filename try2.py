@@ -59,8 +59,6 @@ def on_open(ws):
     ws.send(json.dumps(request))
     request = {"op": "subscribe", "args": "margin"}
     ws.send(json.dumps(request))
-    request = {"op": "subscribe", "args": ["quote:XBTUSD"]}
-    ws.send(json.dumps(request))
     print("Sent subscribe")
     # ws.close()
 
