@@ -30,7 +30,7 @@ runs = 0
 
 def on_message(ws, message):
     message = json.loads(message)
-    # print (message)
+    print (message)
     if message['table'] == 'position':
         pos = round(float(message['data'][0]['unrealisedRoePcnt']) * 100, 2)
     elif message['table'] == 'margin':
