@@ -54,4 +54,5 @@ def load_dfs_mult(asset, files):
     with Pool(processes=8) as pool:
         df_list = pool.map(load_df, files)
         combined = pd.concat(df_list, ignore_index=True)
+    print('loaded ' + str(combined.shape[0]) + ' ticks of data')
     return combined
