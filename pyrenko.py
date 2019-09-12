@@ -335,7 +335,7 @@ class renko:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
-                        print ('net backtest profit: $' + self.backtest_bal_usd + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
                         print ('proceeding to live...')
                         self.backtest_bal_usd = 300
                         self.profit = 0
@@ -358,7 +358,7 @@ class renko:
                     threading.Thread(target=self.trade.sell_short,
                                      args=("BITMEX", "XBT-USD", self.pricea, )).start()
                     if self.ff:
-                        print ('net backtest profit: $' + self.backtest_bal_usd + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
                         print ('proceeding to live...')
                         self.backtest_bal_usd = 300
                         self.profit = 0

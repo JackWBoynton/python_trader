@@ -108,7 +108,7 @@ class BitmexTrader():
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
-                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(np.round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
+                print('bought long on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(abs(ind-float(order[0]['price']))), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 + self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=-order_q).result()
@@ -163,7 +163,7 @@ class BitmexTrader():
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
-                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(np.round(abs(ind-float(order[0]['price'])), 3)), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
+                print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: ' + str(abs(ind-float(order[0]['price']))), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
                 self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 1).result()
