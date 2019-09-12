@@ -53,7 +53,7 @@ def load_dfs_mult(asset, files):
     print('backtest dates: ' + frm + '-' + too)
     if not glob.glob('../loaded'+frm+too+'.csv'):
         with Pool(processes=8) as pool:
-            df_list = pool.map(load_df, files)
+            df_list = tqdm(pool.map(load_df, files))
             combined = pd.concat(df_list, ignore_index=True)
             combined.to_csv(path_or_buf='../loaded'+frm+too+'.csv', header=False)
     else:
