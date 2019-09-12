@@ -47,12 +47,17 @@ def load_dfs(asset, files):
 
 
 def load_dfs_mult(asset, files):
+    # multiprocessing version of load_dfs
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
-
-    with Pool(processes=8) as pool:
-        df_list = pool.map(load_df, files)
-        combined = pd.concat(df_list, ignore_index=True)
+    if not glob.glob('../loaded'+frm+too+'.csv'):
+        with Pool(processes=8) as pool:
+            df_list = pool.map(load_df, files)
+            combined = pd.concat(df_list, ignore_index=True)
+            combined.to_csv(path_or_buf='../loaded'+frm+too+'.csv', header=False)
+    else:
+        combined = pd.read_csv('../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
+                           1: float}, usecols=[1])
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
     return combined

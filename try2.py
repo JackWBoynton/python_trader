@@ -89,8 +89,7 @@ def start():
     signature = bitmex_signature(API_SECRET, VERB, ENDPOINT, expires)
 
     # Initial connection - BitMEX sends a welcome message.
-    ws = websocket.WebSocketApp(BITMEX_URL + ENDPOINT +
-                                "?api-expires=%s&api-signature=%s&api-key=%s" % (expires, signature, API_KEY), on_message=on_message, on_close=on_close, on_error=on_error)
+    ws = websocket.WebSocketApp(BITMEX_URL + ENDPOINT + "?api-expires=%s&api-signature=%s&api-key=%s" % (expires, signature, API_KEY), on_message=on_message, on_close=on_close, on_error=on_error)
     ws.on_open = on_open
     ws.run_forever(ping_interval=1)
 
