@@ -94,7 +94,7 @@ def start():
     ws = websocket.WebSocketApp(BITMEX_URL + ENDPOINT +
                                 "?api-expires=%s&api-signature=%s&api-key=%s" % (expires, signature, API_KEY), on_message=on_message, on_close=on_close, on_error=on_error)
     ws.on_open = on_open
-    ws.run_forever(ping_interval=10)
+    ws.run_forever()
 
 if __name__ == '__main__':
     start()
