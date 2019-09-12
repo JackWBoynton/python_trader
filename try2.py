@@ -37,13 +37,12 @@ def on_message(ws, message):
 
         bal = float(message['data'][0]['marginBalance']) / 100000000
         runs += 1
-        if runs > 9:
+        if runs > 0:
             net = round((bal - initial_bal) / initial_bal * 100, 2)
             try:
                 client.chat_postMessage(channel='balance_updates', text='net: ' + str(net) + '%' + ' current: ' + str(pos) + '%')
             except Exception as e:
                 print(str(e))
-                pass
             runs = 0
 
 
