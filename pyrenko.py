@@ -179,7 +179,7 @@ class renko:
         data = requests.get('http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
-                self.add_to_plot(float(key['bidPrice']))
+                self.__renko_rule(float(key['bidPrice']))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
