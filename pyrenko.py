@@ -202,7 +202,7 @@ class renko:
     def add_to_plot(self, price):
         self.aaa = price
         self.prices.append(price)
-        '''
+
         gap_div = int(
             float(price - self.ys[-1]) / self.brick_size)
         is_new_brick = False
@@ -229,9 +229,10 @@ class renko:
                     self.renko_prices.append(
                         self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
                     self.renko_directions.append(np.sign(gap_div))
-        '''
+
         # print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
         # plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
+        '''
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
                 self.y = self.y + self.brick_size
@@ -257,7 +258,7 @@ class renko:
                 self.lim_x_max = self.lim_x_max + 1
                 self.lim_y_min = self.lim_y_min - self.brick_size
                 self.last = price
-
+        '''
     def animate(self):
         self.lll = self.lll + 1
         # - self.brick_size to get the open price of the brick
