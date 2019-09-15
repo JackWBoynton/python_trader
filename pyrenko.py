@@ -179,7 +179,8 @@ class renko:
         data = requests.get('http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
-                print ('price: ' + str(key['bidPrice']))
+                #print ('price: ' + str(key['bidPrice']))
+                '''
                 for i in range(self.__renko_rule(float(key['bidPrice']))):
                     print ('new brick')
                     #self.col = col_up if self.renko_directions[i] == 1 else col_down
@@ -188,6 +189,8 @@ class renko:
                     self.aaa = self.last
                     self.animate()
                     self.last = self.y
+                '''
+                self.add_to_plot(float(key['bidPrice']))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
