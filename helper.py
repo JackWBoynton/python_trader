@@ -48,11 +48,10 @@ def load_dfs(asset, files):
 
 def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
-    print (len(files))
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
-    if 1==1 or not glob.glob('../../loaded'+frm+too+'.csv'):
+    if not glob.glob('../../loaded'+frm+too+'.csv'):
         with Pool(processes=8) as pool:
             df_list = (pool.map(load_df, tqdm(files)))
             combined = pd.concat(tqdm(df_list), ignore_index=True)
