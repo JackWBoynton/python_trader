@@ -180,7 +180,7 @@ class renko:
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 for i in range(self.__renko_rule(float(key['bidPrice']))):
-                    self.col = col_up if self.renko_directions[i] == 1 else col_down
+                    #self.col = col_up if self.renko_directions[i] == 1 else col_down
                     self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
                     self.last = self.renko_prices[-1]
                     self.aaa = self.last
