@@ -13,7 +13,7 @@ parser.add_argument('-r', '--tr', type=str)
 args = parser.parse_args()
 
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(args.fast[1]), 'signal length: {}'.format(args.fast[2]))
-sta = sorted(glob.glob('../2019091*.csv'))
+sta = sorted(glob.glob('../../2019091*.csv'))
 print('starting to load csv backtest data...')
 data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta).values)
 print ('finished loading csv backtest data... starting renko brick calculation')
