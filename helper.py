@@ -17,8 +17,9 @@ def load_df(filename):
             data = pd.DataFrame(data.values[:n])
             break
     #del data[0]
-    print(data.head())
+
     del data[1]
+    print(data.head())
     return data
 
 
