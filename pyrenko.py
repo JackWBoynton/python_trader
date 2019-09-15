@@ -171,9 +171,6 @@ class renko:
         '''
 
         self.backtest = False
-        self.renko_directions = []
-        self.renko_prices = []
-        self.renko_directions.append(0)
         while True:
             self.check_for_new()
             # time.sleep(1)
@@ -202,7 +199,7 @@ class renko:
     def add_to_plot(self, price):
         self.aaa = price
         self.prices.append(price)
-
+        '''
         gap_div = int(
             float(price - self.ys[-1]) / self.brick_size)
         is_new_brick = False
@@ -258,7 +255,7 @@ class renko:
                 self.lim_x_max = self.lim_x_max + 1
                 self.lim_y_min = self.lim_y_min - self.brick_size
                 self.last = price
-        '''
+
     def animate(self):
         self.lll = self.lll + 1
         # - self.brick_size to get the open price of the brick
@@ -297,8 +294,8 @@ class renko:
             plt.pause(0.0000001)
 
     def ma(self):
-        fast_ma = pd.DataFrame(self.renko_prices).rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.renko_prices).rolling(window=self.slow).mean()
+        fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
+        slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
@@ -355,10 +352,8 @@ class renko:
     def calc_indicator(self):
 
         if self.strategy == 0:
-            try:
-                self.pricea = self.renko_prices[-1]
-            except:
-                self.pricea = self.ys[-1]
+
+            self.pricea = self.ys[-1]
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False

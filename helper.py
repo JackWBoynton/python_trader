@@ -5,8 +5,7 @@ from multiprocessing import Pool
 
 def load_df(filename):
     asset = 'XBTU19'
-    data = pd.read_csv(filename, header=None, low_memory=False, dtype={
-                       3: float}, usecols=[0, 1, 3], skiprows=2)
+    data = pd.read_csv(filename, header=None, low_memory=False, dtype={3: float}, usecols=[0, 1, 3], skiprows=2)
 
     for n, i in enumerate(data[1]):
         if i == asset:
@@ -40,8 +39,7 @@ def load_dfs(asset, files):
 
         a.to_csv(path_or_buf='../../loaded'+frm+too+'.csv', header=False)
     else:
-        a = pd.read_csv('../../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
-                           1: float}, usecols=[1])
+        a = pd.read_csv('../../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={1: float}, usecols=[1])
     print('loaded ' + str(a.shape[0]) + ' ticks of data')
     return a
 
@@ -57,7 +55,6 @@ def load_dfs_mult(asset, files):
             combined = pd.concat(tqdm(df_list), ignore_index=True)
             combined.to_csv(path_or_buf='../../loaded'+frm+too+'.csv', header=False)
     else:
-        combined = pd.read_csv('../../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={
-                           1: float}, usecols=[1])
+        combined = pd.read_csv('../../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={1: float}, usecols=[1])
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
     return combined
