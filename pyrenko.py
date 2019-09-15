@@ -179,6 +179,7 @@ class renko:
         data = requests.get('http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
+                print ('new brick')
                 for i in range(self.__renko_rule(float(key['bidPrice']))):
                     print ('new brick')
                     #self.col = col_up if self.renko_directions[i] == 1 else col_down
