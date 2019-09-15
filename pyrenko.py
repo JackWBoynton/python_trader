@@ -139,6 +139,9 @@ class renko:
         self.lim_y_max = np.max(self.renko_prices) + 3.0 * self.brick_size
         self.lim_y_min = np.min(self.renko_prices) - 3.0 * self.brick_size
         self.first = True
+        self.renko_directions = []
+        self.renko_prices = []
+        self.renko_directions.append(0)
         if self.plot:
             self.ax[0].set_xlim(0.0,
                                 len(self.renko_prices) + 1.0)
@@ -199,23 +202,37 @@ class renko:
         self.aaa = price
         self.prices.append(price)
         '''
-        try:
-            print (str(self.last_timestamp))
-        except:
-            pass
+        gap_div = int(
+            float(price - self.ys[-1]) / self.brick_size)
+        is_new_brick = False
+        start_brick = 0
+        num_new_bars = 0
+
+        if gap_div != 0:
+            if (gap_div > 0 and (self.renko_directions[-1] > 0 or self.renko_directions[-1] == 0)) or (gap_div < 0 and (self.renko_directions[-1] < 0 or self.renko_directions[-1] == 0)):
+                num_new_bars = gap_div
+                is_new_brick = True
+                start_brick = 0
+            elif np.abs(gap_div) >= 2:
+                num_new_bars = gap_div
+                num_new_bars -= np.sign(gap_div)
+                start_brick = 2
+                is_new_brick = True
+                self.renko_prices.append(
+                    self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
+                self.renko_directions.append(np.sign(gap_div))
+
+            if is_new_brick:
+                # add each brick
+                for d in range(start_brick, np.abs(gap_div)):
+                    self.renko_prices.append(
+                        self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
+                    self.renko_directions.append(np.sign(gap_div))
         '''
         # print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
         # plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
-                if self.plot:
-                    self.ax[0].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[1].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[2].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[0].set_ylim(
-                        self.lim_y_min, self.lim_y_max + self.brick_size)
-
-                self.x = self.x + 1
                 self.y = self.y + self.brick_size
                 self.col = 'g'
                 self.animate()
@@ -278,8 +295,8 @@ class renko:
             plt.pause(0.0000001)
 
     def ma(self):
-        fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
+        fast_ma = pd.DataFrame(self.renko_prices.rolling(window=self.fast).mean()
+        slow_ma = pd.DataFrame(self.renko_prices).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
@@ -334,8 +351,9 @@ class renko:
         print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self):
+
         if self.strategy == 0:
-            self.pricea = self.ys[-1]
+            self.pricea = self.renko_prices[-1]
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
