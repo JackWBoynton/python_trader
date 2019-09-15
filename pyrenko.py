@@ -354,7 +354,10 @@ class renko:
     def calc_indicator(self):
 
         if self.strategy == 0:
-            self.pricea = self.renko_prices[-1]
+            try:
+                self.pricea = self.renko_prices[-1]
+            except:
+                self.pricea = self.ys[-1]
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
