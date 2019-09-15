@@ -295,8 +295,8 @@ class renko:
             plt.pause(0.0000001)
 
     def ma(self):
-        fast_ma = pd.DataFrame(self.renko_prices.rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.renko_prices.rolling(window=self.slow).mean()
+        fast_ma = pd.DataFrame(self.renko_prices).rolling(window=self.fast).mean()
+        slow_ma = pd.DataFrame(self.renko_prices).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
