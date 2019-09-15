@@ -48,6 +48,7 @@ def load_dfs(asset, files):
 
 def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
+    print (len(files))
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
