@@ -25,7 +25,7 @@ for i in range(args.days):
 print (sta)
 print('starting to load csv backtest data... days: ' + str(args.days))
 d = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))
-data = d[1].values
+data = d[2].values
 dates = d[0].values
 print ('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(args.fast[1]), signal_l=int(args.fast[2]), to_trade=False, strategy=0 if args.tr == 'macd' else 1)
