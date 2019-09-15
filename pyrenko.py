@@ -303,7 +303,7 @@ class renko:
             self.backtest_bal_usd * self.backtest_fee
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
         try:
-            per = ((self.w+self.l)-self.w)/(self.w+self.l)
+            per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
         print('trade: $' + str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
@@ -322,7 +322,7 @@ class renko:
         self.profit = self.profit - fee_btc
         self.backtest_bal_usd = self.backtest_bal_usd + floor(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea)
         try:
-            per = ((self.w+self.l)-self.w)/(self.w+self.l)
+            per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
         print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
