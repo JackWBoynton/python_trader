@@ -22,6 +22,7 @@ time = datetime.date.today()
 sta = []
 for i in range(args.days):
     sta.append(datetime.datetime.strftime(time-datetime.timedelta(days=i), "%Y%m%d")+'.csv')
+print (sta)
 print('starting to load csv backtest data... days: ' + str(args.days))
 data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta).values)
 print ('finished loading csv backtest data... starting renko brick calculation')
