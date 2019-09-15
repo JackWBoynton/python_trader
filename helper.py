@@ -25,7 +25,7 @@ def load_dfs(asset, files):
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
     print('backtest dates: ' + frm + '-' + too)
-    if not glob.glob('../../loaded'+frm+too+'.csv'):
+    if 1 == 1 or not glob.glob('../../loaded'+frm+too+'.csv'):
         a = []
         first = True
         for i in tqdm(files):
