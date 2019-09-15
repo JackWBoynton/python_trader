@@ -18,7 +18,7 @@ args = parser.parse_args()
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(args.fast[1]), 'signal length: {}'.format(args.fast[2]))
 #time = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
 #string = str(time.split('-')[0]) + str(time.split('-')[0]) + str(int(time.split('-')[2])-1)
-time = datetime.date.today()
+time = datetime.date.today() - datetime.timedelta(days=1)
 sta = []
 for i in range(args.days):
     sta.append(datetime.datetime.strftime(time-datetime.timedelta(days=i), "%Y%m%d")+'.csv')
