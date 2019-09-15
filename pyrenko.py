@@ -139,9 +139,7 @@ class renko:
         self.lim_y_max = np.max(self.renko_prices) + 3.0 * self.brick_size
         self.lim_y_min = np.min(self.renko_prices) - 3.0 * self.brick_size
         self.first = True
-        self.renko_directions = []
-        self.renko_prices = []
-        self.renko_directions.append(0)
+
         if self.plot:
             self.ax[0].set_xlim(0.0,
                                 len(self.renko_prices) + 1.0)
@@ -173,6 +171,9 @@ class renko:
         '''
 
         self.backtest = False
+        self.renko_directions = []
+        self.renko_prices = []
+        self.renko_directions.append(0)
         while True:
             self.check_for_new()
             # time.sleep(1)
