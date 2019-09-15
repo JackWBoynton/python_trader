@@ -20,6 +20,8 @@ class renko:
         self.renko_prices = []
         self.renko_directions = []
         self.plot = plot
+        self.timestamps = []
+        self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
         if self.plot:
@@ -34,7 +36,7 @@ class renko:
             self.brick_size = brick_size
         return self.brick_size
 
-    def __renko_rule(self, last_price):
+    def __renko_rule(self, last_price, ind):
         gap_div = int(
             float(last_price - self.renko_prices[-1]) / self.brick_size)
         is_new_brick = False
@@ -53,6 +55,7 @@ class renko:
                 is_new_brick = True
                 self.renko_prices.append(
                     self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
+                self.act_timestamps.append(self.timestamps[ind])
                 self.renko_directions.append(np.sign(gap_div))
 
             if is_new_brick:
@@ -60,19 +63,21 @@ class renko:
                 for d in range(start_brick, np.abs(gap_div)):
                     self.renko_prices.append(
                         self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
+                    self.act_timestamps.append(self.timestamps[ind])
                     self.renko_directions.append(np.sign(gap_div))
 
         return num_new_bars
 
     def build_history(self, prices, timestamps):
         if len(prices) > 0:
+            self.timestamps = timestamps
             self.source_prices = prices
             self.renko_prices.append(prices.iloc[-1].values)
-            #self.times.append(timestamps.iloc[-1].values)
+            self.act_timestamps.append(timestamps.iloc[-1].values)
             self.renko_directions.append(0)
 
-            for p in self.source_prices[1:].values:
-                self.__renko_rule(p)
+            for n, p in enumerate(self.source_prices[1:].values):
+                self.__renko_rule(p, n)
 
         return len(self.renko_prices)
 
@@ -159,7 +164,7 @@ class renko:
                 self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
             self.last = self.renko_prices[-1]
             self.aaa = self.last
-            self.animate()
+            self.animate(i)
         self.last = self.renko_prices[-1]
 
         '''
@@ -234,7 +239,7 @@ class renko:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
                 self.y = self.y + self.brick_size
                 self.col = 'g'
-                self.animate()
+                self.animate(1)
                 self.lim_x_max = self.lim_x_max + 1
                 self.lim_y_max = self.lim_y_max + self.brick_size
                 self.last = price
@@ -251,12 +256,12 @@ class renko:
                 self.x = self.x + 1
                 self.y = self.y - self.brick_size
                 self.col = 'r'
-                self.animate()
+                self.animate(1)
                 self.lim_x_max = self.lim_x_max + 1
                 self.lim_y_min = self.lim_y_min - self.brick_size
                 self.last = price
 
-    def animate(self):
+    def animate(self, i):
         self.lll = self.lll + 1
         # - self.brick_size to get the open price of the brick
         self.ys.append(self.y - self.brick_size)
@@ -288,7 +293,7 @@ class renko:
 
             self.ax[2].plot(self.xs, self.balances)
 
-        self.calc_indicator()
+        self.calc_indicator(i)
         if self.plot:
             plt.draw()
             plt.pause(0.0000001)
@@ -349,7 +354,7 @@ class renko:
             per = 0
         print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
 
-    def calc_indicator(self):
+    def calc_indicator(self, ind):
 
         if self.strategy == 0:
 
@@ -373,7 +378,9 @@ class renko:
                           str(datetime.datetime.now()), 'slip: ' + str())
                 else:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
-                    print('backtest BUY at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                    if ind != 1:
+                        sss = self.act_timestamps[ind]
+                    print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
                 self.open = self.pricea - self.backtest_slippage
                 self.next_brick = 1
                 self.runs = self.runs + 1
@@ -396,7 +403,9 @@ class renko:
                           str(datetime.datetime.now()))
                 else:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
-                    print('backtest SELL at: ' + str(self.pricea), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                    if ind != 1:
+                        sss = self.act_timestamps[ind]
+                    print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
                 self.open = self.pricea + self.backtest_slippage
                 self.next_brick = 2
                 self.runs = self.runs + 1

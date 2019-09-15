@@ -16,8 +16,7 @@ def load_df(filename):
         if j != asset:
             data = pd.DataFrame(data.values[:n])
             break
-
-    del data[0]
+    #del data[0]
     del data[1]
     return data
 

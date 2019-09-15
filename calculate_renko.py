@@ -24,9 +24,11 @@ for i in range(args.days):
     sta.append('../../' + datetime.datetime.strftime(time-datetime.timedelta(days=i), "%Y%m%d")+'.csv')
 print (sta)
 print('starting to load csv backtest data... days: ' + str(args.days))
-data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta).values)
+d = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))
+data = d[1].values
+dates = d[0].values
 print ('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(args.fast[1]), signal_l=int(args.fast[2]), to_trade=False, strategy=0 if args.tr == 'macd' else 1)
 renko_obj.set_brick_size(brick_size=args.brick_size, auto=False)
-renko_obj.build_history(prices=data, timestamps=['', ''])
+renko_obj.build_history(prices=data, timestamps=dates)
 renko_obj.plot_renko()
