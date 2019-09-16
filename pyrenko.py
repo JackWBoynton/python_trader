@@ -37,7 +37,6 @@ class renko:
         return self.brick_size
 
     def __renko_rule(self, last_price, ind):
-        print (type(last_price),str(last_price))
         gap_div = int(
             float(last_price - self.renko_prices[-1]) / self.brick_size)
         is_new_brick = False
@@ -91,7 +90,7 @@ class renko:
             return 1
         else:
             self.source_prices.append(last_price)
-            return self.__renko_rule(last_price)
+            return self.__renko_rule(pd.DataFrame(last_price))
 
     def get_renko_prices(self):
         return self.renko_prices
