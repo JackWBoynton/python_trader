@@ -77,6 +77,7 @@ class renko:
             self.renko_directions.append(0)
 
             for n, p in enumerate(self.source_prices[1:].values):
+                print(type(p),p)
                 self.__renko_rule(p, n)
 
         return len(self.renko_prices)
