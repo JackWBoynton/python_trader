@@ -20,7 +20,7 @@ def load_df(filename):
 
     del data[1]
     print(data.head())
-    return data
+    return data.iloc[::-1]
 
 
 def load_dfs(asset, files):
@@ -58,5 +58,5 @@ def load_dfs_mult(asset, files):
     else:
         combined = pd.read_csv('../../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={1: float}, usecols=[0, 1])
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
-    combined = combined.iloc[::-1]
+
     return combined
