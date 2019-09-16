@@ -72,8 +72,8 @@ class renko:
         if len(prices) > 0:
             self.timestamps = timestamps
             self.source_prices = prices
-            self.renko_prices.append(prices.iloc[-1].values)
-            self.act_timestamps.append(timestamps.iloc[-1].values)
+            self.renko_prices.append(prices[-1])
+            self.act_timestamps.append(timestamps[-1])
             self.renko_directions.append(0)
 
             for n, p in enumerate(self.source_prices[1:].values):
