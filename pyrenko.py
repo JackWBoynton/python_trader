@@ -197,14 +197,14 @@ class renko:
                     self.animate()
                     self.last = self.y
                 '''
-                self.add_to_plot(float(key['bidPrice']), self.do_next(np.ndarray(float(key['bidPrice']), dtype=float)))
+                self.add_to_plot(self.do_next(np.ndarray(float(key['bidPrice']), dtype=float)))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
 
-    def add_to_plot(self, price, bricks):
-        self.aaa = price
-        self.prices.append(price)
+    def add_to_plot(self, bricks):
+        self.aaa = self.last
+        self.prices.append(self.last)
         '''
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
