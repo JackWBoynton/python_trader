@@ -84,7 +84,6 @@ class renko:
 
     def do_next(self, last_price):
         last_price = float(last_price)
-        print (type(last_price),last_price)
         if len(self.renko_prices) == 0:
             self.source_prices.append(last_price)
             self.renko_prices.append(last_price)
@@ -248,7 +247,6 @@ class renko:
             self.animate(i)
         self.last = self.renko_prices[-1]
         '''
-        print ('new bricks' + str(bricks))
         for i in range(1, bricks):
 
             self.x = i
