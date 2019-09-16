@@ -380,7 +380,7 @@ class renko:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     if ind != 1:
                         sss = self.act_timestamps[ind]
-                    print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                    print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
                 self.open = self.pricea - self.backtest_slippage
                 self.next_brick = 1
                 self.runs = self.runs + 1
@@ -405,7 +405,7 @@ class renko:
                     self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     if ind != 1:
                         sss = self.act_timestamps[ind]
-                    print('backtest SELL at: ' + str(self.pricea),'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea)[0],3)))
+                    print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
                 self.open = self.pricea + self.backtest_slippage
                 self.next_brick = 2
                 self.runs = self.runs + 1
