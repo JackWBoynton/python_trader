@@ -20,7 +20,7 @@ def load_df(filename):
 
     del data[1]
     print(data.head())
-    return data.iloc[::-1]
+    return data
 
 
 def load_dfs(asset, files):
