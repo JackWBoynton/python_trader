@@ -105,7 +105,6 @@ class renko:
             plt.ion()
             self.fig, self.ax = plt.subplots(3)
             self.fig.set_size_inches(18.5, 10.5)
-            self.fig.savefig('test2png.png', dpi=100)
             self.ax[0].set_title('Renko chart')
             self.ax[0].set_xlabel('Renko bars')
             self.ax[0].set_ylabel('Price')
@@ -182,6 +181,8 @@ class renko:
         self.renko_prices = []
         self.renko_directions.append(0)
         self.source_prices = []
+        self.l = 1
+        self.w = 1
         while True:
             self.check_for_new()
             # time.sleep(1)
