@@ -39,6 +39,7 @@ class renko:
     def __renko_rule(self, last_price, ind):
         gap_div = int(
             float(last_price - self.renko_prices[-1]) / self.brick_size)
+        print(str(gap_div))
         is_new_brick = False
         start_brick = 0
         num_new_bars = 0
@@ -197,12 +198,12 @@ class renko:
                     self.animate()
                     self.last = self.y
                 '''
-                self.add_to_plot(self.do_next(np.array(float(key['bidPrice']), dtype=float)))
+                self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
 
-    def add_to_plot(self, bricks):
+    def add_to_plot(self, price, bricks):
         self.aaa = self.last
         self.prices.append(self.last)
         '''
