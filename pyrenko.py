@@ -39,7 +39,6 @@ class renko:
     def __renko_rule(self, last_price, ind):
         gap_div = int(
             float(last_price - self.renko_prices[-1]) / self.brick_size)
-        print(str(gap_div))
         is_new_brick = False
         start_brick = 0
         num_new_bars = 0
@@ -84,6 +83,7 @@ class renko:
         return len(self.renko_prices)
 
     def do_next(self, last_price):
+        last_price = last_price[0]
         print (type(last_price),last_price)
         if len(self.renko_prices) == 0:
             self.source_prices.append(last_price)
