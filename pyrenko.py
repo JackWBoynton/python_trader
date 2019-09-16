@@ -84,6 +84,7 @@ class renko:
         return len(self.renko_prices)
 
     def do_next(self, last_price):
+        print (type(last_price),last_price)
         if len(self.renko_prices) == 0:
             self.source_prices.append(last_price)
             self.renko_prices.append(last_price)
