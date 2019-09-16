@@ -90,7 +90,7 @@ class renko:
             return 1
         else:
             #self.source_prices.append(pd.DataFrame(last_price).values)
-            return self.__renko_rule(pd.DataFrame(last_price).values)
+            return self.__renko_rule(last_price)
 
     def get_renko_prices(self):
         return self.renko_prices
