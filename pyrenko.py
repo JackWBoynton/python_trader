@@ -70,7 +70,7 @@ class renko:
 
     def build_history(self, prices, timestamps):
         if len(prices) > 0:
-            self.timestamps = pd.DataFrame(prices[0].values)
+            self.timestamps = prices[0].values
             self.source_prices = pd.DataFrame(prices[2].values)
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
