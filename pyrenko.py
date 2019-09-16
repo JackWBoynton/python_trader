@@ -196,44 +196,14 @@ class renko:
                     self.animate()
                     self.last = self.y
                 '''
-                self.add_to_plot(float(key['bidPrice']))
+                self.add_to_plot(float(key['bidPrice']), self.do_next(float(key['bidPrice'])))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
 
-    def add_to_plot(self, price):
+    def add_to_plot(self, price, bricks):
         self.aaa = price
         self.prices.append(price)
-        '''
-        gap_div = int(
-            float(price - self.ys[-1]) / self.brick_size)
-        is_new_brick = False
-        start_brick = 0
-        num_new_bars = 0
-
-        if gap_div != 0:
-            if (gap_div > 0 and (self.renko_directions[-1] > 0 or self.renko_directions[-1] == 0)) or (gap_div < 0 and (self.renko_directions[-1] < 0 or self.renko_directions[-1] == 0)):
-                num_new_bars = gap_div
-                is_new_brick = True
-                start_brick = 0
-            elif np.abs(gap_div) >= 2:
-                num_new_bars = gap_div
-                num_new_bars -= np.sign(gap_div)
-                start_brick = 2
-                is_new_brick = True
-                self.renko_prices.append(
-                    self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
-                self.renko_directions.append(np.sign(gap_div))
-
-            if is_new_brick:
-                # add each brick
-                for d in range(start_brick, np.abs(gap_div)):
-                    self.renko_prices.append(
-                        self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
-                    self.renko_directions.append(np.sign(gap_div))
-
-        # print('last price: ' + str(self.ys[-1]), 'current: ' + str(price), "need: " + str(self.brick_size + self.ys[-1]), 'or: ' + str(self.ys[-1] - self.brick_size))
-        # plt.title('last price: ' + str(self.ys[-1]) + ' current: ' + str(price) + " need: " + str(self.brick_size + self.ys[-1]) + ' or: ' + str(self.ys[-1] - self.brick_size))
         '''
         if price > self.brick_size + self.ys[-1]:
             for a in range(floor((price - self.ys[-1]) / self.brick_size)):
@@ -260,6 +230,28 @@ class renko:
                 self.lim_x_max = self.lim_x_max + 1
                 self.lim_y_min = self.lim_y_min - self.brick_size
                 self.last = price
+
+        for i in range(1, len(self.renko_prices)):
+            self.col = col_up if self.renko_directions[i] == 1 else col_down
+            self.x = i
+            self.y = self.renko_prices[i] - \
+                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
+            self.last = self.renko_prices[-1]
+            self.aaa = self.last
+            self.animate(i)
+        self.last = self.renko_prices[-1]
+        '''
+
+        for i in range(1, bricks):
+
+            self.x = i
+            self.y = self.renko_prices[i] - \
+                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
+            self.last = self.renko_prices[-1]
+            self.aaa = self.last
+            self.animate(1)
+
+        self.last = self.renko_prices[-1]
 
     def animate(self, i):
         self.lll = self.lll + 1
@@ -377,7 +369,6 @@ class renko:
                     print('BUY at: ' + str(self.pricea),
                           str(datetime.datetime.now()), 'slip: ' + str())
                 else:
-                    self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     if ind != 1:
                         sss = self.act_timestamps[ind]
                     else:
@@ -404,7 +395,6 @@ class renko:
                     print('SELL at: ' + str(self.pricea),
                           str(datetime.datetime.now()))
                 else:
-                    self.profit = self.profit - ((self.backtest_bal_usd/self.pricea)*self.backtest_fee)
                     if ind != 1:
                         sss = self.act_timestamps[ind]
                     else:
