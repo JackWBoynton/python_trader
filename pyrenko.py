@@ -196,7 +196,7 @@ class renko:
                     self.animate()
                     self.last = self.y
                 '''
-                self.add_to_plot(float(key['bidPrice']), self.do_next(float(key['bidPrice'])))
+                self.add_to_plot(float(key['bidPrice']), self.do_next(pd.DataFrame(float(key['bidPrice'])).values))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
