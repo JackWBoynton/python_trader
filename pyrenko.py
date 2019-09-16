@@ -71,7 +71,7 @@ class renko:
     def build_history(self, prices, timestamps):
         if len(prices) > 0:
             self.timestamps = timestamps
-            self.source_prices = prices.values
+            self.source_prices = prices[2].values
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
             self.renko_directions.append(0)
