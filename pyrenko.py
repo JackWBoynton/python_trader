@@ -182,7 +182,7 @@ class renko:
         self.renko_directions = []
         self.renko_prices = []
         self.renko_directions.append(0)
-
+        self.source_prices = []
         while True:
             self.check_for_new()
             # time.sleep(1)
