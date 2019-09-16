@@ -89,7 +89,7 @@ class renko:
             self.renko_directions.append(0)
             return 1
         else:
-            self.source_prices.append(pd.DataFrame(last_price).values)
+            #self.source_prices.append(pd.DataFrame(last_price).values)
             return self.__renko_rule(pd.DataFrame(last_price).values)
 
     def get_renko_prices(self):
