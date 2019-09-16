@@ -242,7 +242,7 @@ class renko:
             self.animate(i)
         self.last = self.renko_prices[-1]
         '''
-
+        print ('new bricks' + str(bricks))
         for i in range(1, bricks):
 
             self.x = i
