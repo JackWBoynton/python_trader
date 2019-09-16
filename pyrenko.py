@@ -333,7 +333,7 @@ class renko:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
-        print('trade: $' + str(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea),'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
+        print('trade: $' + str(round(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea,3)),'net BTC: ' + str(round(self.profit,8)), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
             self.w = self.w + 1
         else:
@@ -352,7 +352,7 @@ class renko:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
-        print('trade: $' + str(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea), 'net BTC: ' + str(self.profit), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
+        print('trade: $' + str(round(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea,3)), 'net BTC: ' + str(round(self.profit,8)), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
 
