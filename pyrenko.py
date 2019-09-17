@@ -213,43 +213,7 @@ class renko:
     def add_to_plot(self, price, bricks):
         self.aaa = self.last
         self.prices.append(self.last)
-        '''
-        if price > self.brick_size + self.ys[-1]:
-            for a in range(floor((price - self.ys[-1]) / self.brick_size)):
-                self.y = self.y + self.brick_size
-                self.col = 'g'
-                self.animate(1)
-                self.lim_x_max = self.lim_x_max + 1
-                self.lim_y_max = self.lim_y_max + self.brick_size
-                self.last = price
-        elif price < self.ys[-1] - 2 * self.brick_size:
-            for i in range(floor((self.ys[-1] - price) / self.brick_size)):
-                if self.plot:
-                    #print(self.lim_y_max, self.lim_y_min)
-                    self.ax[0].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[1].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[2].set_xlim(self.lim_x_min, self.lim_x_max + 1)
-                    self.ax[0].set_ylim(self.lim_y_min -
-                                        self.brick_size, self.lim_y_max)
 
-                self.x = self.x + 1
-                self.y = self.y - self.brick_size
-                self.col = 'r'
-                self.animate(1)
-                self.lim_x_max = self.lim_x_max + 1
-                self.lim_y_min = self.lim_y_min - self.brick_size
-                self.last = price
-
-        for i in range(1, len(self.renko_prices)):
-            self.col = col_up if self.renko_directions[i] == 1 else col_down
-            self.x = i
-            self.y = self.renko_prices[i] - \
-                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
-            self.last = self.renko_prices[-1]
-            self.aaa = self.last
-            self.animate(i)
-        self.last = self.renko_prices[-1]
-        '''
         for i in range(1, bricks):
 
             self.x = i
