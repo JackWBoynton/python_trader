@@ -130,6 +130,7 @@ class renko:
         self.next_brick = 0
         self.backtest = True
         self.backtest_bal_usd = 3750
+        self.init = self.backtest_bal_usd
         self.backtest_fee = 0.00075
         self.backtest_slippage = 12*0.5  # ticks*tick_size=$slip
         self.w = 1
@@ -183,6 +184,7 @@ class renko:
         self.source_prices = []
         self.l = 1
         self.w = 1
+        print ('net backtest profit: $' + str(self.backtest_bal_usd - self.init) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
         while True:
             self.check_for_new()
             # time.sleep(1)
