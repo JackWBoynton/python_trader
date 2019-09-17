@@ -11,7 +11,7 @@ import threading
 class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
 
-        self.trade = BitmexTrader(trade=False, leverage=3, tp=0.5, test=to_trade)
+        self.trade = BitmexTrader(trade=False, leverage=10, tp=0.5, test=to_trade)
         self.j_backtest = j_backtest
         self.fast = int(fast)
         self.slow = int(slow)
