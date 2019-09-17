@@ -169,14 +169,6 @@ class renko:
             self.animate(i)
         self.last = self.renko_prices[-1]
 
-        '''
-        for a in range(10):
-            self.ax[0].set_xlim(0.0, len(self.renko_prices) + (a+2))
-            self.ax[0].set_ylim(np.min(self.renko_prices) - 3.0 * self.brick_size,
-                        np.max(self.renko_prices) + 3.0*(a+1) * self.brick_size)
-            self.add_to_plot(12344+a*32)
-        '''
-
         self.backtest = False
         self.renko_directions = []
         self.renko_prices = []
@@ -195,16 +187,6 @@ class renko:
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 #print ('price: ' + str(key['bidPrice']))
-                '''
-                for i in range(self.__renko_rule(float(key['bidPrice']))):
-                    print ('new brick')
-                    #self.col = col_up if self.renko_directions[i] == 1 else col_down
-                    self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
-                    self.last = self.renko_prices[-1]
-                    self.aaa = self.last
-                    self.animate()
-                    self.last = self.y
-                '''
                 self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
