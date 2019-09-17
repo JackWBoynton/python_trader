@@ -21,7 +21,7 @@ print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(arg
 time = datetime.date.today() - datetime.timedelta(days=1)
 sta = []
 for i in range(args.days):
-    sta.append('../../' + datetime.datetime.strftime(time-datetime.timedelta(days=i), "%Y%m%d")+'.csv')
+    sta.append('../' + datetime.datetime.strftime(time-datetime.timedelta(days=i), "%Y%m%d")+'.csv')
 print (sta)
 print('starting to load csv backtest data... days: ' + str(args.days))
 data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))
