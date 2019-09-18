@@ -191,7 +191,7 @@ class renko:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 #print ('price: ' + str(key['bidPrice']))
                 self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
-                print (str(key['bidPrice']) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
+                print (str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
