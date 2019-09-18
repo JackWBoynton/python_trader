@@ -215,7 +215,7 @@ class renko:
     def animate(self, i):
         self.lll = self.lll + 1
         # - self.brick_size to get the open price of the brick
-        self.ys.append(self.y)
+        self.ys.append(self.y-self.brick_size)
         self.xs.append(self.x)
         # print(self.x, self.y)
         if self.next_brick == 1:
