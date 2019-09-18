@@ -190,7 +190,7 @@ class renko:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 #print ('price: ' + str(key['bidPrice']))
                 self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
-                print (str(key['bidPrice']) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]), end="\r")
+                print (str(key['bidPrice']) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]) + ' len: ' + str(len(self.ys)), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
@@ -306,7 +306,7 @@ class renko:
 
     def calc_indicator(self, ind):
 
-        if self.strategy == 0:
+        if 0 == 0:
 
             self.pricea = self.ys[-1]
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
