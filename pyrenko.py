@@ -172,10 +172,10 @@ class renko:
         self.last = self.renko_prices[-1]
 
         self.backtest = False
-        self.renko_directions = []
+        #self.renko_directions = []
         self.bricks = 0
-        self.renko_prices = []
-        self.renko_directions.append(0)
+        #self.renko_prices = []
+        #self.renko_directions.append(0)
         self.source_prices = []
         self.l = 1
         self.w = 1
