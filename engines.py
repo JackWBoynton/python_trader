@@ -53,6 +53,8 @@ class BitmexTrader():
         self.bitmex_api_secret_t = Config.get('Bitmex-Testnet', 'api_secret')
         self.slack_api = Config.get("Slack", 'api_key')
         self.trade = trade
+        self.long = False
+        self.short = False
         print('sending trades? ' + str(self.trade))
         self.leverage = leverage
         self.take_profit = tp
@@ -81,13 +83,15 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce='FillOrKill').result()
-            time.sleep(1)
-            runs = 1
-            while close[0]['ordStatus'] != 'Filled':
-                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce='FillOrKill').result()
-                runs += 1
+            if self.short:
+                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce='FillOrKill').result()
                 time.sleep(1)
+                runs = 1
+                while close[0]['ordStatus'] != 'Filled':
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce='FillOrKill').result()
+                    runs += 1
+                    time.sleep(1)
+                self.short = False
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
                 self.client.chat_postMessage(channel=self.channel_trades, text='closed short at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
@@ -144,6 +148,7 @@ class BitmexTrader():
                 pass
 
             self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+            self.long = True
 
     def sell_short(self, ex, pair, ind, pric):
         if self.trade:
@@ -158,13 +163,15 @@ class BitmexTrader():
                 runs += 1
                 time.sleep(1)
             '''
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
-            time.sleep(1)
-            runs = 1
-            while close[0]['ordStatus'] != 'Filled':
-                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce='FillOrKill').result()
-                runs += 1
+            if self.long:
+                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
                 time.sleep(1)
+                runs = 1
+                while close[0]['ordStatus'] != 'Filled':
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce='FillOrKill').result()
+                    runs += 1
+                    time.sleep(1)
+                self.long = False
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
                 self.client.chat_postMessage(channel=self.channel_trades, text='closed long at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
@@ -228,6 +235,7 @@ class BitmexTrader():
                 pass
 
             self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+            self.short = True
 
 
 
