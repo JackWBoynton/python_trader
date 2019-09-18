@@ -81,8 +81,13 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close').result()
-            time.sleep(5)
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce='FillOrKill').result()
+            time.sleep(1)
+            runs = 1
+            while close[0]['ordStatus'] != 'Filled':
+                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce='FillOrKill').result()
+                runs += 1
+                time.sleep(1)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
                 self.client.chat_postMessage(channel=self.channel_trades, text='closed short at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
@@ -144,8 +149,22 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close').result()
-            time.sleep(5)
+            '''
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5, timeInForce='FillOrKill').result()
+            time.sleep(1)
+            runs = 1
+            while close[0]['ordStatus'] != 'Filled':
+                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce='FillOrKill').result()
+                runs += 1
+                time.sleep(1)
+            '''
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
+            time.sleep(1)
+            runs = 1
+            while close[0]['ordStatus'] != 'Filled':
+                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce='FillOrKill').result()
+                runs += 1
+                time.sleep(1)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
                 self.client.chat_postMessage(channel=self.channel_trades, text='closed long at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
