@@ -81,7 +81,7 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close', price=pric).result()
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close').result()
             time.sleep(5)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
@@ -95,17 +95,17 @@ class BitmexTrader():
             order_q = floor(bal * self.leverage * price) - 10
 
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric).result()
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q).result()
             except HTTPServiceUnavailable as e:
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                 ord = ''
                 while ord != 'Filled':
                     time.sleep(0.6)
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q).result()
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
                 try:
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q-10, price=pric).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q-10).result()
                 except:
                     self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
@@ -138,7 +138,7 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric).result()
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close').result()
             time.sleep(5)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
