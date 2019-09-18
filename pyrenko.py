@@ -164,8 +164,7 @@ class renko:
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
-            self.y = self.renko_prices[i] - \
-                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
+            self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
             self.last = self.renko_prices[-1]
             self.aaa = self.last
             self.animate(i)
@@ -204,8 +203,7 @@ class renko:
         for i in range(1, bricks+1):
 
             self.x = self.x + i
-            self.y = self.renko_prices[-i] - \
-                self.brick_size if self.renko_directions[-i] == 1 else self.renko_prices[-i]
+            self.y = self.renko_prices[-i] - self.brick_size if self.renko_directions[-i] == 1 else self.renko_prices[-i]
             self.last = self.renko_prices[-i]
             self.aaa = self.last
             self.animate(1)
@@ -213,7 +211,7 @@ class renko:
         self.last = self.renko_prices[-1]
 
     def animate(self, i):
-        self.lll = self.lll + 1
+        self.lll += 1
         # - self.brick_size to get the open price of the brick
         self.ys.append(self.y-self.brick_size)
         self.xs.append(self.x)
@@ -275,31 +273,28 @@ class renko:
             return False
 
     def close_short(self, price):
-        self.profit = self.profit + \
-            (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd
-        self.profit = self.profit - \
-            (1 / self.pricea - 1 / (self.open)) * \
-            self.backtest_bal_usd * self.backtest_fee
-        self.backtest_bal_usd = self.backtest_bal_usd + ((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
+        self.profit += (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd
+        self.profit -= (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee
+        self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
         try:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
         print('trade: $' + str(round(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea,3)),'net BTC: ' + str(round(self.profit,8)), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
-            self.w = self.w + 1
+            self.w += 1
         else:
-            self.l = self.l + 1
+            self.l += 1
 
     def close_long(self, price):
         if price > self.open:
-            self.w = self.w + 1
+            self.w += 1
         else:
-            self.l = self.l + 1
-        self.profit = self.profit + (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd
+            self.l += 1
+        self.profit += (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd
         fee_btc = (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee
-        self.profit = self.profit - fee_btc
-        self.backtest_bal_usd = self.backtest_bal_usd + ((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
+        self.profit -= fee_btc
+        self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
         try:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
@@ -336,7 +331,7 @@ class renko:
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
                 self.open = self.pricea - self.backtest_slippage
                 self.next_brick = 1
-                self.runs = self.runs + 1
+                self.runs += 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
                 self.short = True
                 self.long = False
@@ -362,6 +357,6 @@ class renko:
                     print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
                 self.open = self.pricea + self.backtest_slippage
                 self.next_brick = 2
-                self.runs = self.runs + 1
+                self.runs += 1
             else:
                 self.next_brick = 0
