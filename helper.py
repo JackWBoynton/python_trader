@@ -59,6 +59,6 @@ def load_dfs_mult(asset, files):
     else:
         combined = pd.read_csv('../loaded'+frm+too+'.csv', header=None, low_memory=False, dtype={1: float}, usecols=[0, 1])
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
-    print (combined.head())
-    print (combined.tail())
+    #print (combined.head())
+    #print (combined.tail())
     return combined
