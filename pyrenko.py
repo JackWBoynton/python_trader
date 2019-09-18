@@ -203,7 +203,7 @@ class renko:
         self.prices.append(self.last)
         if bricks > 0:
             print ('new brick\n\n')
-        for i in range(1, bricks):
+        for i in range(1, bricks+1):
 
             self.x = self.x + i
             self.y = self.renko_prices[-i] - \
