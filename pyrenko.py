@@ -203,8 +203,8 @@ class renko:
         for i in range(1, bricks+1):
 
             self.x = self.x + i
-            self.y = self.renko_prices[-i] - self.brick_size if self.renko_directions[-i] == 1 else self.renko_prices[-i]
-            self.last = self.renko_prices[-i]
+            self.y = self.renko_prices[-(bricks+2)-i] - self.brick_size if self.renko_directions[-(bricks+2)-i] == 1 else self.renko_prices[-(bricks+2)-i]
+            self.last = self.renko_prices[-(bricks+2)-i]
             self.aaa = self.last
             self.animate(1)
 
