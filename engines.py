@@ -100,7 +100,7 @@ class BitmexTrader():
             order_q = floor(bal * self.leverage * price) - 10
 
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric, timeInForce='FillOrKill').result()
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-3, timeInForce='FillOrKill').result()
                 time.sleep(1)
                 runs = 1
                 while order[0]['ordStatus'] != 'Filled':
@@ -185,7 +185,7 @@ class BitmexTrader():
                 time.sleep(1)
             '''
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric, timeInForce='FillOrKill').result()
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric+3, timeInForce='FillOrKill').result()
                 time.sleep(1)
                 runs = 1
                 while order[0]['ordStatus'] != 'Filled':
