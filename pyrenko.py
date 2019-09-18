@@ -21,6 +21,8 @@ class renko:
         self.renko_directions = []
         self.plot = plot
         self.timestamps = []
+        self.macdaa = []
+        self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
@@ -188,7 +190,7 @@ class renko:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 #print ('price: ' + str(key['bidPrice']))
                 self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
-                print (str(key['bidPrice']) + ' brick: ' + str(self.last), end="\r")
+                print (str(key['bidPrice']) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
@@ -255,10 +257,11 @@ class renko:
         macda = []
         for n, i in enumerate(fast):
             macda.append(i - slow[n])
-
+        self.macdaa = macda
         return macda
 
     def sma(self):
+        self.smaa = (pd.DataFrame(self.macd()).rolling(window=self.signal_l).mean()).values
         return (pd.DataFrame(self.macd()).rolling(window=self.signal_l).mean()).values
 
     def cross(self, a, b):
