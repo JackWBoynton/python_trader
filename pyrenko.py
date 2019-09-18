@@ -201,8 +201,6 @@ class renko:
         self.aaa = self.last
         self.bricks = bricks
         self.prices.append(self.last)
-        if bricks > 0:
-            print ('new brick\n\n')
         for i in range(1, bricks+1):
 
             self.x = self.x + i
@@ -210,7 +208,6 @@ class renko:
                 self.brick_size if self.renko_directions[-i] == 1 else self.renko_prices[-i]
             self.last = self.renko_prices[-i]
             self.aaa = self.last
-            print ('animate\n\n')
             self.animate(1)
 
         self.last = self.renko_prices[-1]
