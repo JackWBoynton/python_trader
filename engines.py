@@ -95,7 +95,13 @@ class BitmexTrader():
             order_q = floor(bal * self.leverage * price) - 10
 
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q).result()
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric, timeInForce='FillOrKill').result()
+                time.sleep(1)
+                runs = 1
+                while order[0]['ordStatus'] != 'Filled':
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce='FillOrKill').result()
+                    runs += 1
+                    time.sleep(1)
             except HTTPServiceUnavailable as e:
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                 ord = ''
@@ -150,15 +156,30 @@ class BitmexTrader():
             price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
             bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
 
+            '''
+            order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric, timeInForce='FillOrKill').result()
+            time.sleep(1)
+            runs = 0
+            while order[0]['ordStatus'] != 'Filled':
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce='FillOrKill').result()
+                runs += 1
+                time.sleep(1)
+            '''
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10,price=pric).result()
+                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric, timeInForce='FillOrKill').result()
+                time.sleep(1)
+                runs = 1
+                while order[0]['ordStatus'] != 'Filled':
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric-(runs*0.5), timeInForce='FillOrKill').result()
+                    runs += 1
+                    time.sleep(1)
             except HTTPServiceUnavailable as e:
                 print(str(e) + ' retrying...')
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                 ord = ''
                 while ord != 'Filled':
                     time.sleep(0.6)
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10,price=pric).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
                 print('short: ' + str(-floor(bal * self.leverage * price) + 10))
