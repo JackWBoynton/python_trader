@@ -179,6 +179,7 @@ class renko:
         self.source_prices = []
         self.l = 1
         self.w = 1
+        self.ys = [0]
         print ('net backtest profit: $' + str(self.backtest_bal_usd - self.init) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
         while True:
             self.check_for_new()
