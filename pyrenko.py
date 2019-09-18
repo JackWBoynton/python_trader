@@ -198,7 +198,7 @@ class renko:
     def add_to_plot(self, price, bricks):
         self.aaa = self.last
         self.prices.append(self.last)
-
+        print (str(self.y))
         for i in range(1, bricks):
 
             self.x = i
@@ -213,6 +213,7 @@ class renko:
     def animate(self, i):
         self.lll = self.lll + 1
         # - self.brick_size to get the open price of the brick
+
         self.ys.append(self.y - self.brick_size)
         self.xs.append(self.x)
         # print(self.x, self.y)
