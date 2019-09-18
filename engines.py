@@ -81,7 +81,7 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close').result()
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close', price=pric).result()
             time.sleep(5)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
@@ -138,7 +138,7 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close').result()
+            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric).result()
             time.sleep(5)
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
