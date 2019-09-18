@@ -201,6 +201,8 @@ class renko:
         self.aaa = self.last
         self.bricks = bricks
         self.prices.append(self.last)
+        if bricks > 0:
+            print ('new brick\n')
         for i in range(1, bricks):
 
             self.x = i
