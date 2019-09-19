@@ -329,7 +329,7 @@ class renko:
                     else:
                         sss = 'undef'
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
-                self.open = self.pricea - self.backtest_slippage
+                self.open = self.pricea
                 self.next_brick = 1
                 self.runs += 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
@@ -355,7 +355,7 @@ class renko:
                     else:
                         sss = 'undef'
                     print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
-                self.open = self.pricea + self.backtest_slippage
+                self.open = self.pricea
                 self.next_brick = 2
                 self.runs += 1
             else:
