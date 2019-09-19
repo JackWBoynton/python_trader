@@ -11,7 +11,7 @@ import threading
 class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
 
-        self.trade = BitmexTrader(trade=True, leverage=10, tp=0.5, test=to_trade)
+        self.trade = BitmexTrader(trade=False, leverage=10, tp=0.5, test=to_trade)
         self.j_backtest = j_backtest
         self.fast = int(fast)
         self.slow = int(slow)
@@ -213,7 +213,7 @@ class renko:
     def animate(self, i):
         self.lll += 1
         # - self.brick_size to get the open price of the brick
-        self.ys.append(self.y-self.brick_size)
+        self.ys.append(self.y) ####### WHY - ?????
         self.xs.append(self.x)
         # print(self.x, self.y)
         if self.next_brick == 1:
