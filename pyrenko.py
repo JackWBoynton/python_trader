@@ -318,7 +318,7 @@ class renko:
                     if self.ff:
                         print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
                         print ('proceeding to live...')
-                        self.backtest_bal_usd = 300
+                        self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
                     print('BUY at: ' + str(self.pricea),
@@ -344,7 +344,7 @@ class renko:
                     if self.ff:
                         print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
                         print ('proceeding to live...')
-                        self.backtest_bal_usd = 300
+                        self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
                     print('SELL at: ' + str(self.pricea),
