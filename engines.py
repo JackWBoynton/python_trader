@@ -79,7 +79,7 @@ class BitmexTrader():
         self.channel = 'tradeupdates'
         self.channel_trades = 'trades'
         self.client = slack.WebClient(self.slack_api, timeout=30)
-        self.trade_template = {'signal_price':0.0, 'fill_price':0.0, 'quantity':0.0, 'leverage':1, 'side','', 'timestamp':''}
+        self.trade_template = {'signal_price':0.0, 'fill_price':0.0, 'quantity':0.0, 'leverage':1, 'side':'', 'timestamp':''}
 
     def db(self):
         ## TRADE = {'signal_price':float, 'fill_price':float, 'quantity':float, 'leverage':int, 'side',string, 'timestamp':string}
