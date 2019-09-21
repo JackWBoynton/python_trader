@@ -194,7 +194,7 @@ class renko:
                 print (str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
-            #print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
+            # print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
 
     def add_to_plot(self, price, bricks):
         self.aaa = self.last
@@ -213,7 +213,7 @@ class renko:
     def animate(self, i):
         self.lll += 1
         # - self.brick_size to get the open price of the brick
-        self.ys.append(self.y) ####### WHY - ?????
+        self.ys.append(self.y)
         self.xs.append(self.x)
         # print(self.x, self.y)
         if self.next_brick == 1:

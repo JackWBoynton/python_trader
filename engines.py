@@ -14,6 +14,7 @@ from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest
 import alpaca_trade_api as tradeapi
 import configparser
 import numpy as np
+import pyodbc
 Config = configparser.ConfigParser()
 Config.read("config.ini")  # load api_keys
 
@@ -78,6 +79,9 @@ class BitmexTrader():
         self.channel = 'tradeupdates'
         self.channel_trades = 'trades'
         self.client = slack.WebClient(self.slack_api, timeout=30)
+
+    def db(self,):
+        pass
 
     def buy_long(self, ex, pair, ind, pric):
         if self.trade:
