@@ -98,7 +98,7 @@ class BitmexTrader():
             # connection is not autocommit by default. So you must commit to save
             # your changes.
             connection.commit()
-p
+
         finally:
             connection.close()
 
