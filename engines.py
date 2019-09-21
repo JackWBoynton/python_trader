@@ -104,7 +104,7 @@ class BitmexTrader():
 
 
 
-        self.trade_template = {'signal_price':0.0, 'fill_price':0.0, 'quantity':0.0, 'leverage':1, 'side','', 'timestamp':''}
+        self.trade_template = {'signal_price':0.0, 'fill_price':0.0, 'quantity':0.0, 'leverage':1, 'side':'', 'timestamp':''}
 
     def buy_long(self, ex, pair, ind, pric):
         if self.trade:
