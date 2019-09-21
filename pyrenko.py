@@ -79,7 +79,7 @@ class renko:
             self.renko_directions.append(0)
 
             for n, p in enumerate(self.source_prices[1:].values):
-                #print(type(p),p)
+                # print(type(p),p)
                 self.__renko_rule(p, n)
 
         return len(self.renko_prices)
@@ -164,7 +164,8 @@ class renko:
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
-            self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
+            self.y = self.renko_prices[i] - \
+                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
             self.last = self.renko_prices[-1]
             self.aaa = self.last
             self.animate(i)
@@ -174,12 +175,13 @@ class renko:
         #self.renko_directions = []
         self.bricks = 0
         #self.renko_prices = []
-        #self.renko_directions.append(0)
+        # self.renko_directions.append(0)
         self.source_prices = []
         self.l = 1
         self.w = 1
         #self.ys = [0]
-        print ('net backtest profit: $' + str(self.backtest_bal_usd - self.init) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+        print('net backtest profit: $' + str(self.backtest_bal_usd - self.init) +
+              ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
         while True:
             self.check_for_new()
             # time.sleep(1)
@@ -190,8 +192,10 @@ class renko:
         for key in data:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 #print ('price: ' + str(key['bidPrice']))
-                self.add_to_plot(float(key['bidPrice']), self.do_next(np.array(float(key['bidPrice']), dtype=float)))
-                print (str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
+                self.add_to_plot(float(key['bidPrice']), self.do_next(
+                    np.array(float(key['bidPrice']), dtype=float)))
+                print(str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(
+                    self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
             # print('finished loading backtest data, proceeding to live, backtest profit: $' + str(self.profit*self.aaa))
@@ -203,7 +207,8 @@ class renko:
         for i in range(1, bricks+1):
 
             self.x = self.x + i
-            self.y = self.renko_prices[-(bricks+2)-i] - self.brick_size if self.renko_directions[-(bricks+2)-i] == 1 else self.renko_prices[-(bricks+2)-i]
+            self.y = self.renko_prices[-(bricks+2)-i] - self.brick_size if self.renko_directions[-(
+                bricks+2)-i] == 1 else self.renko_prices[-(bricks+2)-i]
             self.last = self.renko_prices[-(bricks+2)-i]
             self.aaa = self.last
             self.animate(1)
@@ -274,13 +279,16 @@ class renko:
 
     def close_short(self, price):
         self.profit += (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd
-        self.profit -= (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee
-        self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
+        self.profit -= (1 / self.pricea - 1 / (self.open)) * \
+            self.backtest_bal_usd * self.backtest_fee
+        self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (
+            1 / self.pricea - 1 / (self.open))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
         try:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
-        print('trade: $' + str(round(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea,3)),'net BTC: ' + str(round(self.profit,8)), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
+        print('trade: $' + str(round(((1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd - (1 / self.pricea - 1 / (self.open)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea, 3)), 'net BTC: ' + str(round(self.profit, 8)),
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: $' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per*100, 3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
             self.w += 1
         else:
@@ -294,12 +302,14 @@ class renko:
         self.profit += (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd
         fee_btc = (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee
         self.profit -= fee_btc
-        self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
+        self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (
+            1 / self.open - 1 / (self.pricea))*self.backtest_bal_usd*self.backtest_fee) * self.pricea
         try:
             per = ((self.w+self.l)-self.l)/(self.w+self.l)
         except:
             per = 0
-        print('trade: $' + str(round(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea,3)), 'net BTC: ' + str(round(self.profit,8)), 'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' +  str(round(per*100,3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
+        print('trade: $' + str(round(((1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd - (1 / self.open - 1 / (self.pricea)) * self.backtest_bal_usd * self.backtest_fee)*self.pricea, 3)), 'net BTC: ' + str(round(self.profit, 8)),
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per*100, 3))+'%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
 
@@ -316,8 +326,9 @@ class renko:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
-                        print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
-                        print ('proceeding to live...')
+                        print('net backtest profit: $' + str(self.backtest_bal_usd) +
+                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print('proceeding to live...')
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
@@ -328,7 +339,8 @@ class renko:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
-                    print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
+                    print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
+                          'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea), 3)))
                 self.open = self.pricea
                 self.next_brick = 1
                 self.runs += 1
@@ -342,8 +354,9 @@ class renko:
                     threading.Thread(target=self.trade.sell_short,
                                      args=("BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
-                        print ('net backtest profit: $' + str(self.backtest_bal_usd) + ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
-                        print ('proceeding to live...')
+                        print('net backtest profit: $' + str(self.backtest_bal_usd) +
+                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                        print('proceeding to live...')
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
@@ -354,7 +367,8 @@ class renko:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
-                    print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd), 'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea),3)))
+                    print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
+                          'fee: $' + str(round(((self.backtest_bal_usd/self.pricea)*self.backtest_fee*self.pricea), 3)))
                 self.open = self.pricea
                 self.next_brick = 2
                 self.runs += 1
