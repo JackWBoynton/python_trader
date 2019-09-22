@@ -182,15 +182,16 @@ class BitmexTrader():
                 #print('placed sl at: ' + str(floor((price - (price * self.stop_loss / self.leverage)) * 0.5) / 0.5))
                 pass
 
-            self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
-            self.long = True
-            self.trade_template['signal_price'] = pric
-            self.trade_template['fill_price'] = float(order[0]['price'])
-            self.trade_template['quantity'] = float(order[0]['orderQty'])
-            self.trade_template['leverage'] = self.leverage
-            self.trade_template['side'] = 'BUY'
-            self.trade_template['timestamp'] = str(order[0]['timestamp'])
-            self.db()
+            if order[0]['ordStatus'] == 'Filled':
+                self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+                self.long = True
+                self.trade_template['signal_price'] = pric
+                self.trade_template['fill_price'] = float(order[0]['price'])
+                self.trade_template['quantity'] = float(order[0]['orderQty'])
+                self.trade_template['leverage'] = self.leverage
+                self.trade_template['side'] = 'BUY'
+                self.trade_template['timestamp'] = str(order[0]['timestamp'])
+                self.db()
 
 
     def sell_short(self, ex, pair, ind, pric):
@@ -284,16 +285,16 @@ class BitmexTrader():
             finally:
                 #print('placed sl at: ' + str(floor((price + (price *self.stop_loss / self.leverage)) * 0.5) / 0.5))
                 pass
-
-            self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
-            self.short = True
-            self.trade_template['signal_price'] = pric
-            self.trade_template['fill_price'] = float(order[0]['price'])
-            self.trade_template['quantity'] = float(order[0]['orderQty'])
-            self.trade_template['leverage'] = self.leverage
-            self.trade_template['side'] = 'SELL'
-            self.trade_template['timestamp'] = str(order[0]['timestamp'])
-            self.db()
+            if order[0]['ordStatus'] == 'Filled':
+                self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+                self.short = True
+                self.trade_template['signal_price'] = pric
+                self.trade_template['fill_price'] = float(order[0]['price'])
+                self.trade_template['quantity'] = float(order[0]['orderQty'])
+                self.trade_template['leverage'] = self.leverage
+                self.trade_template['side'] = 'SELL'
+                self.trade_template['timestamp'] = str(order[0]['timestamp'])
+                self.db()
 
 
 
