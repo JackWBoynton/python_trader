@@ -91,7 +91,7 @@ class BitmexTrader():
         try:
             with connection.cursor() as cursor:
                 sql = "INSERT INTO `trades_raw` (`signal_price`, `fill_price`, `quantity`, `leverage`, `side`, `timestamp`) VALUES (%s, %s, %s, %s, %s, %s)"
-                cursor.execute(sql, (self.trade_template['signal_price'], self.trade_template['fill_price'], self.trade_template['quantity'], self.trade_template['leverage'], self.trade_template['side'], self.trade_template['timestamp']))
+                cursor.execute(sql, (str(self.trade_template['signal_price']), str(self.trade_template['fill_price']), str(self.trade_template['quantity']), str(self.trade_template['leverage']), str(self.trade_template['side']), str(self.trade_template['timestamp'])))
             connection.commit()
         finally:
             connection.close()
