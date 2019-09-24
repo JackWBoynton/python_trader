@@ -252,7 +252,10 @@ class BitmexTrader():
                 ord = ''
                 while ord != 'Filled':
                     time.sleep(0.6)
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
+                    try:
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
+                    except HTTPServiceUnavailable:
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
                 print('short: ' + str(-floor(bal * self.leverage * price) + 10))
