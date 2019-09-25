@@ -254,33 +254,34 @@ class BitmexTrader():
                 while ord != 'Filled':
                     time.sleep(0.6)
                     try:
-                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
+                        bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 15).result()
                     except HTTPServiceUnavailable:
-                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 15).result()
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
-                print('short: ' + str(-floor(bal * self.leverage * price) + 10))
+                print('short: ' + str(-floor(bal * self.leverage * price) + 15))
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
                 print('sold short on bitmex: ' + str(order[0]['orderQty']) + ' @ ' + str(order[0]['price']), 'slip: $' + str(abs(ind-float(order[0]['price']))), 'ticks: ' + str((ind-float(order[0]['price']))/0.5), 'average tick slip: ' + str(mean(self.slips)))
 
             try:
-                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 10).result()
+                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 15).result()
             except HTTPServiceUnavailable:
                 print('503 retrying...')
                 time.sleep(0.6)
-                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 10).result()
+                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='MarketIfTouched', stopPx=floor(price * (1 - self.take_profit / self.leverage) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 15).result()
             finally:
                 #print('placed tp at: ' + str(floor(price *(1 - self.take_profit / self.leverage) * 0.5) / 0.5))
                 pass
 
             try:
-                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 10).result()
+                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 15).result()
             except HTTPServiceUnavailable:
                 print('503 retrying...')
                 time.sleep(0.6)
-                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 10).result()
+                self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Stop', stopPx=floor((price + (price * self.stop_loss / self.leverage)) * 0.5) / 0.5, orderQty=floor(bal * self.leverage * price) + 15).result()
             finally:
                 #print('placed sl at: ' + str(floor((price + (price *self.stop_loss / self.leverage)) * 0.5) / 0.5))
                 pass
