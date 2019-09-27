@@ -56,6 +56,7 @@ class BitmexTrader():
         self.trade = trade
         self.long = False
         self.type = 'ImmediateOrCancel'
+        self.ord_type = 'Market'
         self.short = False
         print('sending trades? ' + str(self.trade))
         self.leverage = leverage
@@ -104,13 +105,17 @@ class BitmexTrader():
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
             if self.short:
-                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce=self.type).result()
-                time.sleep(5)
-                runs = 1
-                while close[0]['ordStatus'] != 'Filled':
-                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce=self.type).result()
-                    runs += 1
-                    time.sleep(5)
+                if self.ord_type == 'Limit':
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce=self.type).result()
+                    time.sleep(1)
+                    runs = 1
+                    while close[0]['ordStatus'] != 'Filled':
+                        close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce=self.type).result()
+                        runs += 1
+                        time.sleep(1)
+                else:
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close').result()
+                    time.sleep(2)
                 self.short = False
                 self.trade_template['signal_price'] = pric
                 self.trade_template['fill_price'] = float(close[0]['price'])
@@ -131,14 +136,17 @@ class BitmexTrader():
             order_q = floor(bal * self.leverage * price) - 10
 
             try:
-                print ('trying: ' + str(pric))
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-3, timeInForce=self.type).result()
-                time.sleep(5)
-                runs = 1
-                while order[0]['ordStatus'] != 'Filled':
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce=self.type).result()
-                    runs += 1
+                if self.ord_type == 'Limit':
+                    print ('trying: ' + str(pric))
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-3, timeInForce=self.type).result()
                     time.sleep(5)
+                    runs = 1
+                    while order[0]['ordStatus'] != 'Filled':
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce=self.type).result()
+                        runs += 1
+                        time.sleep(5)
+                else:
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q).result()
             except HTTPServiceUnavailable as e:
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
                 ord = ''
@@ -205,13 +213,17 @@ class BitmexTrader():
                 time.sleep(1)
             '''
             if self.long:
-                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
-                time.sleep(5)
-                runs = 1
-                while close[0]['ordStatus'] != 'Filled':
-                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce=self.type).result()
-                    runs += 1
+                if self.ord_type == 'Limit':
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
                     time.sleep(5)
+                    runs = 1
+                    while close[0]['ordStatus'] != 'Filled':
+                        close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce=self.type).result()
+                        runs += 1
+                        time.sleep(5)
+                else:
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market').result()
+                    time.sleep(1)
                 self.long = False
                 self.trade_template['signal_price'] = pric
                 self.trade_template['fill_price'] = float(close[0]['price'])
@@ -240,13 +252,16 @@ class BitmexTrader():
                 time.sleep(1)
             '''
             try:
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric+3, timeInForce=self.type).result()
-                time.sleep(5)
-                runs = 1
-                while order[0]['ordStatus'] != 'Filled':
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric-(runs*0.5), timeInForce=self.type).result()
-                    runs += 1
+                if self.ord_type == 'Limit':
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric+3, timeInForce=self.type).result()
                     time.sleep(5)
+                    runs = 1
+                    while order[0]['ordStatus'] != 'Filled':
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric-(runs*0.5), timeInForce=self.type).result()
+                        runs += 1
+                        time.sleep(5)
+                else:
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
             except HTTPServiceUnavailable as e:
                 print(str(e) + ' retrying...')
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
