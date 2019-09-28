@@ -44,7 +44,7 @@ def load_dfs(asset, files):
 
 def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
-    del files[-1]
+    del files[0]
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
 
