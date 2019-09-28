@@ -132,6 +132,7 @@ class renko:
         self.init = self.backtest_bal_usd
         self.backtest_fee = 0.00075
         self.backtest_slippage = 12 * 0.5  # ticks*tick_size=$slip
+        self.leverage = 10
         self.w = 1
         self.l = 1
         self.runs = 0
