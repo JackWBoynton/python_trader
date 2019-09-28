@@ -263,16 +263,16 @@ class renko:
 
     def close_short(self, price):
         self.profit += (1 / self.pricea - 1 / (self.open)) * \
-            floor(self.backtest_bal_usd*self.open)
+            floor(self.backtest_bal_usd*self.open)*self.leverage
         self.profit -= (1 / self.pricea - 1 / (self.open)) * \
-            floor(self.backtest_bal_usd*self.open) * self.backtest_fee
+            floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee
         self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) - (
-            1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee)
+            1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except:
             per = 0
-        print('trade: BTC ' + str(round(((1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) - (1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
+        print('trade: BTC ' + str(round(((1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage - (1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
             self.w += 1
@@ -285,17 +285,17 @@ class renko:
         else:
             self.l += 1
         self.profit += (1 / self.open - 1 / (self.pricea)) * \
-            floor(self.backtest_bal_usd*self.open)
+            floor(self.backtest_bal_usd*self.open)*self.leverage
         fee_btc = (1 / self.open - 1 / (self.pricea)) * \
-            floor(self.backtest_bal_usd*self.open) * self.backtest_fee
+            floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee
         self.profit -= fee_btc
-        self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) - (
-            1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee)
+        self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage - (
+            1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except:
             per = 0
-        print('trade: BTC ' + str(round(((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) - (1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
+        print('trade: BTC ' + str(round(((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage - (1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
@@ -325,7 +325,7 @@ class renko:
                     else:
                         sss = 'undef'
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
-                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea) / self.pricea) * self.backtest_fee * self.pricea), 3)))
+                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
                 self.open = self.pricea
                 self.next_brick = 1
                 self.runs += 1
@@ -353,7 +353,7 @@ class renko:
                     else:
                         sss = 'undef'
                     print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
-                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea) / self.pricea) * self.backtest_fee * self.pricea), 3)))
+                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
                 self.open = self.pricea
                 self.next_brick = 2
                 self.runs += 1
