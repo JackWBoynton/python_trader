@@ -40,8 +40,11 @@ class renko:
         return self.brick_size
 
     def __renko_rule(self, last_price, ind):
-        gap_div = int(
-            float(last_price - self.renko_prices[-1]) / self.brick_size)
+        try:
+            gap_div = int(
+                float(last_price - self.renko_prices[-1]) / self.brick_size)
+        except:
+            gap_div = 0
         is_new_brick = False
         start_brick = 0
         num_new_bars = 0
