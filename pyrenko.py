@@ -267,7 +267,7 @@ class renko:
         self.profit -= (1 / self.pricea - 1 / (self.open)) * \
             floor(self.backtest_bal_usd*self.open) * self.backtest_fee
         self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) - (
-            1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee) * self.pricea
+            1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except:
@@ -290,7 +290,7 @@ class renko:
             floor(self.backtest_bal_usd*self.open) * self.backtest_fee
         self.profit -= fee_btc
         self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) - (
-            1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee) * self.pricea
+            1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open) * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except:
