@@ -222,7 +222,7 @@ class BitmexTrader():
                         runs += 1
                         time.sleep(5)
                 else:
-                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market').result()
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Market', execInst='Close').result()
                     time.sleep(1)
                 self.long = False
                 self.trade_template['signal_price'] = pric

@@ -327,7 +327,7 @@ class renko:
                 if self.runs > 0:
                     self.close_short(self.pricea)
 
-                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 20:
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
@@ -355,7 +355,7 @@ class renko:
                 if self.runs > 0:
                     self.close_long(self.pricea)
 
-                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 20:
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
                     threading.Thread(target=self.trade.sell_short,
                                      args=("BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
