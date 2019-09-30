@@ -1,5 +1,10 @@
-import numpy as np
+'''
+python3
+renko brick calculation python implementation
+Jack Boynton 2019
+'''
 
+import numpy as np
 import pandas as pd
 from math import floor
 import datetime
@@ -40,6 +45,8 @@ class renko:
         return self.brick_size
 
     def __renko_rule(self, last_price, ind):
+        # determines if should plot new bricks
+        # returns number of new bricks to plot
         try:
             gap_div = int(
                 float(last_price - self.renko_prices[-1]) / self.brick_size)
@@ -73,6 +80,7 @@ class renko:
         return num_new_bars
 
     def build_history(self, prices, timestamps):
+        # builds backtest bricks
         if len(prices) > 0:
             self.timestamps = prices[0].values
             self.source_prices = pd.DataFrame(prices[2].values)
@@ -81,10 +89,12 @@ class renko:
             self.renko_directions.append(0)
             for n, p in enumerate(self.source_prices[1:].values):
                 # print(type(p),p)
-                self.__renko_rule(p, n)
+                self.__renko_rule(p, n)  # performs __renko_rule on each price tick
         return len(self.renko_prices)
 
     def do_next(self, last_price):
+        # function that is used to plot live data
+        # calls __renko_rule on each new live price tick
         last_price = float(last_price)
         if len(self.renko_prices) == 0:
             self.source_prices.append(last_price)
@@ -177,9 +187,11 @@ class renko:
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) +
               ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
         while True:
+            # starts live trading
             self.check_for_new()
 
     def check_for_new(self):
+        # connects to hosted BITMEX delta server running in nodejs on port 4444
         data = requests.get(
             'http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
         for key in data:
@@ -206,9 +218,8 @@ class renko:
 
     def animate(self, i):
         self.lll += 1
-        # - self.brick_size to get the open price of the brick
-        self.ys.append(self.y)
-        self.xs.append(self.x)
+        self.ys.append(self.y)  # all bricks for indicator calculation
+        self.xs.append(self.x)  # num bars
         if self.next_brick == 1:
             self.col = 'b'
         elif self.next_brick == 2:
@@ -232,17 +243,19 @@ class renko:
             except:
                 pass
             self.ax[2].plot(self.xs, self.balances)
-        self.calc_indicator(i)
+        self.calc_indicator(i)  # calculates given indicator
         if self.plot:
             plt.draw()
             plt.pause(0.0000001)
 
     def ma(self):
+        # calculates simple moving averages on brick prices
         fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
         slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
+        # calculated moving average convergence divergence on brick prices
         fast, slow = self.ma()
         macda = []
         for n, i in enumerate(fast):
@@ -251,19 +264,22 @@ class renko:
         return macda
 
     def sma(self):
+        # simple moving average to compare against macd
         self.smaa = (pd.DataFrame(self.macd()).rolling(
             window=self.signal_l).mean()).values
         return (pd.DataFrame(self.macd()).rolling(window=self.signal_l).mean()).values
 
     def cross(self, a, b):
+        # determines if signal price and macd cross or had crossed one brick ago
         try:
             if (a[-2] > b[-2] and b[-1] > a[-1]) or (b[-2] > a[-2] and a[-1] > b[-1]) or (a[-2] > b[-2] and b[-1] == a[-1]) or (b[-2] > a[-2] and b[-1] == a[-1]):
                 return True
             return False
-        except:
+        except Exception:
             return False
 
     def close_short(self, price):
+        # calculates profit on close of short trade
         self.profit += (1 / self.pricea - 1 / (self.open)) * \
             floor(self.backtest_bal_usd*self.open)*self.leverage
         self.profit -= (1 / self.pricea - 1 / (self.open)) * \
@@ -272,7 +288,7 @@ class renko:
             1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
-        except:
+        except Exception:
             per = 0
         print('trade: BTC ' + str(round(((1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage - (1 / self.pricea - 1 / (self.open)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
@@ -282,6 +298,7 @@ class renko:
             self.l += 1
 
     def close_long(self, price):
+        # calculates profit on close of long trade
         if price > self.open:
             self.w += 1
         else:
@@ -295,13 +312,14 @@ class renko:
             1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
-        except:
+        except Exception:
             per = 0
         print('trade: BTC ' + str(round(((1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage - (1 / self.open - 1 / (self.pricea)) * floor(self.backtest_bal_usd*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
-        if 0 == 0:
+        # calculates indicator
+        if 0 == 0: # can add more indicators by expanding if condition:
             self.pricea = self.y
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True

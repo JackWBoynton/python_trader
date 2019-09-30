@@ -61,7 +61,7 @@ class BitmexTrader():
         print('sending trades? ' + str(self.trade))
         self.leverage = leverage
         self.take_profit = tp
-        self.stop_loss = 0.1 # 10%
+        self.stop_loss = 0.1  # 10%
         self.slips = []
 
         if test:
