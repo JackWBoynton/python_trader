@@ -48,6 +48,7 @@ def load_dfs_mult(asset, files):
     too = files[-1].split('/')[1].split('.')[0]
 
     files.reverse()
+    print (files)
     print('backtest dates: ' + frm + '-' + too)
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=8) as pool:
