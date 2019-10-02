@@ -8,6 +8,7 @@ def load_df(filename):
     asset = 'XBTU19'
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
                        3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0)
+    print(filename)
     for n, i in enumerate(data[1]):
         if i == asset:
             data = pd.DataFrame(data.values[n:])
@@ -60,6 +61,6 @@ def load_dfs_mult(asset, files):
                             frm + too + '.csv', header=False)
     else:
         combined = pd.read_csv('../loaded' + frm + too + '.csv', header=None,
-                               low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2,na_values=0)
+                               low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2, na_values=0)
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
     return combined

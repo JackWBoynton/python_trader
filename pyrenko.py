@@ -143,6 +143,7 @@ class renko:
             self.last = self.renko_prices[-1]
             self.aaa = self.last
             self.animate(i)
+            
         self.last = self.renko_prices[-1]
         self.backtest = False
         self.bricks = 0
