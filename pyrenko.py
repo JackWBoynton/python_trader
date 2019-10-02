@@ -33,7 +33,6 @@ class renko:
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
 
-
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
         if auto:
             self.brick_size = self.__get_optimal_brick_size(

@@ -26,10 +26,7 @@ for i in range(args.days):  # gets all date csv files in home directory
                                                   datetime.timedelta(days=i), "%Y%m%d") + '.csv')
 
 print('starting to load csv backtest data... days: ' + str(args.days))
-if len(sta) > 1:
-    data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))  # uses multiprocessing to parse huge csv datafiles
-else:
-    data = pd.DataFrame(helper.load_df(sta[0]))
+data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))  # uses multiprocessing to parse huge csv datafiles
 print('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(
     args.fast[1]), signal_l=int(args.fast[2]), to_trade=False, strategy=0 if args.tr == 'macd' else 1)
