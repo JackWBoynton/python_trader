@@ -7,7 +7,7 @@ from multiprocessing import Pool
 def load_df(filename):
     asset = 'XBTU19'
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
-                       3: float}, usecols=[0, 1, 3], skiprows=2,na_values=0)
+                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0)
     for n, i in enumerate(data[1]):
         if i == asset:
             data = pd.DataFrame(data.values[n:])
@@ -37,7 +37,7 @@ def load_dfs(asset, files):
         a.to_csv(path_or_buf='../loaded' + frm + too + '.csv', header=False)
     else:
         a = pd.read_csv('../loaded' + frm + too + '.csv', header=None,
-                        low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2,na_values=0)
+                        low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2, na_values=0)
     print('loaded ' + str(a.shape[0]) + ' ticks of data')
     return a
 
@@ -45,7 +45,7 @@ def load_dfs(asset, files):
 def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
     for n, i in enumerate(files):
-        if i.split('/')[1].split('.')[0] == '20190927':
+        if i.split('/')[1].split('.')[0] is "20190927":
             del files[n]
     del files[0]
     frm = files[0].split('/')[1].split('.')[0]
