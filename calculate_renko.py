@@ -26,6 +26,7 @@ for i in range(args.days):  # gets all date csv files in home directory
                                                   datetime.timedelta(days=i), "%Y%m%d") + '.csv')
 
 print('starting to load csv backtest data... days: ' + str(args.days))
+print (sta)
 data = pd.DataFrame(helper.load_dfs_mult('XBTU19', files=sta))  # uses multiprocessing to parse huge csv datafiles
 print(data.head(), data.tail())
 print('finished loading csv backtest data... starting renko brick calculation')
