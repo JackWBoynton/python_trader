@@ -44,8 +44,6 @@ def load_dfs(asset, files):
 
 def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
-    
-    del files[0]
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
 
@@ -54,7 +52,9 @@ def load_dfs_mult(asset, files):
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=8) as pool:
             df_list = (pool.map(load_df, files))
+            print(df_list)
             combined = pd.concat(df_list, ignore_index=True)
+            print(combined)
             combined.to_csv(path_or_buf='../loaded' +
                             frm + too + '.csv', header=False)
     else:
