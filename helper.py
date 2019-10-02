@@ -6,18 +6,20 @@ from multiprocessing import Pool
 
 def load_df(filename):
     asset = 'XBTU19'
-    data = pd.read_csv(filename, header=None, low_memory=False, dtype={
-                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0)
-    print(filename, data.head())
-    for n, i in enumerate(data[1]):
+    data = pd.read_csv(filename, header=0, low_memory=False, dtype={
+                       'timestamp': str, 'symbol': str, 'bidPrice': float}, usecols=['timestamp', 'symbol', 'bidPrice'], skiprows=0, na_values=0)
+    #print(data.columns, data[data.columns[1]])
+    for n, i in enumerate(data['symbol']):
         if i == asset:
             data = pd.DataFrame(data.values[n:])
+            #print (data)
             break
-    for n, j in enumerate(data[1]):
+    for n, j in enumerate(data['symbol']):
         if j != asset:
             data = pd.DataFrame(data.values[:n])
             break
-    del data[1]
+    print (data.head())
+    #del data['symbol']
     return data
 
 
@@ -58,7 +60,7 @@ def load_dfs_mult(asset, files):
             combined = pd.concat(df_list, ignore_index=True)
             print(combined)
             combined.to_csv(path_or_buf='../loaded' +
-                            frm + too + '.csv', header=False)
+                            frm + too + '.csv', header=0)
     else:
         combined = pd.read_csv('../loaded' + frm + too + '.csv', header=None,
                                low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2, na_values=0)
