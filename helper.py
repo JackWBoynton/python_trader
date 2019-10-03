@@ -2,11 +2,12 @@ import pandas as pd
 import glob
 from tqdm import tqdm
 from multiprocessing import Pool
-len_df = 0
+
 
 def load_df(filename):
     asset = 'XBTUSD'
     global len_df
+    assert len_df != 0
     tqdm.pandas(desc="load csvs #" + str(len_df))
     len_df -= 1
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
@@ -56,10 +57,10 @@ def load_dfs_mult(asset, files):
 
     files.reverse()
     print('backtest dates: ' + frm + '-' + too)
+    global len_df
+    len_df = len(files)
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=16) as pool:
-            global len_df
-            len_df = len(files)
             df_list = (pool.map(load_df, files))
             tqdm.pandas(desc="concat csvs")
             combined = pd.concat(df_list, ignore_index=True).progress_apply(lambda x: x) # apply dummy lambda fn to call tqdm.pandas()
