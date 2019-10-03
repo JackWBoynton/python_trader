@@ -12,7 +12,7 @@ import requests
 from data import new_trade
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
-
+from calculate_pred import main as pred
 
 class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
@@ -292,6 +292,7 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
+                    pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     print('BUY at: ' + str(self.pricea),
                           str(datetime.datetime.now()), 'slip: ' + str())
                 else:
