@@ -329,7 +329,7 @@ class renko:
                     self.close_short(self.pricea)
                     side = 1 if self.long else 0
                     if len(self.renko_prices) > 10:
-                        new_trade(past_bricks=self.renko_prices[-10:], price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.act_timestamps[ind], time_close=datetime.datetime.now())
+                        new_trade(past_bricks=self.renko_prices[-10:], price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
@@ -350,6 +350,7 @@ class renko:
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                           'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
                 self.open = self.pricea
+                self.time_open = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-1]
                 self.sma_open = self.sma()[-1]
                 self.next_brick = 1
