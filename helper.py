@@ -56,6 +56,7 @@ def load_dfs_mult(asset, files):
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=16) as pool:
             df_list = tqdm(pool.map(load_df, files))
+            tqdm.pandas()
             combined = pd.concat(df_list, ignore_index=True)
             combined.to_csv(path_or_buf='../loaded' +
                             frm + too + '.csv', header=False)
