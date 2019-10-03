@@ -341,8 +341,9 @@ class renko:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
-                    print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
-                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+                    if len(self.macd()) > 10 and len(self.sma()) > 10:
+                        print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
+                              'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
