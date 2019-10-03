@@ -300,7 +300,7 @@ class renko:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
-                    if len(self.macd()) > 10 and len(self.sma()) > 10:
+                    if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                               'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 self.open = self.pricea
@@ -319,7 +319,7 @@ class renko:
                         side = 0
                     elif self.short:
                         side = 1
-                    if len(self.renko_prices) > 10 and len(self.macd()) > 10:
+                    if len(self.renko_prices) > 10 and len(self.macd()) > 10 and len(self.ys) > 10:
                         # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
 
@@ -333,7 +333,7 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-                    if len(self.macd()) > 10 and len(self.sma()) > 10:
+                    if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
                         print('SELL at: ' + str(self.pricea),
                               str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 else:
@@ -341,7 +341,7 @@ class renko:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
-                    if len(self.macd()) > 10 and len(self.sma()) > 10:
+                    if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                               'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 self.open = self.pricea
