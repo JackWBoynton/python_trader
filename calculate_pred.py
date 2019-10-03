@@ -5,13 +5,13 @@ bst.load_model('../0001.model')  # load data
 
 
 def main(ys, macd, sma, last_price):
-    string = ''
+    string = []
     for i in ys:
-        string += str(i)
+        string.append(i)
     for j in macd:
-        string += str(j[0])
+        string.append(j[0])
     for k in sma:
-        string += str(k[0])
-    string += str(last_price)
+        string.append(k[0])
+    string.append(last_price)
     print (string)
     return bst.predict(xgb.DMatrix(string))
