@@ -85,7 +85,7 @@ class renko:
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
             self.renko_directions.append(0)
-            for n, p in tqdm(enumerate(self.source_prices[1:].values),total=len(self.source_prices[1:].values)):
+            for n, p in tqdm(enumerate(self.source_prices[1:].values),total=len(self.source_prices[1:].values), desc='build renko'):
                 # print(type(p),p)
                 self.__renko_rule(p, n)  # performs __renko_rule on each price tick
         return len(self.renko_prices)
