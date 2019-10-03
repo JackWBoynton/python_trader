@@ -3,7 +3,7 @@ python3
 renko brick calculation python implementation
 Jack Boynton 2019
 '''
-
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from math import floor
@@ -85,7 +85,7 @@ class renko:
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
             self.renko_directions.append(0)
-            for n, p in enumerate(self.source_prices[1:].values):
+            for n, p in tqdm(enumerate(self.source_prices[1:].values)):
                 # print(type(p),p)
                 self.__renko_rule(p, n)  # performs __renko_rule on each price tick
         return len(self.renko_prices)
@@ -280,6 +280,7 @@ class renko:
                     elif self.short:
                         side = 1
                     if len(self.renko_prices) > 10 and len(self.macd()) > 10:
+                        # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
                     threading.Thread(target=self.trade.buy_long, args=(
@@ -317,6 +318,7 @@ class renko:
                     elif self.short:
                         side = 1
                     if len(self.renko_prices) > 10 and len(self.macd()) > 10:
+                        # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
 
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
