@@ -14,4 +14,4 @@ def main(ys, macd, sma, last_price):
         string.append(k[0])
     string.append(last_price)
     #print (string)
-    return bst.predict(xgb.DMatrix(string))
+    return bst.predict(xgb.DMatrix(string))[0]
