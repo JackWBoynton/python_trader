@@ -292,16 +292,16 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-                    pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+
                     print('BUY at: ' + str(self.pricea),
-                          str(datetime.datetime.now()), 'slip: ' + str())
+                          str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 else:
                     if ind != 1:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
-                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
+                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
@@ -333,14 +333,14 @@ class renko:
                         self.profit = 0
                         self.ff = False
                     print('SELL at: ' + str(self.pricea),
-                          str(datetime.datetime.now()))
+                          str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 else:
                     if ind != 1:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
                     print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
-                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
+                          'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
