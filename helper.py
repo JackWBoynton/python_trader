@@ -22,7 +22,7 @@ def load_df(filename):
             data = pd.DataFrame(data.values[:n])
             break
     del data[1]
-    len_df = len_df - 1
+
     return data
 
 
