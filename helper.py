@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 from tqdm import tqdm
 from multiprocessing import Pool
-
+len_df = 0
 
 def load_df(filename):
     asset = 'XBTUSD'
@@ -59,7 +59,8 @@ def load_dfs_mult(asset, files):
     files.reverse()
     print('backtest dates: ' + frm + '-' + too)
     global len_df
-    len_df = len(files)
+    if len_df == 0:
+        len_df = len(files)
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=16) as pool:
             df_list = (pool.map(load_df, files))
