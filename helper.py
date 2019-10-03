@@ -9,7 +9,7 @@ def load_df(filename):
     global len_df
     assert len_df != 0
     tqdm.pandas(desc="load csvs #" + str(len_df))
-    len_df -= 1
+
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
                        3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x)
     # print(data)
@@ -22,6 +22,7 @@ def load_df(filename):
             data = pd.DataFrame(data.values[:n])
             break
     del data[1]
+    len_df = len_df - 1
     return data
 
 
