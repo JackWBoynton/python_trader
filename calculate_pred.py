@@ -9,9 +9,9 @@ def main(ys, macd, sma, last_price):
     for i in ys:
         string += str(i)
     for j in macd:
-        string += str(j)
+        string += str(j[0])
     for k in sma:
-        string += str(k)
+        string += str(k[0])
     string += str(last_price)
     print (string)
-    return bst.predict(string)
+    return bst.predict(xgb.DMatrix(string))
