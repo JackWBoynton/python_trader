@@ -6,9 +6,9 @@ from multiprocessing import Pool
 
 def load_df(filename):
     asset = 'XBTUSD'
-    tqdm.pandas()
+    tqdm.pandas(desc="load csvs")
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
-                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x)
+                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x**2)
     # print(data)
     for n, i in enumerate(data[1]):
         if i == asset:
@@ -57,7 +57,7 @@ def load_dfs_mult(asset, files):
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=16) as pool:
             df_list = (pool.map(load_df, files))
-            tqdm.pandas()
+            tqdm.pandas(desc="concat csvs")
             combined = pd.concat(df_list, ignore_index=True).progress_apply(lambda x: x) # apply dummy lambda fn to call tqdm.pandas()
             combined.to_csv(path_or_buf='../loaded' +
                             frm + too + '.csv', header=False)
