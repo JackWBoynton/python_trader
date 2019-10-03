@@ -26,16 +26,13 @@ class renko:
         self.source_prices = []
         self.renko_prices = []
         self.renko_directions = []
-        self.plot = plot
+        self.plot = plot # unused
         self.timestamps = []
         self.macdaa = []
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
-        if self.plot:
-            import matplotlib.pyplot as plt
-            import matplotlib.patches as patches
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
         if auto:
@@ -113,20 +110,6 @@ class renko:
         return self.renko_directions
 
     def plot_renko(self, col_up='g', col_down='r'):
-        if self.plot:
-            plt.ion()
-            self.fig, self.ax = plt.subplots(3)
-            self.fig.set_size_inches(18.5, 10.5)
-            self.ax[0].set_title('Renko chart')
-            self.ax[0].set_xlabel('Renko bars')
-            self.ax[0].set_ylabel('Price')
-            self.ax[1].set_title('Indicators')
-            self.ax[1].set_xlabel('Renko bars')
-            self.ax[1].set_ylabel('Price')
-            self.ax[2].set_title('Profit')
-            self.ax[2].set_xlabel('Renko bars')
-            self.ax[2].set_ylabel('Profit_btc')
-            plt.show()
         self.last_timestamp = datetime.datetime(
             year=2018, month=7, day=12, hour=7, minute=9, second=33)  # random day in the past to make sure all data gets loaded as backtest
         self.ys = []
@@ -157,19 +140,6 @@ class renko:
         self.lim_y_max = np.max(self.renko_prices) + 3.0 * self.brick_size
         self.lim_y_min = np.min(self.renko_prices) - 3.0 * self.brick_size
         self.first = True
-
-        if self.plot:
-            self.ax[0].set_xlim(0.0,
-                                len(self.renko_prices) + 1.0)
-            self.ax[0].set_ylim(np.min(self.renko_prices) - 3.0 * self.brick_size,
-                                np.max(self.renko_prices) + 3.0 * self.brick_size)
-            self.ax[1].set_xlim(0.0,
-                                len(self.renko_prices) + 1.0)
-            self.ax[1].set_ylim(-100, 100)
-            self.ax[2].set_xlim(0.0,
-                                len(self.renko_prices) + 1.0)
-            self.ax[2].set_ylim(-0.0005, 0.0005)
-            plt.show(block=False)
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
@@ -224,29 +194,8 @@ class renko:
             self.col = 'b'
         elif self.next_brick == 2:
             self.col = 'y'
-
         self.balances.append(self.profit)
-        if self.plot:
-            self.ax[0].add_patch(
-                patches.Rectangle(
-                    (self.x, self.y),   # (x,y)
-                    1.0,     # width
-                    self.brick_size,  # height
-                    facecolor=self.col
-                )
-            )
-            self.ax[1].plot(self.xs, self.macd())
-            self.ax[1].plot(self.xs, self.sma())
-            try:
-                self.ax[2].set_ylim(min(self.balances) * 2,
-                                    max(self.balances) * 2)
-            except:
-                pass
-            self.ax[2].plot(self.xs, self.balances)
         self.calc_indicator(i)  # calculates given indicator
-        if self.plot:
-            plt.draw()
-            plt.pause(0.0000001)
 
     def ma(self):
         # calculates simple moving averages on brick prices
