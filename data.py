@@ -13,5 +13,5 @@ def new_trade(past_bricks, price_open, price_close, side, macd_open, macd_close,
         profit = 0
 
     with open('data.csv', 'a') as f:
-        f.write(string + str(price_open) + ',' + str(price_close) + ',' + str(side) + ',' + str(macd_open) + ',' + str(macd_close) +
-                ',' + str(sma_open) + ',' + str(sma_close) + ',' + str(time_open) + ',' + str(time_close) + ',' + str(profit) + '\n')
+        f.write(string + str(price_open) + ',' + str(price_close) + ',' + str(side) + ',' + str(macd_open[0]) + ',' + str(macd_close[0]) +
+                ',' + str(sma_open[0]) + ',' + str(sma_close[0]) + ',' + str(time_open) + ',' + str(time_close) + ',' + str(profit) + '\n')
