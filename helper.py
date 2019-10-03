@@ -47,7 +47,6 @@ def load_dfs_mult(asset, files):
     for n, i in enumerate(files):
         if i.split('/')[1].split('.')[0] == '20190927':
             del files[n]
-    del files[0]
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
 
