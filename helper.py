@@ -7,7 +7,7 @@ len_df = 0
 def load_df(filename):
     asset = 'XBTUSD'
     global len_df
-    assert len_df != 0
+    len_df += 1
     tqdm.pandas(desc="load csvs #" + str(len_df))
 
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
@@ -58,9 +58,6 @@ def load_dfs_mult(asset, files):
 
     files.reverse()
     print('backtest dates: ' + frm + '-' + too)
-    global len_df
-    if len_df == 0:
-        len_df = len(files)
     if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
         with Pool(processes=16) as pool:
             df_list = (pool.map(load_df, files))
