@@ -3,7 +3,7 @@ import json
 
 def new_trade(past_bricks, price_open, price_close, side, macd_open, macd_close, sma_open, sma_close, time_open, time_close):
     string = ''
-    for i in past_bricks.values:
+    for i in past_bricks:
         string += str(i) + ','
     if side == 1 and price_close > price_open:
         profit = 1
