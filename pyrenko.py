@@ -48,7 +48,7 @@ class renko:
         try:
             gap_div = int(
                 float(last_price - self.renko_prices[-1]) / self.brick_size)
-        except:
+        except Exception:
             gap_div = 0
         is_new_brick = False
         start_brick = 0
