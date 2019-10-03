@@ -364,9 +364,9 @@ class renko:
                 if self.runs > 0:
                     self.close_long(self.pricea)
                     if self.long:
-                        side = 1
-                    elif self.short:
                         side = 0
+                    elif self.short:
+                        side = 1
                     if len(self.renko_prices) > 10:
                         new_trade(past_bricks=self.renko_prices[-10:], price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
 
