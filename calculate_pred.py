@@ -7,10 +7,11 @@ bst.load_model('../0001.model')  # load data
 def main(ys, macd, sma, last_price):
     string = ''
     for i in ys:
-        string += str(i[0])
+        string += str(i)
     for j in macd:
-        string += str(j[0])
+        string += str(j)
     for k in sma:
-        string += str(k[0])
+        string += str(k)
     string += str(last_price)
+    print (string)
     return bst.predict(string)
