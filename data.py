@@ -6,9 +6,9 @@ def new_trade(past_bricks, price_open, price_close, side, macd_open, macd_close,
     for i in past_bricks:
         string += str(i) + ','
     for j in macd_open:
-        string += str(j) + ','
+        string += str(j[0]) + ','
     for k in sma_open:
-        string += str(k) + ','
+        string += str(k[0]) + ','
 
     if side == 1 and price_close > price_open:
         profit = 1

@@ -48,7 +48,7 @@ def load_dfs_mult(asset, files):
     # multiprocessing version of load_dfs
     for n, i in enumerate(files):
         if i.split('/')[1].split('.')[0] == '20190927':
-            del files[n]
+            del files[n]  # remove wonky day's data
     frm = files[0].split('/')[1].split('.')[0]
     too = files[-1].split('/')[1].split('.')[0]
 
