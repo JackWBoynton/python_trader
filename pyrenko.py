@@ -9,6 +9,7 @@ import pandas as pd
 from math import floor
 import datetime
 import requests
+from data import new_trade
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 
@@ -326,7 +327,8 @@ class renko:
                 self.short = False
                 if self.runs > 0:
                     self.close_short(self.pricea)
-
+                    side = 1 if self.long else 0
+                    new_trade(past_bricks=self.renko_prices[-10:], price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd(), sma_open=self.sma_open, sma_close=self.sma(), time_open=self.act_timestamps[ind], time_close=datetime.datetime.now())
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
                     threading.Thread(target=self.trade.buy_long, args=(
                         "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
@@ -347,6 +349,8 @@ class renko:
                     print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                           'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)))
                 self.open = self.pricea
+                self.macd_open = self.macd()
+                self.sma_open = self.sma()
                 self.next_brick = 1
                 self.runs += 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
