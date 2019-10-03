@@ -8,7 +8,7 @@ def load_df(filename):
     asset = 'XBTUSD'
     tqdm.pandas(desc="load csvs")
     data = pd.read_csv(filename, header=None, low_memory=False, dtype={
-                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x**2)
+                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x)
     # print(data)
     for n, i in enumerate(data[1]):
         if i == asset:
