@@ -152,7 +152,7 @@ class renko:
         self.backtest = False
         self.bricks = 0
         self.source_prices = []
-        self.ys = [0]
+        #self.ys = [0]
         self.l = 1
         self.w = 1
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round((self.backtest_bal_usd/self.init)*100, 3)) + ' percent')
