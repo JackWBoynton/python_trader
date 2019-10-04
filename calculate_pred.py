@@ -1,3 +1,4 @@
+import pandas as pd
 import xgboost as xgb
 from sklearn.externals import joblib
 scaler_filename = "../scaler.save"
@@ -17,4 +18,4 @@ def main(ys, macd, sma, last_price):
         string.append(k[0])
     string.append(last_price)
     # print (string)
-    return bst.predict(xgb.DMatrix(scaler.transform(string)))[0]
+    return bst.predict(xgb.DMatrix(scaler.transform(pd.DataFrame(string))))[0]
