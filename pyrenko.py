@@ -301,7 +301,7 @@ class renko:
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)[0] > 0.2:
+                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea) > 0.2:
                             print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                                   'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                             self.long = True
@@ -346,7 +346,7 @@ class renko:
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)[0] > 0.2:
+                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea) > 0.2:
                             print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                                   'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                             self.short = True
