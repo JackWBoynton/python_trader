@@ -10,4 +10,4 @@ evallist = [(dtest, 'eval'), (dtrain, 'train')]
 
 num_round = 10
 bst = xgb.train(param, dtrain, num_round, evallist)
-bst.save_model('0001.model')
+bst.save_model('../0001.model')
