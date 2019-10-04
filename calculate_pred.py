@@ -16,6 +16,7 @@ def main(ys, macd, sma, last_price):
         string.append(j[0])
     for k in sma:
         string.append(k[0])
+    string.append(0)
     string.append(last_price)
     #print(string)
     string = pd.DataFrame(string)
