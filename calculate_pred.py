@@ -17,5 +17,6 @@ def main(ys, macd, sma, last_price):
     for k in sma:
         string.append(k[0])
     string.append(last_price)
-    # print (string)
-    return bst.predict(xgb.DMatrix(scaler.transform(pd.DataFrame(string))))[0]
+    print(string)
+    string = pd.DataFrame(string)
+    return bst.predict(xgb.DMatrix(scaler.transform(string)))[0]
