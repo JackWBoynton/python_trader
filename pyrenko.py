@@ -155,7 +155,7 @@ class renko:
         #self.ys = [0]
         self.l = 1
         self.w = 1
-        print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round((self.backtest_bal_usd/self.init)*100, 3)) + ' percent')
+        print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
         while True:
             # starts live trading
             self.check_for_new()
