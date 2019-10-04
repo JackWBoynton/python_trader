@@ -19,7 +19,7 @@ def main(ys, macd, sma, last_price):
     string.append(0)
     string.append(last_price)
     #print(string)
-    string = pd.DataFrame(string)
+    string = pd.DataFrame([string])
     print(string)
     string = scaler.transform(string)
     return bst.predict(xgb.DMatrix(string))[0]
