@@ -271,9 +271,8 @@ class renko:
         if 0 == 0: # can add more indicators by expanding if condition:
             self.pricea = self.y
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
-                self.long = True
-                self.short = False
-                if self.runs > 0:
+
+                if self.runs > 0 and self.short:
                     self.close_short(self.pricea)
                     if self.long:
                         side = 0
@@ -302,9 +301,11 @@ class renko:
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-
-                        print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
+                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)[0] > 0.2:
+                            print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                                   'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+                            self.long = True
+                            self.short = False
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
@@ -313,9 +314,8 @@ class renko:
                 self.next_brick = 1
                 self.runs += 1
             elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
-                self.short = True
-                self.long = False
-                if self.runs > 0:
+
+                if self.runs > 0 and self.long:
                     self.close_long(self.pricea)
                     if self.long:
                         side = 0
@@ -339,15 +339,18 @@ class renko:
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
                         print('SELL at: ' + str(self.pricea),
                               str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+
                 else:
                     if ind != 1:
                         sss = self.act_timestamps[ind]
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-
-                        print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
+                        if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)[0] > 0.2:
+                            print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.backtest_bal_usd),
                                   'fee: $' + str(round(((floor(self.backtest_bal_usd*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+                            self.short = True
+                            self.long = False
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
