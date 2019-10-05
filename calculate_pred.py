@@ -18,7 +18,7 @@ def main(ys, macd, sma, last_price):
         string.append(k[0])
     string.append(0)
     string.append(last_price)
-    #print(string)
+
     string = pd.DataFrame([string])
     string = scaler.transform(string)
     string = pd.DataFrame(string, columns=range(0, 32))
