@@ -2,9 +2,11 @@ import wget
 import datetime
 import glob
 import gzip
+import pandas as pd
 
 
 def download_new():
+    print('downloading new days data')
     date = datetime.date.today() - datetime.timedelta(days=1)
     if '../'+date.strftime("%Y%m%d")+'.csv' not in glob.glob('../2019*.csv'):
         wget.download(url="https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.csv.gz".format(date.strftime('%Y%m%d')), out='../')
@@ -14,6 +16,21 @@ def download_new():
         output = open("../"+date.strftime("%Y%m%d")+'.csv', 'wb')
         output.write(s)
         output.close()
+        ### Parse:
+        print('parsing')
+        asset = 'XBTUSD'
+        data = pd.read_csv("../"+date.strftime("%Y%m%d")+'.csv', header=None, low_memory=False, usecols=[0, 1, 3], dtype={0: str, 1: str, 3: float}, skiprows=2)
+        for n, j in enumerate(data[1]):
+            if j == asset:
+                data = pd.DataFrame(data.values[n:])
+                break
+        for n, k in enumerate(data[1]):
+            if k != asset:
+                data = pd.DataFrame(data.values[:n])
+                break
+        del data[1]
+        data.to_csv("../"+date.strftime("%Y%m%d")+'.csv')
+        print('done')
         return 1
     else:
         return 0
