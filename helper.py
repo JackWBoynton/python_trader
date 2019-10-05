@@ -62,7 +62,7 @@ def load_dfs_mult(asset, files, location):
         with Pool(processes=8) as pool:
             df_list = (pool.starmap(load_df, enumerate(files)))
             tqdm.pandas(desc="concat csvs")
-            combined = pd.concat(df_list, ignore_index=True).progress_apply(lambda x: x) # apply dummy lambda fn to call tqdm.pandas()
+            combined = pd.concat(df_list, ignore_index=True).progress_apply(lambda x: x)  # apply dummy lambda fn to call tqdm.pandas()
             combined.to_csv(path_or_buf=location+'loaded' +
                             frm + too + '.csv', header=False)
     else:
