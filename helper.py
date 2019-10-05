@@ -46,13 +46,13 @@ def load_dfs_mult(asset, files, location):
         if location == '../':
             if i.split('/')[1].split('.')[0] == '20190927':
                 del files[n]  # remove wonky day's data
-                frm = files[0].split('/')[1].split('.')[0]
-                too = files[-1].split('/')[1].split('.')[0]
+            frm = files[0].split('/')[1].split('.')[0]
+            too = files[-1].split('/')[1].split('.')[0]
         else:
             if i.split('.')[0] == '20190927':
                 del files[n]
-                frm = files[0].split('.')[0]
-                too = files[-1].split('.')[0]
+            frm = files[0].split('.')[0]
+            too = files[-1].split('.')[0]
 
     files.reverse()
     print('backtest dates: ' + frm + '-' + too)
