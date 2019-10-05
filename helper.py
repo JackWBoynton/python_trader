@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 from tqdm import tqdm
 from multiprocessing import Pool
+from new_data import download_new
 len_df = 0
 files_ = []
 
@@ -39,6 +40,7 @@ def load_dfs(asset, files):
 
 
 def load_dfs_mult(asset, files):
+    download_new()
     # multiprocessing version of load_dfs
     for n, i in enumerate(files):
         if i.split('/')[1].split('.')[0] == '20190927':
