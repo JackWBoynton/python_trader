@@ -6,9 +6,10 @@ import pandas as pd
 
 
 def download_new():
-    print('downloading new days data')
+
     date = datetime.date.today() - datetime.timedelta(days=1)
     if '../'+date.strftime("%Y%m%d")+'.csv' not in glob.glob('../2019*.csv'):
+        print('downloading new days data')
         wget.download(url="https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.csv.gz".format(date.strftime('%Y%m%d')), out='../')
         input = gzip.GzipFile("../"+date.strftime("%Y%m%d")+'.csv.gz', 'rb')
         s = input.read()
@@ -33,6 +34,7 @@ def download_new():
         print('done')
         return 1
     else:
+        print('have all data')
         return 0
 
 
