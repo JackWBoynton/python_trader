@@ -1,6 +1,6 @@
 import pandas as pd
 import xgboost as xgb
-from sklearn.externals import joblib
+import joblib
 scaler_filename = "../scaler.save"
 scaler = joblib.load(scaler_filename)
 
