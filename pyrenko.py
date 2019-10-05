@@ -14,6 +14,7 @@ from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 from calculate_pred import main as pred
 
+
 class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
 
@@ -26,7 +27,7 @@ class renko:
         self.source_prices = []
         self.renko_prices = []
         self.renko_directions = []
-        self.plot = plot # unused
+        self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
         self.smaa = []
@@ -85,9 +86,12 @@ class renko:
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
             self.renko_directions.append(0)
-            for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):
+            '''
+            for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
                 # print(type(p),p)
                 self.__renko_rule(p, n)  # performs __renko_rule on each price tick
+            '''
+            map(lambda x: self.__renko_rule(x[0], x[1]), enumerate(self.source_prices[1:].values))
         return len(self.renko_prices)
 
     def do_next(self, last_price):
@@ -152,7 +156,7 @@ class renko:
         self.backtest = False
         self.bricks = 0
         self.source_prices = []
-        #self.ys = [0]
+        # self.ys = [0]
         self.l = 1
         self.w = 1
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
