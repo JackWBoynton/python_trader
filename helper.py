@@ -7,24 +7,12 @@ files_ = []
 
 
 def load_df(ind, filename):
-    asset = 'XBTUSD'
     global len_df
     len_df += 1
     tqdm.pandas(desc="load csvs #" + str(ind) + ' ' + str(files_[ind]))
 
     data = pd.read_csv(filename, header=None, low_memory=True, dtype={0: str, 1: str,
-                       3: float}, usecols=[0, 1, 3], skiprows=2, na_values=0).progress_apply(lambda x: x)
-    # print(data)
-    for n, i in enumerate(data[1]):
-        if i == asset:
-            data = pd.DataFrame(data.values[n:])
-            break
-    for n, j in enumerate(data[1]):
-        if j != asset:
-            data = pd.DataFrame(data.values[:n])
-            break
-    del data[1]
-
+                       3: float}, na_values=0).progress_apply(lambda x: x)
     return data
 
 
