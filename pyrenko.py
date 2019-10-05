@@ -46,7 +46,7 @@ class renko:
     def __renko_rule(self, last_price, ind):
         # determines if should plot new bricks
         # returns number of new bricks to plot
-        print(last_price,ind)
+        #print(last_price,ind)
         try:
             gap_div = int(
                 float(last_price - self.renko_prices[-1]) / self.brick_size)
@@ -87,7 +87,7 @@ class renko:
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[0].values[-1])
             self.renko_directions.append(0)
-            
+
             for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
                 # print(type(p),p)
                 self.__renko_rule(p, n)  # performs __renko_rule on each price tick
