@@ -91,7 +91,7 @@ class renko:
                 # print(type(p),p)
                 self.__renko_rule(p, n)  # performs __renko_rule on each price tick
             '''
-            map(lambda x: self.__renko_rule(x[0], x[1]), enumerate(self.source_prices[1:].values))
+            map(lambda x: self.__renko_rule(x[1], x[0]), enumerate(self.source_prices[1:].values))
         return len(self.renko_prices)
 
     def do_next(self, last_price):
