@@ -43,24 +43,30 @@ def load_dfs_mult(asset, files, location):
     download_new(location)
     # multiprocessing version of load_dfs
     for n, i in enumerate(files):
-        if i.split('/')[1].split('.')[0] == '20190927':
-            del files[n]  # remove wonky day's data
-    frm = files[0].split('/')[1].split('.')[0]
-    too = files[-1].split('/')[1].split('.')[0]
+        if location == '../':
+            if i.split('/')[1].split('.')[0] == '20190927':
+                del files[n]  # remove wonky day's data
+                frm = files[0].split('/')[1].split('.')[0]
+                too = files[-1].split('/')[1].split('.')[0]
+        else:
+            if i.split('.')[0] == '20190927':
+                del files[n]
+                frm = files[0].split('.')[0]
+                too = files[-1].split('.')[0]
 
     files.reverse()
     print('backtest dates: ' + frm + '-' + too)
     global files_
     files_ = files
-    if 1 == 1 or not glob.glob('../loaded' + frm + too + '.csv'):
+    if 1 == 1 or not glob.glob(location+'loaded' + frm + too + '.csv'):
         with Pool(processes=8) as pool:
             df_list = (pool.starmap(load_df, enumerate(files)))
             tqdm.pandas(desc="concat csvs")
             combined = pd.concat(df_list, ignore_index=True).progress_apply(lambda x: x) # apply dummy lambda fn to call tqdm.pandas()
-            combined.to_csv(path_or_buf='../loaded' +
+            combined.to_csv(path_or_buf=location+'loaded' +
                             frm + too + '.csv', header=False)
     else:
-        combined = pd.read_csv('../loaded' + frm + too + '.csv', header=None,
+        combined = pd.read_csv(location+'loaded' + frm + too + '.csv', header=None,
                                low_memory=False, dtype={1: float}, usecols=[0, 1], skiprows=2, na_values=0)
     print('loaded ' + str(combined.shape[0]) + ' ticks of data')
     return combined
