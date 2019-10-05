@@ -46,6 +46,7 @@ class renko:
     def __renko_rule(self, last_price, ind):
         # determines if should plot new bricks
         # returns number of new bricks to plot
+        print(last_price,ind)
         try:
             gap_div = int(
                 float(last_price - self.renko_prices[-1]) / self.brick_size)
