@@ -1,10 +1,5 @@
 import json
 
-
-<<<<<<< HEAD
-def new_trade(past_bricks,):
-    
-=======
 def new_trade(past_bricks, price_open, price_close, side, macd_open, macd_close, sma_open, sma_close, time_open, time_close):
     string = ''
     for i in past_bricks:
@@ -28,4 +23,3 @@ def new_trade(past_bricks, price_open, price_close, side, macd_open, macd_close,
     with open('data-clean.csv', 'a') as f:
         # STRING: past_bricks(10),macd_open(10),sma_open(10),price_open,profitable?
         f.write(str(profit) + ',' + string + ',' + str(price_open) + '\n')
->>>>>>> new
