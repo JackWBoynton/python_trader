@@ -119,10 +119,6 @@ class renko:
         return self.renko_directions
 
     def plot_renko(self, col_up='g', col_down='r'):
-<<<<<<< HEAD
-
-=======
->>>>>>> new
         self.last_timestamp = datetime.datetime(
             year=2018, month=7, day=12, hour=7, minute=9, second=33)  # random day in the past to make sure all data gets loaded as backtest
         self.ys = []
@@ -147,10 +143,7 @@ class renko:
         self.profit = 0
 
         self.first = True
-<<<<<<< HEAD
 
-=======
->>>>>>> new
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
