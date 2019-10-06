@@ -187,7 +187,7 @@ class BitmexTrader():
                 pass
 
             if order[0]['ordStatus'] == 'Filled':
-                self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+                self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']) + ' risk: ' + str(round(risk, 6)))
                 self.long = True
                 self.trade_template['signal_price'] = pric
                 self.trade_template['fill_price'] = float(order[0]['price'])
@@ -300,7 +300,7 @@ class BitmexTrader():
                 #print('placed sl at: ' + str(floor((price + (price *self.stop_loss / self.leverage)) * 0.5) / 0.5))
                 pass
             if order[0]['ordStatus'] == 'Filled':
-                self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']))
+                self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']) + ' risk: ' + str(round(risk, 6)))
                 self.short = True
                 self.trade_template['signal_price'] = pric
                 self.trade_template['fill_price'] = float(order[0]['price'])
