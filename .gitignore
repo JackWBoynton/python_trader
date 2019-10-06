@@ -1,4 +1,8 @@
 *.ini
 *.pyc
+<<<<<<< HEAD
 __pycache*
+=======
+__pychache*
+>>>>>>> new
 *.csv
