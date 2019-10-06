@@ -197,9 +197,8 @@ class BitmexTrader():
                 self.trade_template['timestamp'] = str(order[0]['timestamp'])
                 self.db()
 
-
     def sell_short(self, ex, pair, ind, pric, risk):
-        print (str(pric) + '\n')
+        print(str(pric) + '\n')
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()

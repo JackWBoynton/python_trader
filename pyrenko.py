@@ -37,7 +37,7 @@ class renko:
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
-        self.use_ml = False
+        self.use_ml = True
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
         if auto:
@@ -165,7 +165,7 @@ class renko:
         # self.ys = [0]
         self.l = 1
         self.w = 1
-        print(self.returns)
+        #print(self.returns)
         #self.returns = map(lambda x: x*100, self.returns)
         sr = pd.DataFrame(self.returns[2:]).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
