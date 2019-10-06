@@ -13,6 +13,7 @@ from data import new_trade
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 from calculate_pred import main as pred
+import statistics
 
 
 class renko:
@@ -25,6 +26,7 @@ class renko:
         self.slow = int(slow)
         self.signal_l = int(signal_l)
         self.source_prices = []
+        self.trades_ = []
         self.renko_prices = []
         self.renko_directions = []
         self.plot = plot  # unused
@@ -244,6 +246,7 @@ class renko:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
             per = 0
+        self.trades_.append(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage - (1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee))
         print('trade: BTC ' + str(round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage - (1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
@@ -268,6 +271,7 @@ class renko:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
             per = 0
+        self.trades_.append(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage - (1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee))
         print('trade: BTC ' + str(round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage - (1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
@@ -293,7 +297,7 @@ class renko:
                                          "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
-                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
                         self.backtest_bal_usd = self.init
                         self.profit = 0
