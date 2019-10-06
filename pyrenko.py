@@ -311,8 +311,8 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-
-                    print('BUY at: ' + str(self.pricea),
+                    act_price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
+                    print('BUY at: ' + str(self.pricea), ' act: ' + str(act_price),
                           str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 else:
                     if ind != 1:
@@ -358,9 +358,9 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-                    if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        print('SELL at: ' + str(self.pricea),
-                              str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+                    act_price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
+                    print('SELL at: ' + str(self.pricea), 'act: ' + str(act_price),
+                          str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
 
                 else:
                     if ind != 1:
