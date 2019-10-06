@@ -249,15 +249,16 @@ class renko:
         self.profit += net
         fee = round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
-        self.backtest_bal_usd += round((net - fee)[0], 8)
-        ret = round((net - fee)[0], 8)/self.risk
+        print(type(net-fee))
+        self.backtest_bal_usd += round((net - fee), 8)
+        ret = round((net - fee), 8)/self.risk
         self.returns.append(ret)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
             per = 0
-        self.trades_.append(round((net-fee)[0], 8))
-        print('trade: BTC ' + str(round((net - fee)[0], 8)), 'net BTC: ' + str(round(self.profit, 8)),
+        self.trades_.append(round((net-fee), 8))
+        print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
         if price < self.open:
             self.w += 1
@@ -274,15 +275,16 @@ class renko:
         self.profit += net
         fee = round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
-        self.backtest_bal_usd += round((net - fee)[0], 8)
-        ret = round((net - fee)[0], 8)/self.risk
+        print(type(net-fee))
+        self.backtest_bal_usd += round((net - fee), 8)
+        ret = round((net - fee), 8)/self.risk
         self.returns.append(ret)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
             per = 0
-        self.trades_.append(round(net - fee)[0], 8)
-        print('trade: BTC ' + str(round((net - fee)[0], 8)), 'net BTC: ' + str(round(self.profit, 8)),
+        self.trades_.append(round(net - fee), 8)
+        print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
