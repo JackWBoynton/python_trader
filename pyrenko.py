@@ -37,6 +37,7 @@ class renko:
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
+        self.use_ml = False
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
         if auto:
@@ -323,7 +324,10 @@ class renko:
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                        if self.use_ml:
+                            predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                        else:
+                            predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
                               'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
@@ -369,7 +373,10 @@ class renko:
                     else:
                         sss = 'undef'
                     if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                        if self.use_ml:
+                            predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                        else:
+                            predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
                               'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
