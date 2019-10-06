@@ -26,6 +26,7 @@ class renko:
         self.slow = int(slow)
         self.signal_l = int(signal_l)
         self.source_prices = []
+        self.returns = []
         self.trades_ = []
         self.renko_prices = []
         self.renko_directions = []
@@ -158,6 +159,7 @@ class renko:
         self.last = self.renko_prices[-1]
         self.backtest = False
         self.bricks = 0
+
         self.source_prices = []
         # self.ys = [0]
         self.l = 1
@@ -244,6 +246,8 @@ class renko:
             floor(self.risk*self.open)*self.leverage * self.backtest_fee
         self.backtest_bal_usd += ((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open) - (
             1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee)
+        ret = (((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage) - (1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee)/self.risk
+        self.returns.append(ret)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
@@ -269,6 +273,8 @@ class renko:
         self.profit -= fee_btc
         self.backtest_bal_usd += ((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage - (
             1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee)
+        ret = (((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage) - fee_btc)/self.risk
+        self.returns.append(ret)
         try:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
