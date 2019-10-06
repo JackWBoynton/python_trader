@@ -305,9 +305,8 @@ class renko:
                         # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
-                    if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea) > 0.75:
-                        threading.Thread(target=self.trade.buy_long, args=(
-                                         "BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
+                    predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                    threading.Thread(target=self.trade.buy_long, args=("BITMEX", "XBT-USD", self.pricea, self.pricea, predi, )).start()
                     if self.ff:
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
@@ -353,9 +352,8 @@ class renko:
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
 
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
-                    if pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea) > 0.75:
-                        threading.Thread(target=self.trade.sell_short,
-                                         args=("BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
+                    predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
+                    threading.Thread(target=self.trade.sell_short, args=("BITMEX", "XBT-USD", self.pricea, self.pricea, predi, )).start()
                     if self.ff:
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))

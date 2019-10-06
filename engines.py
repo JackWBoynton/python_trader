@@ -100,7 +100,7 @@ class BitmexTrader():
 
         self.trade_template = {'signal_price':0.0, 'fill_price':0.0, 'quantity':0.0, 'leverage':1, 'side':'', 'timestamp':''}
 
-    def buy_long(self, ex, pair, ind, pric):
+    def buy_long(self, ex, pair, ind, pric, risk):
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='BUY:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
@@ -133,7 +133,7 @@ class BitmexTrader():
 
             bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
             price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
-            order_q = floor(bal * self.leverage * price) - 10
+            order_q = floor(bal * risk * self.leverage * price) - 10
 
             try:
                 if self.ord_type == 'Limit':
@@ -198,7 +198,7 @@ class BitmexTrader():
                 self.db()
 
 
-    def sell_short(self, ex, pair, ind, pric):
+    def sell_short(self, ex, pair, ind, pric, risk):
         print (str(pric) + '\n')
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
@@ -253,15 +253,15 @@ class BitmexTrader():
             '''
             try:
                 if self.ord_type == 'Limit':
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric+3, timeInForce=self.type).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10, price=pric+3, timeInForce=self.type).result()
                     time.sleep(5)
                     runs = 1
                     while order[0]['ordStatus'] != 'Filled':
-                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10, price=pric-(runs*0.5), timeInForce=self.type).result()
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10, price=pric-(runs*0.5), timeInForce=self.type).result()
                         runs += 1
                         time.sleep(5)
                 else:
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 10).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10).result()
             except HTTPServiceUnavailable as e:
                 print(str(e) + ' retrying...')
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(e) + ' retrying...')
@@ -270,12 +270,12 @@ class BitmexTrader():
                     time.sleep(0.6)
                     try:
                         bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
-                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 15).result()
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 15).result()
                     except HTTPServiceUnavailable:
-                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * self.leverage * price) + 15).result()
+                        order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 15).result()
                     ord = order[0]['ordStatus']
             except HTTPBadRequest as r:
-                print('short: ' + str(-floor(bal * self.leverage * price) + 15))
+                print('short: ' + str(-floor(bal * risk * self.leverage * price) + 15))
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
                 self.slips.append(float(abs(ind-float(order[0]['price']))/0.5))
