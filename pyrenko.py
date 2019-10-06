@@ -164,7 +164,8 @@ class renko:
         # self.ys = [0]
         self.l = 1
         self.w = 1
-        self.returns = map(lambda x: x*100, self.returns)
+        print(self.returns)
+        #self.returns = map(lambda x: x*100, self.returns)
         sr = pd.DataFrame(self.returns).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
         srb = sra.mean()/sra.std() * np.sqrt(252)
