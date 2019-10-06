@@ -37,10 +37,7 @@ class renko:
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
-<<<<<<< HEAD
-=======
         self.use_ml = True
->>>>>>> new
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
         if auto:
@@ -122,10 +119,6 @@ class renko:
         return self.renko_directions
 
     def plot_renko(self, col_up='g', col_down='r'):
-<<<<<<< HEAD
-
-=======
->>>>>>> new
         self.last_timestamp = datetime.datetime(
             year=2018, month=7, day=12, hour=7, minute=9, second=33)  # random day in the past to make sure all data gets loaded as backtest
         self.ys = []
@@ -150,10 +143,7 @@ class renko:
         self.profit = 0
 
         self.first = True
-<<<<<<< HEAD
 
-=======
->>>>>>> new
         for i in range(1, len(self.renko_prices)):
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
@@ -162,7 +152,7 @@ class renko:
             self.last = self.renko_prices[-1]
             self.aaa = self.last
             self.animate(i)
-            
+
         self.last = self.renko_prices[-1]
         self.backtest = False
         self.bricks = 0
@@ -321,8 +311,8 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-
-                    print('BUY at: ' + str(self.pricea),
+                    act_price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
+                    print('BUY at: ' + str(self.pricea), ' act: ' + str(act_price),
                           str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
                 else:
                     if ind != 1:
@@ -368,9 +358,9 @@ class renko:
                         self.backtest_bal_usd = self.init
                         self.profit = 0
                         self.ff = False
-                    if len(self.macd()) > 10 and len(self.sma()) > 10 and len(self.ys) > 10:
-                        print('SELL at: ' + str(self.pricea),
-                              str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
+                    act_price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
+                    print('SELL at: ' + str(self.pricea), 'act: ' + str(act_price),
+                          str(datetime.datetime.now()), 'pred: ' + str(pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)))
 
                 else:
                     if ind != 1:
