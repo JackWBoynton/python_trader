@@ -342,7 +342,7 @@ class renko:
                                          args=("BITMEX", "XBT-USD", self.pricea, self.pricea, )).start()
                     if self.ff:
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
-                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade')
+                              ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
                         self.backtest_bal_usd = self.init
                         self.profit = 0
