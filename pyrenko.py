@@ -247,7 +247,8 @@ class renko:
         # calculates profit on close of short trade
         net = round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage), 8)
         self.profit += net
-        fee = round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
+        fee = round(((self.pricea) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
+        fee += round(((self.open) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
         print(type(net-fee))
         self.backtest_bal_usd += round((net - fee), 8)
@@ -273,7 +274,8 @@ class renko:
             self.l += 1
         net = round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage), 8)
         self.profit += net
-        fee = round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
+        fee = round(((self.pricea) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
+        fee += round(((self.open) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
         print(type(net-fee))
         self.backtest_bal_usd += round((net - fee), 8)
