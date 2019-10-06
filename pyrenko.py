@@ -131,7 +131,7 @@ class renko:
         self.lim_y_max = 0
         self.next_brick = 0
         self.backtest = True
-        self.backtest_bal_usd = 0.005
+        self.backtest_bal_usd = 0.0028655
         self.init = self.backtest_bal_usd
         self.backtest_fee = 0.00075  # 0.11%
         self.backtest_slippage = 12 * 0.5  # ticks*tick_size=$slip
