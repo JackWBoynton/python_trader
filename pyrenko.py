@@ -163,6 +163,8 @@ class renko:
         self.l = 1
         self.w = 1
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
+        print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
+              ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
         while True:
             # starts live trading
             self.check_for_new()
