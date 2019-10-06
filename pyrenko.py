@@ -283,7 +283,7 @@ class renko:
             per = ((self.w + self.l) - self.l) / (self.w + self.l)
         except Exception:
             per = 0
-        self.trades_.append(round(net - fee), 8)
+        self.trades_.append(round((net - fee), 8))
         print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
