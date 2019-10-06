@@ -166,11 +166,11 @@ class renko:
         self.w = 1
         print(self.returns)
         #self.returns = map(lambda x: x*100, self.returns)
-        sr = pd.DataFrame(self.returns).cumsum()
+        sr = pd.DataFrame(self.returns[2:]).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
         srb = sra.mean()/sra.std() * np.sqrt(252)
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
-        print('net backtest profit: BTC ' + str(self.backtest_bal_usd), 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)), 'SR: ' + str(srb))
+        print('net backtest profit: BTC ' + str(self.backtest_bal_usd), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
         while True:
             # starts live trading
             self.check_for_new()
