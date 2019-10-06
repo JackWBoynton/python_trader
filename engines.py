@@ -13,7 +13,6 @@ import robin_stocks as r
 from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest
 import alpaca_trade_api as tradeapi
 import configparser
-import numpy as np
 import pymysql
 Config = configparser.ConfigParser()
 Config.read("config.ini")  # load api_keys
