@@ -282,7 +282,7 @@ class renko:
         except Exception:
             per = 0
         self.trades_.append(net - fee)
-        print('trade: BTC ' + str(round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage - (1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage * self.backtest_fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
+        print('trade: BTC ' + str(round(net - fee, 8)), 'net BTC: ' + str(round(self.profit, 8)),
               'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
