@@ -26,6 +26,7 @@ for i in range(args.days):  # gets all date csv files in home directory
                                                   datetime.timedelta(days=i), "%Y%m%d") + '.csv')
 
 print('starting to load csv backtest data... days: ' + str(args.days))
+
 data = pd.DataFrame(helper.load_dfs_mult('XBTUSD', files=sta, location='../'))  # uses multiprocessing to parse huge csv datafiles
 print('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=False, fast=int(args.fast[0]), slow=int(
