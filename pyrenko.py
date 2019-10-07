@@ -20,7 +20,7 @@ class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
 
         self.trade = BitmexTrader(
-            trade=True, leverage=10, tp=0.5, test=to_trade)
+            trade=to_trade, leverage=10, tp=0.5, test=False)
         self.j_backtest = j_backtest
         self.fast = int(fast)
         self.slow = int(slow)
