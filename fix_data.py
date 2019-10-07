@@ -8,6 +8,7 @@ import os
 
 def fix_absolute(filename, location='../'):
     if filename not in glob.glob(location+'2019*.csv'):
+        print('fixing...')
         print('downloading new data for: ' + str(filename))
         wget.download(url="https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.gz".format(filename), out=location)
         input = gzip.GzipFile(filename+'.gz', 'rb')
