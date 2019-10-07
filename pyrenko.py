@@ -39,7 +39,7 @@ class renko:
         self.strategy = strategy
         self.use_ml = True
 
-    def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
+    def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
             self.brick_size = self.__get_optimal_brick_size(
                 HLC_history.iloc[:, [0, 1, 2]])
@@ -183,7 +183,8 @@ class renko:
                 print(str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(
                     self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
-                    key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
+                    key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%f')
+                self.bid = float(key['bidPrice'])
 
     def add_to_plot(self, price, bricks):
         self.aaa = self.last
@@ -288,7 +289,7 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         if 0 == 0: # can add more indicators by expanding if condition:
-            self.pricea = self.y
+            self.pricea = self.bid
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False

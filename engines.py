@@ -125,7 +125,7 @@ class BitmexTrader():
                 self.db()
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
-                self.client.chat_postMessage(channel=self.channel_trades, text='closed short at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
+                self.client.chat_postMessage(channel=self.channel_trades, text='closed short at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * self.last_risk * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
                 self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             except:
                 pass
@@ -186,6 +186,7 @@ class BitmexTrader():
                 pass
 
             if order[0]['ordStatus'] == 'Filled':
+                self.last_risk = risk
                 self.client.chat_postMessage(channel=self.channel_trades, text='bought: ' + str(round(float(order[0]['orderQty']) / self.leverage, 3)) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']) + ' risk: ' + str(round(risk, 6)))
                 self.long = True
                 self.trade_template['signal_price'] = pric
@@ -232,7 +233,7 @@ class BitmexTrader():
                 self.db()
             new_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             try:
-                self.client.chat_postMessage(channel=self.channel_trades, text='closed long at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
+                self.client.chat_postMessage(channel=self.channel_trades, text='closed long at ' + str(close[0]['price']) + '. profit: $' + str(round((new_bal - self.last_bal) * self.last_risk * float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price']), 3)))
                 self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
             except:
                 pass
@@ -299,6 +300,7 @@ class BitmexTrader():
                 #print('placed sl at: ' + str(floor((price + (price *self.stop_loss / self.leverage)) * 0.5) / 0.5))
                 pass
             if order[0]['ordStatus'] == 'Filled':
+                self.last_risk = risk
                 self.client.chat_postMessage(channel=self.channel_trades, text='shorted: ' + str(round(float(-order[0]['orderQty']), 3) / self.leverage) + ' XBT with ' + str(self.leverage) + ' X leverage at $' + str(order[0]['price']) + ' risk: ' + str(round(risk, 6)))
                 self.short = True
                 self.trade_template['signal_price'] = pric
