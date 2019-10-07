@@ -293,7 +293,7 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         if 0 == 0: # can add more indicators by expanding if condition:
-            self.pricea = self.y
+            self.pricea = self.last
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
