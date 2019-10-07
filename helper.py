@@ -11,9 +11,11 @@ def load_df(ind, filename):
     global len_df
     len_df += 1
     tqdm.pandas(desc="load csvs #" + str(ind) + ' ' + str(files_[ind]))
-
-    data = pd.read_csv(filename, header=None, low_memory=True, dtype={0: str, 1: str,
-                       3: float}, skiprows=2, na_values=0).progress_apply(lambda x: x)
+    try:
+        data = pd.read_csv(filename, header=None, low_memory=True, dtype={0: str, 1: str,
+                           3: float}, skiprows=2, na_values=0).progress_apply(lambda x: x)
+    except Exception as e:
+        print(e)
     return data
 
 
