@@ -16,7 +16,7 @@ parser.add_argument('-r', '--tr', type=str)
 parser.add_argument('-b', '--brick_size', type=int)
 parser.add_argument('-d', '--days', type=int)
 args = parser.parse_args()
-
+print(args.trade)
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(
     args.fast[1]), 'signal length: {}'.format(args.fast[2]))
 time = datetime.date.today() - datetime.timedelta(days=1)
