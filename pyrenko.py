@@ -39,7 +39,7 @@ class renko:
         self.strategy = strategy
         self.use_ml = True
 
-    def set_brick_size(self, HLC_history=None, auto=True, brick_size=10.0):
+    def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
             self.brick_size = self.__get_optimal_brick_size(
                 HLC_history.iloc[:, [0, 1, 2]])
