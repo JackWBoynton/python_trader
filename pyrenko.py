@@ -193,11 +193,14 @@ class renko:
         self.aaa = self.last
         self.bricks = bricks
         self.prices.append(self.last)
-        for i in range(1, bricks + 1):
+        if bricks >= 1:
+            bricks += 1
+        for i in range(1, bricks):
             self.x = self.x + i
-            self.y = self.renko_prices[-(bricks + 2) - i] - self.brick_size if self.renko_directions[-(
-                bricks + 2) - i] == 1 else self.renko_prices[-(bricks + 2) - i]
-            self.last = self.renko_prices[-(bricks + 2) - i]
+            print()
+            self.y = self.renko_prices[(-bricks + i) - 1] - self.brick_size if self.renko_directions[(
+                -bricks + i) - 1] == 1 else self.renko_prices[(-bricks + i) - 1]
+            self.last = self.renko_prices[(-bricks + i) - 1]
             self.aaa = self.last
             self.animate(1)
         self.last = self.renko_prices[-1]
@@ -215,8 +218,8 @@ class renko:
 
     def ma(self):
         # calculates simple moving averages on brick prices
-        fast_ma = pd.DataFrame(self.renko_prices).rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.renko_prices).rolling(window=self.slow).mean()
+        fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
+        slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
