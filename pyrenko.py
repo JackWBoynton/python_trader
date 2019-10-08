@@ -183,9 +183,10 @@ class renko:
 
                 act_price = 0
                 print(str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(
-                    self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks) + ' y: ' + str(self.y) + ' act: ' + str(act_price), end="\r")
+                    self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks) + ' y: ' + str(self.renko_prices[-1]) + ' act: ' + str(act_price), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
+
                 #self.bid = float(key['bidPrice'])
 
     def add_to_plot(self, price, bricks):
@@ -214,8 +215,8 @@ class renko:
 
     def ma(self):
         # calculates simple moving averages on brick prices
-        fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
+        fast_ma = pd.DataFrame(self.renko_prices).rolling(window=self.fast).mean()
+        slow_ma = pd.DataFrame(self.renko_prices).rolling(window=self.slow).mean()
         return fast_ma.values, slow_ma.values
 
     def macd(self):
@@ -249,7 +250,6 @@ class renko:
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
-        print(type(net-fee))
         self.backtest_bal_usd += round((net - fee), 8)
         ret = round((net - fee), 8)/self.risk
         self.returns.append(ret)
