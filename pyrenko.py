@@ -17,10 +17,10 @@ import statistics
 
 
 class renko:
-    def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy):
+    def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy, ordtype):
 
         self.trade = BitmexTrader(
-            trade=to_trade, leverage=10, tp=0.5, test=False)
+            trade=to_trade, leverage=10, tp=0.5, test=False, ord_type=ordtype)
         self.j_backtest = j_backtest
         self.fast = int(fast)
         self.slow = int(slow)
@@ -279,7 +279,7 @@ class renko:
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
-        print(type(net-fee))
+        #print(type(net-fee))
         self.backtest_bal_usd += round((net - fee), 8)
         ret = round((net - fee), 8)/self.risk
         self.returns.append(ret)
