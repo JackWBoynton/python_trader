@@ -26,7 +26,7 @@ else:
 args.trade = bool(args.trade)
 print(args.trade)
 print('fast ma length: {}'.format(args.fast[0]), 'slow ma length: {}'.format(
-    args.fast[1]), 'signal length: {}'.format(args.fast[2]))
+    args.fast[1]), 'signal length: {}'.format(args.fast[2]), 'ord_type: ' + str(args.order_type))
 time = datetime.date.today() - datetime.timedelta(days=1)
 sta = []
 for i in range(args.days):  # gets all date csv files in home directory
