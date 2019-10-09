@@ -46,7 +46,7 @@ class AlpacaTrader():
 
 class BitmexTrader():
 
-    def __init__(self, trade, leverage, tp, test):
+    def __init__(self, trade, leverage, tp, test, ord_type):
         self.bitmex_api_key = Config.get('Bitmex', 'api_key')
         self.bitmex_api_secret = Config.get('Bitmex', 'api_secret')
         self.bitmex_api_key_t = Config.get('Bitmex-Testnet', 'api_key')
@@ -55,7 +55,7 @@ class BitmexTrader():
         self.trade = trade
         self.long = False
         self.type = 'ImmediateOrCancel'
-        self.ord_type = 'Market'
+        self.ord_type = ord_type
         self.short = False
         print('sending trades? ' + str(self.trade))
         self.leverage = leverage
