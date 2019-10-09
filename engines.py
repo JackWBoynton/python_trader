@@ -55,7 +55,7 @@ class BitmexTrader():
         self.slack_api = Config.get("Slack", 'api_key')
         self.trade = trade
         self.long = False
-        self.type = 'ImmediateOrCancel'
+        self.type = 'GoodTillCancel'
         self.ord_type = ord_type
         self.short = False
         print('sending trades? ' + str(self.trade))
@@ -110,6 +110,7 @@ class BitmexTrader():
                     time.sleep(1)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
+                        self.auth_client_bitmex.Order.Order_cancelAll().result()
                         close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce=self.type).result()
                         runs += 1
                         time.sleep(1)
@@ -142,6 +143,7 @@ class BitmexTrader():
                     time.sleep(5)
                     runs = 1
                     while order[0]['ordStatus'] != 'Filled':
+                        self.auth_client_bitmex.Order.Order_cancelAll().result()
                         print('trying: ' + str(pric-(runs*0.5)))
                         order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce=self.type).result()
                         runs += 1
@@ -219,6 +221,7 @@ class BitmexTrader():
                     time.sleep(5)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
+                        self.auth_client_bitmex.Order.Order_cancelAll().result()
                         close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce=self.type).result()
                         runs += 1
                         time.sleep(5)
@@ -259,6 +262,7 @@ class BitmexTrader():
                     time.sleep(5)
                     runs = 1
                     while order[0]['ordStatus'] != 'Filled':
+                        self.auth_client_bitmex.Order.Order_cancelAll().result()
                         print('trying... ' + str(pric+(runs*0.5)))
                         order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10, price=pric+(runs*0.5), timeInForce=self.type).result()
                         runs += 1
