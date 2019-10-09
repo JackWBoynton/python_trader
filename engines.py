@@ -44,6 +44,7 @@ class AlpacaTrader():
         finally:
             print ('selling 10 ' + str(asset) + ' on ALPACA')
 
+
 class BitmexTrader():
 
     def __init__(self, trade, leverage, tp, test, ord_type):
@@ -66,11 +67,11 @@ class BitmexTrader():
         if test:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=True, api_key=self.bitmex_api_key_t, api_secret=self.bitmex_api_secret_t)
-            print ('testnet')
+            print('testnet')
         else:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=False, api_key=self.bitmex_api_key, api_secret=self.bitmex_api_secret)
-            print ('LIVE')
+            print('LIVE')
         try:
             self.auth_client_bitmex.Position.Position_updateLeverage(
                 symbol='XBTUSD', leverage=leverage).result()
@@ -105,7 +106,7 @@ class BitmexTrader():
             self.auth_client_bitmex.Order.Order_cancelAll().result()
             if self.short:
                 if self.ord_type == 'Limit':
-                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-5, timeInForce=self.type).result()
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric, timeInForce=self.type).result()
                     time.sleep(1)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
@@ -137,7 +138,7 @@ class BitmexTrader():
             try:
                 if self.ord_type == 'Limit':
                     print ('trying: ' + str(pric))
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-3, timeInForce=self.type).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric, timeInForce=self.type).result()
                     time.sleep(5)
                     runs = 1
                     while order[0]['ordStatus'] != 'Filled':
@@ -213,7 +214,7 @@ class BitmexTrader():
             '''
             if self.long:
                 if self.ord_type == 'Limit':
-                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5).result()
+                    close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric).result()
                     time.sleep(5)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
@@ -252,7 +253,7 @@ class BitmexTrader():
             '''
             try:
                 if self.ord_type == 'Limit':
-                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10, price=pric+3, timeInForce=self.type).result()
+                    order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 10, price=pric, timeInForce=self.type).result()
                     time.sleep(5)
                     runs = 1
                     while order[0]['ordStatus'] != 'Filled':
@@ -310,7 +311,6 @@ class BitmexTrader():
                 self.trade_template['side'] = 'SELL'
                 self.trade_template['timestamp'] = str(order[0]['timestamp'])
                 self.db()
-
 
 
 class BinanceTrader():
