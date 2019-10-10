@@ -10,7 +10,7 @@ import bitmex
 import requests
 from binance.client import Client as binance_client
 import robin_stocks as r
-from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest
+from bravado.exception import HTTPServiceUnavailable, HTTPBadRequest, HTTPTooManyRequests
 import alpaca_trade_api as tradeapi
 import configparser
 import pymysql
@@ -160,7 +160,8 @@ class BitmexTrader():
                     except HTTPServiceUnavailable:
                         order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q).result()
                     ord = order[0]['ordStatus']
-            except HTTPBadRequest as r:
+            except HTTPBadRequest or HTTPTooManyRequests as r:
+                time.sleep(5)
                 try:
                     order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q-10).result()
                 except:
@@ -281,7 +282,8 @@ class BitmexTrader():
                     except HTTPServiceUnavailable:
                         order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=-floor(bal * risk * self.leverage * price) + 15).result()
                     ord = order[0]['ordStatus']
-            except HTTPBadRequest as r:
+            except HTTPBadRequest or HTTPTooManyRequests as r:
+                time.sleep(5)
                 print('short: ' + str(-floor(bal * risk * self.leverage * price) + 15))
                 self.client.chat_postMessage(channel=self.channel_trades, text='error: ' + str(r) + ' FATAL!!! order not placed')
             finally:
