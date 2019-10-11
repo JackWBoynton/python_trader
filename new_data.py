@@ -18,7 +18,7 @@ def download_new(location):
         output.write(s)
         output.close()
         # Parse:
-        print('parsing')
+        print('\nparsing')
         asset = 'XBTUSD'
         data = pd.read_csv(location+date.strftime("%Y%m%d")+'.csv', header=None, low_memory=False, usecols=[0, 1, 3], dtype={0: str, 1: str, 3: float}, skiprows=2)
         for n, j in enumerate(data[1]):

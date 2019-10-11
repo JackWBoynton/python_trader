@@ -176,7 +176,9 @@ class renko:
         # connects to hosted BITMEX delta server running in nodejs on port 4444
         data = requests.get(
             'http://132.198.249.205:4444/quote?symbol=XBTUSD').json()
+
         for key in data:
+            print(str(key['timestamp']))
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 self.add_to_plot(float(key['bidPrice']), self.do_next(
                     np.array(float(key['bidPrice']), dtype=float)))
@@ -294,7 +296,7 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         if 0 == 0: # can add more indicators by expanding if condition:
-            self.pricea = self.y
+            self.pricea = self.y  # calculates indicator on each new brick
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
