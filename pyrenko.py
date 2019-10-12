@@ -188,7 +188,7 @@ class renko:
                     self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks) + ' y: ' + str(self.renko_prices[-1]) + ' act: ' + str(act_price), end="\r")
                 self.last_timestamp = datetime.datetime.strptime(
                     key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ')
-                print(self.last_timestamp)
+                #print(self.last_timestamp)
                 #self.bid = float(key['bidPrice'])
 
     def add_to_plot(self, price, bricks):
