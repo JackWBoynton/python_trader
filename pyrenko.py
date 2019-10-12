@@ -8,12 +8,15 @@ import numpy as np
 import pandas as pd
 from math import floor
 import datetime
+import sys
 import requests
 from data import new_trade
 from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 from calculate_pred import main as pred
 import statistics
+sys.path.insert(1, '/home/jayce/rest_api/')
+from balance import update as update_
 
 
 class renko:
@@ -182,7 +185,7 @@ class renko:
             if datetime.datetime.strptime(key['timestamp'].replace('T', ''), '%Y-%m-%d%H:%M:%S.%fZ') > self.last_timestamp:
                 self.add_to_plot(float(key['bidPrice']), self.do_next(
                     np.array(float(key['bidPrice']), dtype=float)))
-
+                update_()
                 act_price = 0
                 print(str(float(key['bidPrice'])) + ' brick: ' + str(self.last) + ' sma: ' + str(self.smaa[-1]) + ' macd: ' + str(
                     self.macdaa[-1]) + ' len: ' + str(len(self.ys)) + ' bricks: ' + str(self.bricks) + ' y: ' + str(self.renko_prices[-1]) + ' act: ' + str(act_price), end="\r")
@@ -199,7 +202,7 @@ class renko:
             bricks += 1
         for i in range(1, bricks):
             self.x = self.x + i
-            print()
+            #print()
             self.y = self.renko_prices[(-bricks + i) - 1] - self.brick_size if self.renko_directions[(
                 -bricks + i) - 1] == 1 else self.renko_prices[(-bricks + i) - 1]
             self.last = self.renko_prices[(-bricks + i) - 1]
