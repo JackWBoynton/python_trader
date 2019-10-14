@@ -168,7 +168,7 @@ class renko:
         #self.returns = map(lambda x: x*100, self.returns)
         sr = pd.DataFrame(self.returns[2:]).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
-        srb = sra.mean()/sra.std() * np.sqrt(252)
+        srb = sra.mean()/sra.std() * np.sqrt(365) # calculate sharpe ratio for 1 year trading every day
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
         while True:
@@ -298,8 +298,8 @@ class renko:
 
     def calc_indicator(self, ind):
         # calculates indicator
-        if 0 == 0: # can add more indicators by expanding if condition:
-            self.pricea = self.y  # calculates indicator on each new brick
+        if 0 == 0:  # can add more indicators by expanding if condition:
+            self.pricea = self.y + self.brick_size  # calculates indicator on each new brick
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
