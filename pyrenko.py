@@ -75,6 +75,7 @@ class renko:
                 is_new_brick = True
                 self.renko_prices.append(
                     self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
+                print(self.timestamps[ind])
                 self.act_timestamps.append(self.timestamps[ind])
                 self.renko_directions.append(np.sign(gap_div))
             if is_new_brick:
