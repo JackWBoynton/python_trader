@@ -253,7 +253,7 @@ class renko:
 
     def close_short(self, price):
         # calculates profit on close of short trade
-        entry = self.open - 15
+        entry = self.open - 5
         net = round(((1 / self.pricea - 1 / (entry)) * floor(self.risk*entry)*self.leverage), 8)
         self.profit += net
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
@@ -276,7 +276,7 @@ class renko:
 
     def close_long(self, price):
         # calculates profit on close of long trade
-        entry = self.open + 15
+        entry = self.open + 5
         if price > entry:
             self.w += 1
         else:
