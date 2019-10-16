@@ -253,8 +253,7 @@ class renko:
 
     def close_short(self, price):
         # calculates profit on close of short trade
-        entry = self.open
-        net = round(((1 / self.pricea - 1 / (entry)) * floor(self.risk*entry)*self.leverage), 8)
+        net = round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage), 8)
         self.profit += net
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
@@ -268,20 +267,19 @@ class renko:
             per = 0
         self.trades_.append(round((net-fee), 8))
         print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
-              'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < entry else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
-        if price < entry:
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
+        if price < self.open:
             self.w += 1
         else:
             self.l += 1
 
     def close_long(self, price):
         # calculates profit on close of long trade
-        entry = self.open
-        if price > entry:
+        if price > self.open:
             self.w += 1
         else:
             self.l += 1
-        net = round(((1 / entry - 1 / (self.pricea)) * floor(self.risk*entry)*self.leverage), 8)
+        net = round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage), 8)
         self.profit += net
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
@@ -296,7 +294,7 @@ class renko:
             per = 0
         self.trades_.append(round((net - fee), 8))
         print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
-              'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < entry else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
         # calculates indicator
