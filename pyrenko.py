@@ -300,7 +300,7 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         if 0 == 0:  # can add more indicators by expanding if condition:
-            self.pricea = self.y + self.brick_size  # calculates indicator on each new brick
+            self.pricea = self.y + 2*self.brick_size  # calculates indicator on each new brick
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
