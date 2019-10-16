@@ -75,7 +75,7 @@ class renko:
                 is_new_brick = True
                 self.renko_prices.append(
                     self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
-                print(self.timestamps[ind])
+                #print(self.timestamps[ind])
                 self.act_timestamps.append(self.timestamps[ind])
                 self.renko_directions.append(np.sign(gap_div))
             if is_new_brick:
@@ -90,10 +90,10 @@ class renko:
     def build_history(self, prices, timestamps):
         # builds backtest bricks
         if len(prices) > 0:
-            self.timestamps = prices[0].values
+            self.timestamps = prices[1].values
             self.source_prices = pd.DataFrame(prices[2].values)
             self.renko_prices.append(prices[2].values[-1])
-            self.act_timestamps.append(prices[0].values[-1])
+            self.act_timestamps.append(prices[1].values[-1])
             self.renko_directions.append(0)
 
             for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
