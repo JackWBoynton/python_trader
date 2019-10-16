@@ -16,7 +16,7 @@ import threading
 from calculate_pred import main as pred
 import statistics
 sys.path.insert(1, '/home/jayce/rest_api/')
-from balance import update as update_
+from balance import update as update_  # not working
 
 
 class renko:
@@ -253,7 +253,8 @@ class renko:
 
     def close_short(self, price):
         # calculates profit on close of short trade
-        net = round(((1 / self.pricea - 1 / (self.open)) * floor(self.risk*self.open)*self.leverage), 8)
+        entry = self.pricea + 51 * 0.5
+        net = round(((1 / self.pricea - 1 / (entry)) * floor(self.risk*entry)*self.leverage), 8)
         self.profit += net
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
@@ -267,24 +268,25 @@ class renko:
             per = 0
         self.trades_.append(round((net-fee), 8))
         print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
-              'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < self.open else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
-        if price < self.open:
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('yes') if price < entry else str('no'), 'balance: BTC ' + str(self.backtest_bal_usd), 'percentage profitable ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
+        if price < entry:
             self.w += 1
         else:
             self.l += 1
 
     def close_long(self, price):
         # calculates profit on close of long trade
-        if price > self.open:
+        entry = self.pricea - 51 * 0.5
+        if price > entry:
             self.w += 1
         else:
             self.l += 1
-        net = round(((1 / self.open - 1 / (self.pricea)) * floor(self.risk*self.open)*self.leverage), 8)
+        net = round(((1 / entry - 1 / (self.pricea)) * floor(self.risk*entry)*self.leverage), 8)
         self.profit += net
         fee = round((self.risk*self.leverage * self.backtest_fee), 8)
         fee += round((self.risk*self.leverage * self.backtest_fee), 8)
         self.profit -= fee
-        #print(type(net-fee))
+        # print(type(net-fee))
         self.backtest_bal_usd += round((net - fee), 8)
         ret = round((net - fee), 8)/self.risk
         self.returns.append(ret)
@@ -294,7 +296,7 @@ class renko:
             per = 0
         self.trades_.append(round((net - fee), 8))
         print('trade: BTC ' + str(round((net - fee), 8)), 'net BTC: ' + str(round(self.profit, 8)),
-              'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < self.open else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
+              'closed at: ' + str(self.pricea), 'profitable?: ' + str('no') if price < entry else str('yes'), 'balance $' + str(self.backtest_bal_usd), 'percentage profitable: ' + str(round(per * 100, 3)) + '%', 'w:' + str(self.w), 'l:' + str(self.l))
 
     def calc_indicator(self, ind):
         # calculates indicator
