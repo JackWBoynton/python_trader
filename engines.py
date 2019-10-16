@@ -106,11 +106,13 @@ class BitmexTrader():
             self.auth_client_bitmex.Order.Order_cancelAll().result()
             if self.short:
                 if self.ord_type == 'Limit':
+                    print('trying ' + str(pric))
                     close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric, timeInForce=self.type).result()
                     time.sleep(1)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
                         self.auth_client_bitmex.Order.Order_cancelAll().result()
+                        print('trying ' + str(pric-(5-runs*0.5)))
                         close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric-(5-runs*0.5), timeInForce=self.type).result()
                         runs += 1
                         time.sleep(1)
@@ -218,11 +220,13 @@ class BitmexTrader():
             '''
             if self.long:
                 if self.ord_type == 'Limit':
+                    print('trying ' + str(pric))
                     close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric).result()
                     time.sleep(5)
                     runs = 1
                     while close[0]['ordStatus'] != 'Filled':
                         self.auth_client_bitmex.Order.Order_cancelAll().result()
+                        print('trying ' + str(pric+(5-runs*0.5)))
                         close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce=self.type).result()
                         runs += 1
                         time.sleep(5)
