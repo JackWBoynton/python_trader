@@ -64,7 +64,7 @@ class BitmexTrader():
         self.stop_loss = 0.1  # 10%
         self.slips = []
 
-        if test:
+        if test and 1==2:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=True, api_key=self.bitmex_api_key_t, api_secret=self.bitmex_api_secret_t)
             print('testnet')
