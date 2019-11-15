@@ -68,7 +68,7 @@ class BitmexTrader():
             self.auth_client_bitmex = bitmex.bitmex(
                 test=True, api_key=self.bitmex_api_key_t, api_secret=self.bitmex_api_secret_t)
             print('testnet')
-        elif not test:
+        elif 1==2:
             self.auth_client_bitmex = bitmex.bitmex(
                 test=False, api_key=self.bitmex_api_key, api_secret=self.bitmex_api_secret)
             print('LIVE')
