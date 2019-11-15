@@ -75,9 +75,10 @@ class BitmexTrader():
         try:
             self.auth_client_bitmex.Position.Position_updateLeverage(
                 symbol='XBTUSD', leverage=leverage).result()
+            self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
         except:
             pass
-        self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
+        
         self.channel = 'tradeupdates'
         self.channel_trades = 'trades'
         self.client = slack.WebClient(self.slack_api, timeout=30)
