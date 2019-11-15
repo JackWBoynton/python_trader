@@ -265,7 +265,7 @@ class renko:
         except:
             RS = 0
         print(type(RS[0]))
-        return 100 - 100/(1 + RS)
+        return 100 - 100/(1 + RS[0])
 
 
     def cross(self, a, b):
