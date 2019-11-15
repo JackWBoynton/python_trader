@@ -264,7 +264,6 @@ class renko:
             RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))[-1]
         except:
             RS = 0
-        print(type(RS[0]))
         return 100 - 100/(1 + RS[0])
 
 
