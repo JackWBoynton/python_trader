@@ -127,6 +127,8 @@ class renko:
             year=2018, month=7, day=12, hour=7, minute=9, second=33)  # random day in the past to make sure all data gets loaded as backtest
         self.ys = []
         self.xs = []
+        self.U = [] # ema--rsi
+        self.D = [] # ema--rsi
         self.lll = 0
         self.prices = []
         self.next_brick = 0
@@ -243,6 +245,25 @@ class renko:
             window=self.signal_l).mean()).values
         return (pd.DataFrame(self.macd()).rolling(window=self.signal_l).mean()).values
 
+    def ema_(self, t, n):
+        # exponential moving average
+        return pd.DataFrame(t).ewm(span=n, adjust=False).mean().values
+
+    def rsi(self):
+        if self.ys[-1] > self.ys[-2]:
+            self.U.append(self.ys[-1] - self.ys[-2])
+            self.D.append(0)
+        elif self.ys[-2] > self.ys[-1]:
+            self.U.append(0)
+            self.D.append(self.ys[-2] - self.ys[-1])
+        else:
+            self.D.append(0)
+            self.U.append(0)
+        
+        RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))[-1]
+        return 100 - 100/(1 + RS)
+
+
     def cross(self, a, b):
         # determines if signal price and macd cross or had crossed one brick ago
         try:
@@ -338,7 +359,7 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + self.rsi())
 
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
@@ -386,7 +407,7 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + self.rsi())
 
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]

@@ -251,15 +251,6 @@ class BitmexTrader():
             price = float(requests.get("https://www.bitmex.com/api/v1/orderBook/L2?symbol=xbt&depth=1").json()[1]['price'])
             bal = self.auth_client_bitmex.User.User_getMargin().result()[0]['availableMargin'] / 100000000
 
-            '''
-            order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric, timeInForce=self.type).result()
-            time.sleep(1)
-            runs = 0
-            while order[0]['ordStatus'] != 'Filled':
-                order = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', orderQty=order_q, price=pric-(runs*0.5), timeInForce=self.type).result()
-                runs += 1
-                time.sleep(1)
-            '''
             try:
                 if self.ord_type == 'Limit':
                     print('trying... ' + str(pric))
