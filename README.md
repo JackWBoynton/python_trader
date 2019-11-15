@@ -11,7 +11,7 @@ to run:
 2. start ./ngrok http 7777
 2. python3 webhook.py
 
-to calculate renko bricks:
+to calculate renko bricks locally and perform strategy calculations:
 
 * must have raw bitmex tick data in ../ for backtest
 
