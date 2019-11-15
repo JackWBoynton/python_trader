@@ -363,7 +363,7 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + self.rsi())
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + str(self.rsi()))
 
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
@@ -411,7 +411,7 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + self.rsi())
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + str(self.rsi()))
 
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
