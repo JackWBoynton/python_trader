@@ -73,7 +73,6 @@ class renko:
                 num_new_bars = gap_div
                 num_new_bars -= np.sign(gap_div)
                 start_brick = 2
-                is_new_brick = True
                 self.renko_prices.append(
                     self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
                 #print(self.timestamps[ind])
