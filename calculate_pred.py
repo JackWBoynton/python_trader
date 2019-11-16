@@ -1,7 +1,7 @@
 import pandas as pd
 import xgboost as xgb
 import joblib
-scaler_filename = "../scaler.save"
+scaler_filename = "scaler.save"
 scaler = joblib.load(scaler_filename)
 
 bst = xgb.Booster({'nthread': 4})  # init model
