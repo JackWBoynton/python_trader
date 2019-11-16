@@ -36,7 +36,7 @@ class renko:
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
-        self.n = 2 # ema--rsi
+        self.n = 5 # ema--rsi
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
