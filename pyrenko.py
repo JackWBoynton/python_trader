@@ -15,9 +15,10 @@ from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 from calculate_pred import main as pred
 import statistics
+"""
 sys.path.insert(1, '/home/jayce/rest_api/')
 from balance import update as update_  # not working
-
+"""
 
 class renko:
     def __init__(self, plot, j_backtest, fast, slow, signal_l, to_trade, strategy, ordtype):
@@ -36,7 +37,7 @@ class renko:
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
-        self.n = 5 # ema--rsi
+        self.n = 3 # ema--rsi
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
@@ -324,7 +325,7 @@ class renko:
         # calculates indicator
         if 0 == 0:  # can add more indicators by expanding if condition:
             self.pricea = self.y + 2*self.brick_size  # calculates indicator on each new brick
-            if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
+            if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and self.rsi() < 50 and not self.long:
                 self.long = True
                 self.short = False
                 if self.runs > 0:
@@ -370,7 +371,7 @@ class renko:
                 self.sma_open = self.sma()[-10:]
                 self.next_brick = 1
                 self.runs += 1
-            elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
+            elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and self.rsi() > 50 and not self.short:
                 self.short = True
                 self.long = False
                 if self.runs > 0:
