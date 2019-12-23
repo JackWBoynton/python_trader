@@ -34,6 +34,7 @@ class renko:
         self.trades_ = []
         self.renko_prices = []
         self.renko_directions = []
+        self.out = []
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
@@ -90,6 +91,7 @@ class renko:
 
     def build_history(self, prices, timestamps):
         # builds backtest bricks
+        self.orig_prices = prices
         if len(prices) > 0:
             self.timestamps = prices[1].values
             self.source_prices = pd.DataFrame(prices[2].values)
@@ -175,10 +177,12 @@ class renko:
         srb = sra.mean()/sra.std() * np.sqrt(365) # calculate sharpe ratio for 1 year trading every day
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
         print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
-        while True:
-            # starts live trading
-            self.check_for_new()
-
+        if not self.j_backtest:
+            while True:
+                # starts live trading
+                self.check_for_new()
+        else:
+            return self.out
     def check_for_new(self):
         # connects to hosted BITMEX delta server running in nodejs on port 4444
         data = requests.get(
@@ -225,6 +229,10 @@ class renko:
         self.balances.append(self.profit)
         self.calc_indicator(i)  # calculates given indicator
 
+    def ma_(self):
+        # vanilla moving average
+        return pd.DataFrame(self.ys).rolling(window=self.n).mean()
+
     def ma(self):
         # calculates simple moving averages on brick prices
         fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
@@ -248,7 +256,7 @@ class renko:
 
     def ema_(self, t, n):
         # exponential moving average
-        return pd.DataFrame(t).ewm(span=n, adjust=False).mean().values
+        return pd.DataFrame(t).ewm(span=n, adjust=False).mean().values[-1]
 
     def rsi(self):
         if self.ys[-1] > self.ys[-2]:
@@ -261,10 +269,10 @@ class renko:
             self.D.append(0)
             self.U.append(0)
         try:
-            RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))[-1]
+            RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))
         except:
             RS = 0
-        return 100 - 100/(1 + RS[0])
+        return list(map(lambda x: 100-100/(1+x),RS))[-1]
 
 
     def cross(self, a, b):
@@ -324,8 +332,8 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         if 0 == 0:  # can add more indicators by expanding if condition:
-            self.pricea = self.y + 2*self.brick_size  # calculates indicator on each new brick
-            if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and self.rsi() < 50 and not self.long:
+            self.pricea = self.y + self.brick_size  # calculates indicator on each new brick
+            if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
                 if self.runs > 0:
@@ -362,8 +370,8 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + str(self.rsi()))
-
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                        self.out.append([1,sss,self.pricea])
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]
@@ -371,7 +379,7 @@ class renko:
                 self.sma_open = self.sma()[-10:]
                 self.next_brick = 1
                 self.runs += 1
-            elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and self.rsi() > 50 and not self.short:
+            elif self.cross(self.macd(), self.sma()) and self.sma()[-1] > self.macd()[-1] and not self.short:
                 self.short = True
                 self.long = False
                 if self.runs > 0:
@@ -410,8 +418,8 @@ class renko:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi), "rsi: " + str(self.rsi()))
-
+                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                        self.out.append([2,sss,self.pricea])
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
                 self.macd_open = self.macd()[-10:]

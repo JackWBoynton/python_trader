@@ -3,7 +3,7 @@ import datetime
 import glob
 import gzip
 import pandas as pd
-
+import argparse
 
 def download_new(location):
 
@@ -39,6 +39,33 @@ def download_new(location):
 
 
 def download_abs(day):
-    day = str(day)+'.csv'
+    day = str(day)
+    print(day)
+    print("https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.csv.gz".format(day))
     wget.download(url="https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.csv.gz".format(day), out='../')
-    return 1
+    input = gzip.GzipFile("../"+day+".csv.gz", 'rb')
+    s = input.read()
+    input.close()
+    output = open("../"+day+".csv","wb")
+    output.write(s)
+    output.close()
+    print("\nparsing")
+    asset = "XBTUSD"
+    data = pd.read_csv("../"+day+'.csv', header=None, low_memory=False, usecols=[0, 1, 3], dtype={0: str, 1: str, 3: float}, skiprows=2)
+    for n, j in enumerate(data[1]):
+        if j == asset:
+            data=pd.DataFrame(data.values[n:])
+            break
+    for n, k in enumerate(data[1]):
+        if k != asset:
+            data=pd.DataFrame(data.values[:n])
+            break
+    del data[1]
+    data.to_csv("../"+day+".csv")
+    print("done")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('day', type=str, nargs=1)
+    args = parser.parse_args()
+    download_abs(args.day[0])
