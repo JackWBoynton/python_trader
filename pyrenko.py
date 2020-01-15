@@ -43,7 +43,7 @@ class renko:
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
-        self.use_ml = True
+        self.use_ml = False
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
@@ -175,14 +175,17 @@ class renko:
         sr = pd.DataFrame(self.returns[2:]).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
         srb = sra.mean()/sra.std() * np.sqrt(365) # calculate sharpe ratio for 1 year trading every day
-        print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
-        print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
+        self.trade.end_backtest(self.pricea)
+        #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
+        #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
         if not self.j_backtest:
+            self.trade.end_backtest(self.pricea)
             while True:
                 # starts live trading
                 self.check_for_new()
         else:
             return self.out
+    
     def check_for_new(self):
         # connects to hosted BITMEX delta server running in nodejs on port 4444
         data = requests.get(
@@ -274,7 +277,6 @@ class renko:
             RS = 0
         return list(map(lambda x: 100-100/(1+x),RS))[-1]
 
-
     def cross(self, a, b):
         # determines if signal price and macd cross or had crossed one brick ago
         try:
@@ -331,13 +333,14 @@ class renko:
 
     def calc_indicator(self, ind):
         # calculates indicator
-        if 0 == 0:  # can add more indicators by expanding if condition:
+        #print(f"using {self.strategy}")
+        if 1==1:  # can add more indicators by expanding if condition:
             self.pricea = self.y + self.brick_size  # calculates indicator on each new brick
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
                 self.short = False
                 if self.runs > 0:
-                    self.close_short(self.pricea)
+                    print(f"closed trade at {self.trade.close_backtest_short(self.pricea):.8f} of profit")
                     if self.long:
                         side = 0
                     elif self.short:
@@ -345,10 +348,11 @@ class renko:
                     if len(self.renko_prices) > 10 and len(self.macd()) > 10:
                         # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
-                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35 and self.trade.backtest_over == True:
                     predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     threading.Thread(target=self.trade.buy_long, args=("BITMEX", "XBT-USD", self.pricea, self.pricea-self.brick_size, predi, )).start()
                     if self.ff:
+                        self.trade.end_backtest(self.pricea)
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
@@ -369,6 +373,7 @@ class renko:
                         else:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
+                        self.trade.backtest_buy(self.pricea)
                         print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
                               'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
                         self.out.append([1,sss,self.pricea])
@@ -383,7 +388,7 @@ class renko:
                 self.short = True
                 self.long = False
                 if self.runs > 0:
-                    self.close_long(self.pricea)
+                    print(f"closed trade at {self.trade.close_backtest_long(self.pricea):.8f} of profit")
                     if self.long:
                         side = 0
                     elif self.short:
@@ -392,10 +397,11 @@ class renko:
                         # write trades to file
                         new_trade(past_bricks=self.ys_open, price_open=self.open, price_close=self.pricea, side=side, macd_open=self.macd_open, macd_close=self.macd()[-1], sma_open=self.sma_open, sma_close=self.sma()[-1], time_open=self.open_time, time_close=self.act_timestamps[ind])
 
-                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35:
+                if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35 and self.trade.backtest_over == True:
                     predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     threading.Thread(target=self.trade.sell_short, args=("BITMEX", "XBT-USD", self.pricea, self.pricea+self.brick_size, predi, )).start()
                     if self.ff:
+                        self.trade.end_backtest(self.pricea)
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
@@ -417,6 +423,7 @@ class renko:
                         else:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
+                        self.trade.backtest_sell(self.pricea)
                         print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
                               'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
                         self.out.append([2,sss,self.pricea])
@@ -429,3 +436,6 @@ class renko:
                 self.runs += 1
             else:
                 self.next_brick = 0
+        elif self.strategy == "abcd":
+            self.pricea = self.y + self.brick_size
+
