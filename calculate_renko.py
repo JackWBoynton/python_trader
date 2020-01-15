@@ -81,4 +81,5 @@ if args.plot:
             timestamp = (datetime.datetime.strptime(point,p))       
             plt.scatter(calendar.timegm(timestamp.timetuple()),[i[2]], c="#ff0000")
 
-    plt.show()
+    plt.savefig("out.jpg")
+    #plt.show()
