@@ -15,6 +15,7 @@ from engines import BitmexTrader, BinanceTrader, RobinhoodTrader, AlpacaTrader
 import threading
 from calculate_pred import main as pred
 import statistics
+from b_trader import trader as b_trader
 """
 sys.path.insert(1, '/home/jayce/rest_api/')
 from balance import update as update_  # not working
@@ -44,6 +45,7 @@ class renko:
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
         self.use_ml = False
+        self.b_ = b_trader(0.001)
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
@@ -175,7 +177,8 @@ class renko:
         sr = pd.DataFrame(self.returns[2:]).cumsum()
         sra = (sr - sr.shift(1))/sr.shift(1)
         srb = sra.mean()/sra.std() * np.sqrt(365) # calculate sharpe ratio for 1 year trading every day
-        self.trade.end_backtest(self.pricea)
+        #self.trade.end_backtest(self.pricea)
+        self.b_.end(self.pricea)
         #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
         #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
         if not self.j_backtest:
@@ -340,7 +343,8 @@ class renko:
                 self.long = True
                 self.short = False
                 if self.runs > 0:
-                    print(f"closed trade at {self.trade.close_backtest_short(self.pricea):.8f} of profit")
+                    #print(f"closed trade at {self.trade.close_backtest_short(self.pricea):.8f} of profit")
+                    self.b_.close(self.pricea)
                     if self.long:
                         side = 0
                     elif self.short:
@@ -352,7 +356,8 @@ class renko:
                     predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     threading.Thread(target=self.trade.buy_long, args=("BITMEX", "XBT-USD", self.pricea, self.pricea-self.brick_size, predi, )).start()
                     if self.ff:
-                        self.trade.end_backtest(self.pricea)
+                        #self.trade.end_backtest(self.pricea)
+                        self.b_.end(self.pricea)
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
@@ -373,9 +378,10 @@ class renko:
                         else:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
-                        self.trade.backtest_buy(self.pricea)
-                        print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                        #self.trade.backtest_buy(self.pricea)
+                        self.b_.buy(self.pricea)
+                        #print('backtest BUY at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
+                        #     'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
                         self.out.append([1,sss,self.pricea])
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]
@@ -388,7 +394,8 @@ class renko:
                 self.short = True
                 self.long = False
                 if self.runs > 0:
-                    print(f"closed trade at {self.trade.close_backtest_long(self.pricea):.8f} of profit")
+                    #print(f"closed trade at {self.trade.close_backtest_long(self.pricea):.8f} of profit")
+                    self.b_.close(self.pricea)
                     if self.long:
                         side = 0
                     elif self.short:
@@ -401,7 +408,8 @@ class renko:
                     predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     threading.Thread(target=self.trade.sell_short, args=("BITMEX", "XBT-USD", self.pricea, self.pricea+self.brick_size, predi, )).start()
                     if self.ff:
-                        self.trade.end_backtest(self.pricea)
+                        #self.trade.end_backtest(self.pricea)
+                        self.b_.end(self.pricea)
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +
                               ' with $' + str(self.backtest_slippage) + ' of slippage per trade', 'max drawdown: ' + str(min(self.trades_)), 'max trade: ' + str(max(self.trades_)), 'average: ' + str(statistics.mean(self.trades_)))
                         print('proceeding to live...')
@@ -423,9 +431,10 @@ class renko:
                         else:
                             predi = 1
                         self.risk = self.backtest_bal_usd * predi
-                        self.trade.backtest_sell(self.pricea)
-                        print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
-                              'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
+                        #self.trade.backtest_sell(self.pricea)
+                        self.b_.sell(self.pricea)
+                        #print('backtest SELL at: ' + str(self.pricea), 'time: ' + str(sss), 'amount: ' + str(self.risk),
+                              #'fee: $' + str(round(((floor(self.risk*self.pricea)*self.leverage / self.pricea) * self.backtest_fee * self.pricea), 3)), 'pred: ' + str(predi))
                         self.out.append([2,sss,self.pricea])
                 self.open = self.pricea
                 self.open_time = self.act_timestamps[ind]

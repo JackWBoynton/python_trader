@@ -22,7 +22,7 @@ class trader:
         fee = round((buying_power * self.fee) / price, 8)
         self.bal_btc -= fee
         self.open_contracts_usd = buying_power
-        print(f"bought {buying_power} BTC with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
+        print(f"bought {buying_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
     def sell(self, price):
         assert not self.short and self.open_contracts_usd == 0
@@ -32,21 +32,24 @@ class trader:
         fee = round((selling_power * self.fee) / price,8)
         self.bal_btc -= fee
         self.open_contracts_usd = selling_power
-        print(f"shorted {selling_power} BTC with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
+        print(f"shorted {selling_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
     def close(self, price):
         assert self.long or self.short
         if self.short:
-            profit = (1/self.open_price) - (1/price)
-            profit *= self.open_contracts_usd
+            profit = (1/self.open_price)-(1/price)
+            profit *= -self.open_contracts_usd
+            self.short = False
         elif self.long:
             profit = (1 / self.open_price) - (1 / price)
             profit *= self.open_contracts_usd
-        fee = round((self.open_contracts_usd * self.fee) / price,8)
-        self.bal_btc -= fee
-        self.bal_btc += profit
+            self.long = False
+        fee = round((self.open_contracts_usd * self.fee) / price, 8)
+        self.bal_btc -= abs(fee)
+        self.bal_btc += round(profit,8)
         self.bal_btc += round((self.open_contracts_usd/self.leverage) / price,8)
-        print(f"closed trade, profit: {profit} BTC, bal after: {self.btc_bal}, fee: {fee} BTC")
+        self.open_contracts_usd = 0
+        print(f"closed trade at {price}, profit: {profit} BTC, bal after: {self.bal_btc}, fee: {fee} BTC")
 
     def end(self,price):
         if self.long or self.short:
