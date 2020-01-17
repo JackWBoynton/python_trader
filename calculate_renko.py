@@ -52,7 +52,8 @@ if args.plot:
     macd_ = renko_obj.macd()
     fast, slow = renko_obj.ma()
     times = renko_obj.act_timestamps
-    print(len(renko_obj.ys), len(macd_), len(renko_obj.act_timestamps)) # 204 204 205
+    wma, times_wma = renko_obj.wma(9)
+    print(len(renko_obj.ys), len(macd_), len(renko_obj.act_timestamps),len(renko_obj.wma(9))) # 204 204 205
     print(f"x:{renko_obj.act_timestamps[-2]},y:{macd_[-1]}")
     # takes an incredible amount of time bc graphing millions of price ticks
     p = "%Y-%m-%d%H:%M:%S.%f000"
@@ -67,10 +68,16 @@ if args.plot:
         pt = pt.replace("D","")
         ac = (datetime.datetime.strptime(pt,p))
         macd_timestamps.append(calendar.timegm(ac.timetuple()))
+    timestamps_wma = []
+    for a, b in enumerate(times_wma):
+        b = b.replace("D","")
+        ad = (datetime.datetime.strptime(b,p))
+        timestamps_wma.append(calendar.timegm(ad.timetuple()))
     #plt.plot(macd_timestamps, macd_)
     plt.plot(timestampss, data[2])
     plt.plot(macd_timestamps, slow)
     plt.plot(macd_timestamps, fast)
+    plt.plot(timestamps_wma, wma, c="#00ff00")
     for i in trades:
         if i[0] == 1:
             point = i[1].replace("D","")

@@ -77,19 +77,7 @@ class BitmexTrader():
                 symbol='XBTUSD', leverage=leverage).result()
             self.last_bal = float(self.auth_client_bitmex.User.User_getMargin().result()[0]['marginBalance'] / 100000000)
         except:
-            pass
-        
-        #backtesting hyperparameters
-        self.backtest_bal = 0.1
-        self.open_backtest_bal = 0
-        self.backtest_long = False
-        self.backtest_short = False
-        self.backtest_over = False
-        self.open_trade_price = 0
-        self.winning_trades = 0
-        self.losing_trades = 0
-        self.backtest_fee = 0.00075 
-        self.backtest_risk = 0.60 # risk 60% of capital on each trade
+            pass    
 
         self.channel = 'tradeupdates'
         self.channel_trades = 'trades'
@@ -328,73 +316,6 @@ class BitmexTrader():
                 self.trade_template['side'] = 'SELL'
                 self.trade_template['timestamp'] = str(order[0]['timestamp'])
                 self.db()
-
-    def backtest_buy(self, price):
-        assert self.backtest_long == False
-        print(f"buying {self.backtest_bal * self.backtest_risk * self.leverage}$ at {price}, balance: {self.backtest_bal-(self.open_backtest_bal / self.leverage) / price}, {self.winning_trades}:{self.losing_trades}")
-        self.backtest_long = True
-        self.open_trade_price = price
-        power = floor(self.backtest_bal * price * self.backtest_risk) * self.leverage
-        self.open_backtest_bal += power
-        self.backtest_bal -= (self.open_backtest_bal / self.leverage) / price
-
-    def backtest_sell(self, price):
-        assert self.backtest_short == False
-        print(f"shorting {self.backtest_bal * self.backtest_risk * self.leverage}$ at {price}, balance: {self.backtest_bal-(self.open_backtest_bal / self.leverage) / price}, {self.winning_trades}:{self.losing_trades}")
-        self.backtest_short = True
-        self.open_trade_price = price
-        power = floor(self.backtest_bal * price * self.backtest_risk) * self.leverage
-        self.open_backtest_bal += power
-        self.backtest_bal -= (self.open_backtest_bal / self.leverage) / price
-        print(f"shorting {power} contracts, risking {((power/price)/self.backtest_risk)/self.leverage}")
-
-    def close_backtest_long(self, current_price):
-        print(f"open backtest_bal {self.open_backtest_bal}")
-        #assert self.backtest_long == True or self.open_backtest_bal == 0 and self.open_trade_price != 0 and current_price != 0
-        profit = round((((1 / self.open_trade_price) - (1 / (current_price))) * floor(self.open_backtest_bal)*self.leverage), 8)
-        fee = 2*(round(self.leverage*self.backtest_fee*self.open_backtest_bal,8))
-        self.backtest_bal += round(profit-fee,8)
-        self.backtest_bal += (self.open_backtest_bal / self.leverage) / current_price
-        if profit-fee > 0.0:
-            self.winning_trades+=1
-        else:
-            self.losing_trades+=1
-        self.backtest_long = False
-        self.open_backtest_bal = 0
-        return profit
-
-
-    def close_backtest_short(self, current_price):
-        #print(self.leverage)
-        if self.open_trade_price != 0:
-            #assert self.backtest_short == True or self.open_backtest_bal == 0 and self.open_trade_price != 0 and current_price != 0
-            profit = round((((1 / current_price) - (1 / (self.open_trade_price))) * floor(self.open_backtest_bal)*self.leverage), 8)
-            fee = 2*(round(self.leverage*self.backtest_fee*self.open_backtest_bal,8))
-            print(f"fee {fee}")
-            self.backtest_bal += round(profit-fee,8)
-            self.backtest_bal += (self.open_backtest_bal / self.leverage) / current_price
-            if profit-fee > 0.0:
-                self.winning_trades+=1
-            else:
-                self.losing_trades+=1
-            self.backtest_short = False
-            self.open_backtest_bal = 0
-            return profit
-        else:
-            pass
-            
-    def end_backtest(self, price):
-        if not self.backtest_long and not self.backtest_short:
-            self.backtest_over = True
-        elif self.backtest_long:
-            self.close_backtest_long(price)
-        else:
-            self.close_backtest_short(price)
-
-        print(f"change {self.backtest_bal-0.001:.8f} BTC, final balance: {self.backtest_bal}, pct change: {((self.backtest_bal-0.001)/0.001)*100}%")
-
-
-
 class BinanceTrader():
     def __init__(self):
         self.binance_api_key = Config.get('Binance', 'api_key')

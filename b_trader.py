@@ -1,5 +1,7 @@
+# seperate file for running and controlling the backtesting captial balances;
 import math
-
+from termcolor import colored
+#print colored('RED TEXT', 'red'), colored('GREEN TEXT', 'green')
 
 
 class trader:
@@ -8,7 +10,7 @@ class trader:
         self._bal = bal
         self.bal_btc = bal
         self.open_contracts_usd = 0
-        self.risk = 0.6 # risk 60% of capital, fee comes out of btc bal after trade comes out
+        self.risk = 0.05 # risk 5% of capital, fee comes out of btc bal after trade comes out
         self.long = False
         self.short = False
         self.leverage = 10
@@ -22,7 +24,7 @@ class trader:
         fee = round((buying_power * self.fee) / price, 8)
         self.bal_btc -= fee
         self.open_contracts_usd = buying_power
-        print(f"bought {buying_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
+        print(f"[+] bought {buying_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
     def sell(self, price):
         assert not self.short and self.open_contracts_usd == 0
@@ -32,7 +34,7 @@ class trader:
         fee = round((selling_power * self.fee) / price,8)
         self.bal_btc -= fee
         self.open_contracts_usd = selling_power
-        print(f"shorted {selling_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
+        print(f"[+] shorted {selling_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
     def close(self, price):
         assert self.long or self.short
@@ -47,12 +49,21 @@ class trader:
         fee = round((self.open_contracts_usd * self.fee) / price, 8)
         self.bal_btc -= abs(fee)
         self.bal_btc += round(profit,8)
-        self.bal_btc += round((self.open_contracts_usd/self.leverage) / price,8)
+        self.bal_btc = round(self.bal_btc, 8)
+        #self.bal_btc += round((self.open_contracts_usd/self.leverage) / price,8)
         self.open_contracts_usd = 0
-        print(f"closed trade at {price}, profit: {profit} BTC, bal after: {self.bal_btc}, fee: {fee} BTC")
+        if profit > 0:
+            col = 'green'
+        else:
+            col = 'red'
+        print(f"{colored('[-]', col)} closed trade at {price}, profit: {profit} BTC, bal after: {self.bal_btc}, fee: {fee} BTC")
 
     def end(self,price):
         if self.long or self.short:
             self.close(price)
-        print(f"end, change: {self.bal_btc - self._bal} BTC")
+        if self.bal_btc - self._bal > 0:
+            col = 'green'
+        else:
+            col = 'red'
+        print(f"{colored('[**]',col)} end, change: {self.bal_btc - self._bal} BTC, ending bal {self.bal_btc} BTC")
 

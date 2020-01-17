@@ -45,7 +45,7 @@ class renko:
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
         self.use_ml = False
-        self.b_ = b_trader(0.001)
+        self.b_ = b_trader(0.1)
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
@@ -279,6 +279,21 @@ class renko:
         except:
             RS = 0
         return list(map(lambda x: 100-100/(1+x),RS))[-1]
+    
+    def wma(self,p):
+        # weighted moving average
+        ret = []
+        times = []
+        for n,num in enumerate(self.ys):
+            if n > p:
+                use = self.ys[n-p:n]
+                times.append(self.act_timestamps[n])
+                weights = [x/sum(list(range(1,p+1))) for x in range(1,len(use)+1)]
+                ret.append(sum([use[x]*weights[x] for x in range(len(weights))]))
+        return ret,times
+
+    
+
 
     def cross(self, a, b):
         # determines if signal price and macd cross or had crossed one brick ago

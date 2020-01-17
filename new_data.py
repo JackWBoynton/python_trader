@@ -8,7 +8,7 @@ import argparse
 def download_new(location):
 
     date = datetime.date.today() - datetime.timedelta(days=1)
-    if location+date.strftime("%Y%m%d")+'.csv' not in glob.glob(location+'2019*.csv'):
+    if location+date.strftime("%Y%m%d")+'.csv' not in glob.glob(location+'*.csv'):
         print('downloading new days data')
         wget.download(url="https://s3-eu-west-1.amazonaws.com/public.bitmex.com/data/quote/{}.csv.gz".format(date.strftime('%Y%m%d')), out=location)
         input = gzip.GzipFile(location+date.strftime("%Y%m%d")+'.csv.gz', 'rb')
