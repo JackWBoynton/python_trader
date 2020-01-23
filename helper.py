@@ -3,12 +3,15 @@ import glob
 from tqdm import tqdm
 from multiprocessing import Pool
 from new_data import download_new
+from fix_data import fix_absolute
 len_df = 0
 files_ = []
 
 
 def load_df(ind, filename):
     global len_df
+    #print(filename)
+    
     len_df += 1
     tqdm.pandas(desc="load csvs #" + str(ind) + ' ' + str(files_[ind]))
     try:
@@ -60,6 +63,11 @@ def load_dfs_mult(asset, files, location):
     print('backtest dates: ' + frm + '-' + too)
     global files_
     files_ = files
+    for file_ in files:
+        if file_ not in sorted(glob.glob("../*.csv")):
+            #print(f"downloading {filename}")
+            print(file_)
+            fix_absolute(file_.replace("../",""))
     if 1 == 1 or not glob.glob(location+'loaded' + frm + too + '.csv'):
         with Pool(processes=8) as pool:
             df_list = (pool.starmap(load_df, enumerate(files)))

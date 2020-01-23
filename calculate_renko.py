@@ -12,6 +12,7 @@ import argparse
 import matplotlib.pyplot as plt
 import time
 import calendar
+from tqdm import tqdm
 import matplotlib
 
 parser = argparse.ArgumentParser()
@@ -53,23 +54,20 @@ if args.plot:
     fast, slow = renko_obj.ma()
     times = renko_obj.act_timestamps
     wma, times_wma = renko_obj.wma(9)
-    print(len(renko_obj.ys), len(macd_), len(renko_obj.act_timestamps),len(renko_obj.wma(9))) # 204 204 205
-    print(f"x:{renko_obj.act_timestamps[-2]},y:{macd_[-1]}")
-    # takes an incredible amount of time bc graphing millions of price ticks
     p = "%Y-%m-%d%H:%M:%S.%f000"
     timestampss = []
     plt.figure(figsize=(20,20))
-    for n, point in enumerate(data[1]):
+    for n, point in tqdm(enumerate(data[1]),total=len(data[1])): ## somehow improve parsing time??? 
         point = point.replace("D","")
         st = (datetime.datetime.strptime(point,p))
         timestampss.append(calendar.timegm(st.timetuple()))
     macd_timestamps = []
-    for m, pt in enumerate(times[-len(macd_):]):
+    for m, pt in tqdm(enumerate(times[-len(macd_):]),total=len(times[-len(macd_):])):
         pt = pt.replace("D","")
         ac = (datetime.datetime.strptime(pt,p))
         macd_timestamps.append(calendar.timegm(ac.timetuple()))
     timestamps_wma = []
-    for a, b in enumerate(times_wma):
+    for a, b in tqdm(enumerate(times_wma),total=len(times_wma)):
         b = b.replace("D","")
         ad = (datetime.datetime.strptime(b,p))
         timestamps_wma.append(calendar.timegm(ad.timetuple()))

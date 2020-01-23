@@ -168,7 +168,7 @@ class renko:
         self.backtest = False
         self.bricks = 0
 
-        self.source_prices = []
+        #self.source_prices = []
         # self.ys = [0]
         self.l = 1
         self.w = 1
@@ -241,9 +241,15 @@ class renko:
 
     def ma(self):
         # calculates simple moving averages on brick prices
-        fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
-        slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
-        return fast_ma.values, slow_ma.values
+        if (1==1):
+            fast_ma = pd.DataFrame(self.ys).rolling(window=self.fast).mean()
+            slow_ma = pd.DataFrame(self.ys).rolling(window=self.slow).mean()
+            return fast_ma.values, slow_ma.values
+        else:
+            # doesnt work... calculates the mas for the entire source prices df not changing with time
+            fast_ma = pd.DataFrame(self.source_prices).rolling(window=self.fast).mean()
+            slow_ma = pd.DataFrame(self.source_prices).rolling(window=self.slow).mean()
+            return fast_ma.values, slow_ma.values
 
     def macd(self):
         # calculated moving average convergence divergence on brick prices
@@ -370,7 +376,7 @@ class renko:
                 if self.end_backtest <= self.last_timestamp and not self.j_backtest and len(self.ys) > 35 and self.trade.backtest_over == True:
                     predi = pred(self.ys[-10:], self.macd()[-10:], self.sma()[-10:], self.pricea)
                     threading.Thread(target=self.trade.buy_long, args=("BITMEX", "XBT-USD", self.pricea, self.pricea-self.brick_size, predi, )).start()
-                    if self.ff:
+                    if self.ff: # if done backtest: 
                         #self.trade.end_backtest(self.pricea)
                         self.b_.end(self.pricea)
                         print('net backtest profit: BTC ' + str(self.backtest_bal_usd) +

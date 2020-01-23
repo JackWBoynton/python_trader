@@ -10,10 +10,10 @@ class trader:
         self._bal = bal
         self.bal_btc = bal
         self.open_contracts_usd = 0
-        self.risk = 0.05 # risk 5% of capital, fee comes out of btc bal after trade comes out
+        self.risk = 0.5 # risk 5% of capital, fee comes out of btc bal after trade comes out
         self.long = False
         self.short = False
-        self.leverage = 10
+        self.leverage = 2
         self.fee = 0.0075 # 0.075%
     
     def buy(self, price):

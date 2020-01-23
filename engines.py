@@ -210,15 +210,6 @@ class BitmexTrader():
         if self.trade:
             self.client.chat_postMessage(channel=self.channel, text='SELL:BITMEX:XBTUSD')
             self.auth_client_bitmex.Order.Order_cancelAll().result()
-            '''
-            close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+5, timeInForce=self.type).result()
-            time.sleep(1)
-            runs = 1
-            while close[0]['ordStatus'] != 'Filled':
-                close = self.auth_client_bitmex.Order.Order_new(symbol='XBTUSD', ordType='Limit', execInst='Close', price=pric+(5-runs*0.5), timeInForce=self.type).result()
-                runs += 1
-                time.sleep(1)
-            '''
             if self.long:
                 if self.ord_type == 'Limit':
                     print('trying ' + str(pric))
