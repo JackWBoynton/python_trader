@@ -11,7 +11,9 @@ files_ = []
 def load_df(ind, filename):
     global len_df
     #print(filename)
-    
+    if ".csv.csv" in filename: # never hits
+        filename = filename[0:-3]
+    #print(filename)
     len_df += 1
     tqdm.pandas(desc="load csvs #" + str(ind) + ' ' + str(files_[ind]))
     try:

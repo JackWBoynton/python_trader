@@ -15,6 +15,8 @@ class trader:
         self.short = False
         self.leverage = 2
         self.fee = 0.0075 # 0.075%
+        self.tot_fees = 0
+        self.tot_profit = 0
     
     def buy(self, price):
         assert not self.long and self.open_contracts_usd == 0
@@ -23,6 +25,7 @@ class trader:
         buying_power = math.floor(self.bal_btc * price * self.risk) * self.leverage  # num contracts can buy --> USD
         fee = round((buying_power * self.fee) / price, 8)
         self.bal_btc -= fee
+        self.tot_fees += fee
         self.open_contracts_usd = buying_power
         print(f"[+] bought {buying_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
@@ -33,6 +36,7 @@ class trader:
         selling_power = math.floor(self.bal_btc * price * self.risk) * self.leverage
         fee = round((selling_power * self.fee) / price,8)
         self.bal_btc -= fee
+        self.tot_fees += fee
         self.open_contracts_usd = selling_power
         print(f"[+] shorted {selling_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
@@ -49,6 +53,8 @@ class trader:
         fee = round((self.open_contracts_usd * self.fee) / price, 8)
         self.bal_btc -= abs(fee)
         self.bal_btc += round(profit,8)
+        self.tot_fees += abs(fee)
+        self.tot_profit += round(profit,8)
         self.bal_btc = round(self.bal_btc, 8)
         #self.bal_btc += round((self.open_contracts_usd/self.leverage) / price,8)
         self.open_contracts_usd = 0
@@ -65,5 +71,5 @@ class trader:
             col = 'green'
         else:
             col = 'red'
-        print(f"{colored('[**]',col)} end, change: {self.bal_btc - self._bal} BTC, ending bal {self.bal_btc} BTC")
+        print(f"{colored('[**]',col)} end, change: {self.bal_btc - self._bal} BTC, ending bal {self.bal_btc} BTC, total profit: {self.tot_profit}, total fees: {self.tot_fees}, net: {self.tot_profit-self.tot_fees}")
 

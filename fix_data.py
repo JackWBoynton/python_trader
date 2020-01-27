@@ -19,9 +19,9 @@ def fix_absolute(filename, location='../'):
         output.write(s)
         output.close()
         # Parse:
-        print('parsing')
+        print('\nparsing')
         asset = 'XBTUSD'
-        data = pd.read_csv(location+filename+'.csv', header=None, low_memory=False, usecols=[0, 1, 3], dtype={0: str, 1: str, 3: float}, skiprows=2)
+        data = pd.read_csv(location+filename, header=None, low_memory=False, usecols=[0, 1, 3], dtype={0: str, 1: str, 3: float}, skiprows=2)
         for n, j in enumerate(data[1]):
             if j == asset:
                 data = pd.DataFrame(data.values[n:])
@@ -31,7 +31,7 @@ def fix_absolute(filename, location='../'):
                 data = pd.DataFrame(data.values[:n])
                 break
         del data[1]
-        data.to_csv(location+filename+'.csv')
+        data.to_csv(location+filename)
         print('done')
         return 1
     else:

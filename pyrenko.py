@@ -39,7 +39,7 @@ class renko:
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
-        self.n = 3 # ema--rsi
+        self.n = 20 # ema--rsi
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
@@ -268,23 +268,25 @@ class renko:
 
     def ema_(self, t, n):
         # exponential moving average
-        return pd.DataFrame(t).ewm(span=n, adjust=False).mean().values[-1]
+        return pd.DataFrame(t).ewm(span=n, adjust=False).mean().values
 
     def rsi(self):
-        if self.ys[-1] > self.ys[-2]:
-            self.U.append(self.ys[-1] - self.ys[-2])
-            self.D.append(0)
-        elif self.ys[-2] > self.ys[-1]:
-            self.U.append(0)
-            self.D.append(self.ys[-2] - self.ys[-1])
-        else:
-            self.D.append(0)
-            self.U.append(0)
-        try:
-            RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))
-        except:
-            RS = 0
-        return list(map(lambda x: 100-100/(1+x),RS))[-1]
+        if len(self.ys) > 10:
+            if self.ys[-1] > self.ys[-2]:
+                self.U.append(self.ys[-1] - self.ys[-2])
+                self.D.append(0)
+            elif self.ys[-2] > self.ys[-1]:
+                self.U.append(0)
+                self.D.append(self.ys[-2] - self.ys[-1])
+            else:
+                self.D.append(0)
+                self.U.append(0)
+            try:
+                RS = (self.ema_(self.U, self.n)/self.ema_(self.D, self.n))
+            except:
+                RS = 0
+            if RS.any() != 0:
+                return list(map(lambda x: 100-(100/(1+x)),RS))
     
     def wma(self,p):
         # weighted moving average
@@ -358,7 +360,7 @@ class renko:
     def calc_indicator(self, ind):
         # calculates indicator
         #print(f"using {self.strategy}")
-        if 1==1:  # can add more indicators by expanding if condition:
+        if self.strategy == "macd":  # can add more indicators by expanding if condition:
             self.pricea = self.y + self.brick_size  # calculates indicator on each new brick
             if self.cross(self.macd(), self.sma()) and self.macd()[-1] > self.sma()[-1] and not self.long:
                 self.long = True
@@ -467,5 +469,26 @@ class renko:
             else:
                 self.next_brick = 0
         elif self.strategy == "abcd":
-            self.pricea = self.y + self.brick_size
+            if self.rsi() is not None:
+                self.pricea = self.y + self.brick_size
+                rsi = []
+                for i in self.rsi():
+                    rsi.append(i[0])
+                if rsi[-1] > 10 and rsi[-2] < 10 and not self.long:
+                    if self.long or self.short:
+                        self.b_.close(self.pricea)
+                    self.b_.buy(self.pricea)
+                    print(f"BUY at {self.pricea}")
+                    self.long = True
+                    self.short = False
+                    
+                    
+                elif rsi[-1] < 90 and rsi[-2] > 90 and not self.short:
+                    if self.long or self.short:
+                        self.b_.close(self.pricea)
+                    self.b_.sell(self.pricea)
+                    print(f"SELL at {self.pricea}")
+                    self.short = True
+                    self.long = False
+                    
 

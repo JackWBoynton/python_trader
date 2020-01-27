@@ -44,7 +44,7 @@ print('starting to load csv backtest data... days: ' + str(args.days))
 data = pd.DataFrame(helper.load_dfs_mult('XBTUSD', files=sta, location='../'))  # uses multiprocessing to parse huge csv datafiles
 print('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=True, fast=int(args.fast[0]), slow=int(
-    args.fast[1]), signal_l=int(args.fast[2]), to_trade=args.trade, strategy=0 if args.tr == 'macd' else 1, ordtype=args.order_type)
+    args.fast[1]), signal_l=int(args.fast[2]), to_trade=args.trade, strategy=args.tr, ordtype=args.order_type)
 renko_obj.set_brick_size(brick_size=args.brick_size, auto=False)  # sets brick_size hyperparam in dollars
 renko_obj.build_history(prices=data, timestamps=[''])  # builds renko backtest
 trades = renko_obj.plot_renko()  # starts live renko brick calculation
@@ -56,6 +56,7 @@ if args.plot:
     wma, times_wma = renko_obj.wma(9)
     p = "%Y-%m-%d%H:%M:%S.%f000"
     timestampss = []
+    """
     plt.figure(figsize=(20,20))
     for n, point in tqdm(enumerate(data[1]),total=len(data[1])): ## somehow improve parsing time??? 
         point = point.replace("D","")
@@ -87,4 +88,11 @@ if args.plot:
             plt.scatter(calendar.timegm(timestamp.timetuple()),[i[2]], c="#ff0000")
 
     plt.savefig("out.jpg")
-    #plt.show()
+    plt.close()
+    """
+    rsi = []
+    for i in renko_obj.rsi():
+        rsi.append(i[0])
+    print(rsi)
+    plt.plot(list(range(len(rsi))),rsi)
+    plt.show()
