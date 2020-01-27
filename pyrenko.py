@@ -483,7 +483,7 @@ class renko:
                     self.short = False
                     
                     
-                elif rsi[-1] < 90 and rsi[-2] > 90 and not self.short:
+                elif rsi[-1] < 80 and rsi[-2] > 80 and not self.short:
                     if self.long or self.short:
                         self.b_.close(self.pricea)
                     self.b_.sell(self.pricea)

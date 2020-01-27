@@ -13,7 +13,7 @@ class trader:
         self.risk = 0.5 # risk 5% of capital, fee comes out of btc bal after trade comes out
         self.long = False
         self.short = False
-        self.leverage = 2
+        self.leverage = 5
         self.fee = 0.0075 # 0.075%
         self.tot_fees = 0
         self.tot_profit = 0
