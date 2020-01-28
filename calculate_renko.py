@@ -44,6 +44,7 @@ print('starting to load csv backtest data... days: ' + str(args.days))
 
 #data = pd.DataFrame(helper.load_dfs_mult('XBTUSD', files=sta, location='../'))  # uses multiprocessing to parse huge csv datafiles
 data = get_data(sta) # get_data is a generator that returns a pandas dataframe for 5 day chunks of data
+next(data)
 print('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=True, fast=int(args.fast[0]), slow=int(
     args.fast[1]), signal_l=int(args.fast[2]), to_trade=args.trade, strategy=args.tr, ordtype=args.order_type)
