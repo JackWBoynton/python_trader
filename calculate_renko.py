@@ -51,7 +51,8 @@ renko_obj.set_brick_size(brick_size=args.brick_size, auto=False)  # sets brick_s
 while True:
     try:
         renko_obj.build_history(prices=next(data), timestamps=[''])  # builds renko backtest
-    except:
+    except Exception as e:
+        print(e)
         break
 
 trades = renko_obj.plot_renko()  # starts live renko brick calculation
