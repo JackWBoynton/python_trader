@@ -5,6 +5,7 @@ from helper import load_dfs_mult
 BLOCKSIZE = 5
 
 def get_data(days):
+    print(days)
     last = 0
     for i in range(len(days)//BLOCKSIZE):
         yield pd.DataFrame(load_dfs_mult("XBTUSD",files=days[last:i],location="../"))
