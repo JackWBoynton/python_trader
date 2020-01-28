@@ -39,13 +39,13 @@ class renko:
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
-        self.n = 15 # ema--rsi
+        self.n = 20 # ema--rsi
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
         self.strategy = strategy
         self.use_ml = False
-        self.b_ = b_trader(0.1)
+        self.b_ = b_trader(0.1) # 0.1 BTC starting balance  
 
     def set_brick_size(self, HLC_history=None, auto=True, brick_size=10):
         if auto:
