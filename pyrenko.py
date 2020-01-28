@@ -39,7 +39,7 @@ class renko:
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
-        self.n = 20 # ema--rsi
+        self.n = 15 # ema--rsi
         self.smaa = []
         self.act_timestamps = []
         self.end_backtest = datetime.datetime.now()
@@ -468,12 +468,13 @@ class renko:
                 self.runs += 1
             else:
                 self.next_brick = 0
-        elif self.strategy == "abcd":
+        elif self.strategy == "rsi":
             if self.rsi() is not None:
                 self.pricea = self.y + self.brick_size
                 rsi = []
                 for i in self.rsi():
                     rsi.append(i[0])
+
                 if rsi[-1] > 10 and rsi[-2] < 10 and not self.long:
                     if self.long or self.short:
                         self.b_.close(self.pricea)
@@ -481,7 +482,6 @@ class renko:
                     print(f"BUY at {self.pricea}")
                     self.long = True
                     self.short = False
-                    
                     
                 elif rsi[-1] < 80 and rsi[-2] > 80 and not self.short:
                     if self.long or self.short:
