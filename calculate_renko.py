@@ -14,6 +14,7 @@ import time
 import calendar
 from tqdm import tqdm
 import matplotlib
+from blocks import get_data
 
 parser = argparse.ArgumentParser()
 parser.add_argument("fast", nargs=3, type=int)
@@ -41,12 +42,18 @@ for i in range(args.days):  # gets all date csv files in home directory
 
 print('starting to load csv backtest data... days: ' + str(args.days))
 
-data = pd.DataFrame(helper.load_dfs_mult('XBTUSD', files=sta, location='../'))  # uses multiprocessing to parse huge csv datafiles
+#data = pd.DataFrame(helper.load_dfs_mult('XBTUSD', files=sta, location='../'))  # uses multiprocessing to parse huge csv datafiles
+data = get_data(sta) # get_data is a generator that returns a pandas dataframe for 5 day chunks of data
 print('finished loading csv backtest data... starting renko brick calculation')
 renko_obj = pyrenko.renko(plot=False, j_backtest=True, fast=int(args.fast[0]), slow=int(
     args.fast[1]), signal_l=int(args.fast[2]), to_trade=args.trade, strategy=args.tr, ordtype=args.order_type)
 renko_obj.set_brick_size(brick_size=args.brick_size, auto=False)  # sets brick_size hyperparam in dollars
-renko_obj.build_history(prices=data, timestamps=[''])  # builds renko backtest
+while True:
+    try:
+        renko_obj.build_history(prices=next(data), timestamps=[''])  # builds renko backtest
+    except:
+        break
+
 trades = renko_obj.plot_renko()  # starts live renko brick calculation
 # 2019-12-17D23:09:17.575367000 # sample timestamp from bitmex
 if args.plot:

@@ -155,11 +155,10 @@ class renko:
 
         self.first = True
 
-        for i in range(1, len(self.renko_prices)):
+        for i in range(1, len(self.renko_prices)): # start backtest
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
-            self.y = self.renko_prices[i] - \
-                self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
+            self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
             self.last = self.renko_prices[-1]
             self.aaa = self.last
             self.animate(i)
