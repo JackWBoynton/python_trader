@@ -5,10 +5,8 @@ from helper import load_dfs_mult
 BLOCKSIZE = 5
 
 def get_data(days):
-    #print(days)
     last = 0
     for i in range(len(days)//BLOCKSIZE):
-        #print(days[last:i])
         yield pd.DataFrame(load_dfs_mult("XBTUSD",files=days[last:last+5],location="../"))
         last += 5
     if len(days) % 5 != 0:

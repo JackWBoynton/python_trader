@@ -36,6 +36,7 @@ class renko:
         self.renko_prices = []
         self.renko_directions = []
         self.out = []
+        self.last_loaded = 0
         self.plot = plot  # unused
         self.timestamps = []
         self.macdaa = []
@@ -91,7 +92,7 @@ class renko:
                     self.renko_directions.append(np.sign(gap_div))
         return num_new_bars
 
-    def build_history(self, prices, timestamps):
+    def build_history(self, prices, timestamps,):
         # builds backtest bricks
         self.orig_prices = prices
         if len(prices) > 0:
@@ -100,10 +101,17 @@ class renko:
             self.renko_prices.append(prices[2].values[-1])
             self.act_timestamps.append(prices[1].values[-1])
             self.renko_directions.append(0)
-
-            for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
-                # print(type(p),p)
-                self.__renko_rule(p, n)  # performs __renko_rule on each price tick
+            if self.last_loaded == 0:
+                for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
+                    # print(type(p),p)
+                    self.__renko_rule(p, n)  # performs __renko_rule on each price tick
+                self.last_loaded = n
+                self.source_prices = []
+            else:
+                for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
+                    # print(type(p),p)
+                    self.__renko_rule(p, self.last_loaded+1)
+                self.last_loaded += 1
 
             # map(lambda x: self.__renko_rule(x[1], x[0]), enumerate(self.source_prices[1:].values))
         return len(self.renko_prices)
