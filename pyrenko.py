@@ -94,6 +94,9 @@ class renko:
 
     def build_history(self, prices, timestamps,):
         # builds backtest bricks
+        self.act_timestamps = []
+        self.timestamps = []
+        print(len(self.renko_prices))
         self.orig_prices = prices
         if len(prices) > 0:
             self.timestamps = prices[1].values
@@ -108,7 +111,7 @@ class renko:
                 self.last_loaded = n
                 self.source_prices = []
             else:
-                for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc=f'build renko____ {self.last_loaded}:{self.last_loaded+len(self.source_prices[1:].values)}'):  # takes long time
+                for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc=f'build renko {self.last_loaded}:{self.last_loaded+len(self.source_prices[1:].values)}'):  # takes long time
                     # print(type(p),p)
                     self.__renko_rule(p, self.last_loaded+1)
                 self.last_loaded += 1
