@@ -49,6 +49,7 @@ def load_dfs(asset, files):
 def load_dfs_mult(asset, files, location="../"):
     download_new(location)
     # multiprocessing version of load_dfs
+    print(f"loading {len(files)} files")
     for n, i in enumerate(files):
         if location == '../':
             if i.split('/')[1].split('.')[0] == '20190927':
