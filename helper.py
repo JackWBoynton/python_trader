@@ -46,7 +46,7 @@ def load_dfs(asset, files):
     return a
 
 
-def load_dfs_mult(asset, files, location):
+def load_dfs_mult(asset, files, location="../"):
     download_new(location)
     # multiprocessing version of load_dfs
     for n, i in enumerate(files):
