@@ -108,13 +108,13 @@ class renko:
                 for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc='build renko'):  # takes long time
                     # print(type(p),p)
                     self.__renko_rule(p, n)  # performs __renko_rule on each price tick
-                self.last_loaded = n
+                self.last_loaded = len(self.renko_prices)
                 self.source_prices = []
             else:
                 for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc=f'build renko {self.last_loaded}:{self.last_loaded+len(self.source_prices[1:].values)}'):  # takes long time
                     # print(type(p),p)
                     self.__renko_rule(p, self.last_loaded+1)
-                self.last_loaded += 1
+                self.last_loaded = len(self.renko_prices)
 
             # map(lambda x: self.__renko_rule(x[1], x[0]), enumerate(self.source_prices[1:].values))
         return len(self.renko_prices)
