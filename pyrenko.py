@@ -92,10 +92,10 @@ class renko:
                     self.renko_directions.append(np.sign(gap_div))
         return num_new_bars
 
-    def build_history(self, prices, timestamps,):
+    def build_history(self, prices, timestamps):
         # builds backtest bricks
-        self.act_timestamps = []
-        self.timestamps = []
+        #self.act_timestamps = [] # might use a bunch of ram??
+        #self.timestamps = []
         print(len(self.renko_prices))
         self.orig_prices = prices
         if len(prices) > 0:
@@ -166,7 +166,7 @@ class renko:
 
         self.first = True
 
-        for i in range(1, len(self.renko_prices)): # start backtest
+        for i in tqdm(range(1, len(self.renko_prices)),total=len(self.renko_prices)): # start backtest
             self.col = col_up if self.renko_directions[i] == 1 else col_down
             self.x = i
             self.y = self.renko_prices[i] - self.brick_size if self.renko_directions[i] == 1 else self.renko_prices[i]
