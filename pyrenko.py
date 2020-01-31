@@ -81,23 +81,23 @@ class renko:
                 self.renko_prices.append(
                     self.renko_prices[-1] + 2 * self.brick_size * np.sign(gap_div))
                 #print(self.timestamps[ind])
-                self.act_timestamps.append(self.timestamps[ind])
+                self.act_timestamps.append(self.timestamps[ind+1])
                 self.renko_directions.append(np.sign(gap_div))
             if is_new_brick:
                 # add each brick
                 for d in range(start_brick, np.abs(gap_div)):
                     self.renko_prices.append(
                         self.renko_prices[-1] + self.brick_size * np.sign(gap_div))
-                    self.act_timestamps.append(self.timestamps[ind])
+                    self.act_timestamps.append(self.timestamps[ind+1])
                     self.renko_directions.append(np.sign(gap_div))
         return num_new_bars
 
     def build_history(self, prices, timestamps):
         # builds backtest bricks
-        #self.act_timestamps = [] # might use a bunch of ram??
-        #self.timestamps = []
+        
         print(len(self.renko_prices))
         self.orig_prices = prices
+        print(prices[1].values[-1])
         if len(prices) > 0:
             self.timestamps = prices[1].values
             self.source_prices = pd.DataFrame(prices[2].values)
@@ -109,11 +109,11 @@ class renko:
                     # print(type(p),p)
                     self.__renko_rule(p, n)  # performs __renko_rule on each price tick
                 self.last_loaded = len(self.renko_prices)
-                self.source_prices = []
+                #self.source_prices = []
             else:
                 for n, p in tqdm(enumerate(self.source_prices[1:].values), total=len(self.source_prices[1:].values), desc=f'build renko {self.last_loaded}:{self.last_loaded+len(self.source_prices[1:].values)}'):  # takes long time
                     # print(type(p),p)
-                    self.__renko_rule(p, self.last_loaded+1)
+                    self.__renko_rule(p, n)
                 self.last_loaded = len(self.renko_prices)
 
             # map(lambda x: self.__renko_rule(x[1], x[0]), enumerate(self.source_prices[1:].values))
@@ -188,7 +188,7 @@ class renko:
         sra = (sr - sr.shift(1))/sr.shift(1)
         srb = sra.mean()/sra.std() * np.sqrt(365) # calculate sharpe ratio for 1 year trading every day
         #self.trade.end_backtest(self.pricea)
-        self.b_.end(self.pricea)
+        self.b_.end(self.pricea,self.act_timestamps[-1])
         #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init) + ' :: ' + str(round(((self.backtest_bal_usd-self.init)/self.init)*100, 3)) + ' percent')
         #print('net backtest profit: BTC ' + str(self.backtest_bal_usd - self.init), 'max drawdown: ' + str(round(min(self.trades_), 8)) + ' BTC', 'max trade: ' + str(round(max(self.trades_), 8)) + ' BTC', 'average: ' + str(round(statistics.mean(self.trades_), 8)) + ' BTC', 'SR: ' + str(round(srb[0], 5)))
         if not self.j_backtest:
@@ -479,6 +479,7 @@ class renko:
             else:
                 self.next_brick = 0
         elif self.strategy == "rsi":
+            #print(ind)
             if self.rsi() is not None:
                 self.pricea = self.y + self.brick_size
                 rsi = []
@@ -487,17 +488,17 @@ class renko:
 
                 if rsi[-1] > 10 and rsi[-2] < 10 and not self.long:
                     if self.long or self.short:
-                        self.b_.close(self.pricea)
+                        self.b_.close(self.pricea, self.act_timestamps[ind])
                     self.b_.buy(self.pricea)
-                    print(f"BUY at {self.pricea}")
+                    #print(f"BUY at {self.pricea} @ {self.act_timestamps[ind]}")
                     self.long = True
                     self.short = False
                     
-                elif rsi[-1] < 75 and rsi[-2] > 75 and not self.short:
+                elif rsi[-1] < 70 and rsi[-2] > 70 and not self.short:
                     if self.long or self.short:
-                        self.b_.close(self.pricea)
+                        self.b_.close(self.pricea, self.act_timestamps[ind])
                     self.b_.sell(self.pricea)
-                    print(f"SELL at {self.pricea}")
+                    #print(f"SELL at {self.pricea} @ {self.act_timestamps[ind]}")
                     self.short = True
                     self.long = False
                     

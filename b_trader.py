@@ -7,10 +7,11 @@ from termcolor import colored
 class trader:
     
     def __init__(self, bal):
+        self.__bal = bal
         self._bal = bal
         self.bal_btc = bal
         self.open_contracts_usd = 0
-        self.risk = 0.5 # risk 5% of capital, fee comes out of btc bal after trade comes out
+        self.risk = 0.6 # risk 50% of capital, fee comes out of btc bal after trade comes out, therefore must be < 1.0
         self.long = False
         self.short = False
         self.leverage = 5
@@ -40,7 +41,7 @@ class trader:
         self.open_contracts_usd = selling_power
         print(f"[+] shorted {selling_power} contracts with {self.leverage}x leverage, fee: {fee} BTC, at {price}")
 
-    def close(self, price):
+    def close(self, price, time):
         assert self.long or self.short
         if self.short:
             profit = (1/self.open_price)-(1/price)
@@ -58,18 +59,16 @@ class trader:
         self.bal_btc = round(self.bal_btc, 8)
         #self.bal_btc += round((self.open_contracts_usd/self.leverage) / price,8)
         self.open_contracts_usd = 0
-        if profit > 0:
-            col = 'green'
-        else:
-            col = 'red'
-        print(f"{colored('[-]', col)} closed trade at {price}, profit: {profit} BTC, bal after: {self.bal_btc}, fee: {fee} BTC")
 
-    def end(self,price):
+        print(f"{colored('[-]', 'green' if profit > 0 else 'red')} closed trade at {price}, profit: {profit} BTC, bal after: {self.bal_btc}, fee: {fee} BTC at {time}")
+
+    def end(self,price,time):
         if self.long or self.short:
-            self.close(price)
+            self.close(price,time=time)
         if self.bal_btc - self._bal > 0:
             col = 'green'
         else:
             col = 'red'
-        print(f"{colored('[**]',col)} end, change: {self.bal_btc - self._bal} BTC, ending bal {self.bal_btc} BTC, total profit: {self.tot_profit}, total fees: {self.tot_fees}, net: {self.tot_profit-self.tot_fees}")
+        pct = ((self.bal_btc - self._bal)/self._bal)*100
+        print(f"{colored('[**]',col)} end, change: {self.bal_btc - self._bal} BTC, ending bal {self.bal_btc} BTC, total profit: {self.tot_profit}, total fees: {self.tot_fees}, net: {self.tot_profit-self.tot_fees}, pct: {pct}")
 
